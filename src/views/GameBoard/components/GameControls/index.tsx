@@ -1765,6 +1765,44 @@ export const GameControls: React.FC<GameControlsProps> = ({
                                 </S.ActionButton>
                             )}
 
+                        {toastConfig.type === 'RESPONSE' &&
+                            isMyTurnToAct &&
+                            G.pendingEvent?.type === 'ABOUT_TO_DISCARD' &&
+                            typeof G.pendingEvent.addTwilight === 'number' &&
+                            G.pendingEvent.addTwilight > 0 && (
+                                <S.ActionButton
+                                    style={{ marginTop: '12px', width: '100%' }}
+                                    onClick={() => {
+                                        moves.preventPendingEffect?.();
+                                    }}
+                                >
+                                    Empêcher (+
+                                    {G.pendingEvent.addTwilight} crépuscule
+                                    {G.pendingEvent.addTwilight > 1
+                                        ? 's'
+                                        : ''}
+                                    )
+                                </S.ActionButton>
+                            )}
+
+                        {toastConfig.type === 'RESPONSE' &&
+                            isMyTurnToAct &&
+                            G.pendingEvent?.type === 'ABOUT_TO_DISCARD' &&
+                            typeof G.pendingEvent.addBurdens === 'number' &&
+                            G.pendingEvent.addBurdens > 0 && (
+                                <S.ActionButton
+                                    style={{ marginTop: '12px', width: '100%' }}
+                                    onClick={() => {
+                                        moves.preventPendingEffect?.();
+                                    }}
+                                >
+                                    Empêcher (+
+                                    {G.pendingEvent.addBurdens} fardeau
+                                    {G.pendingEvent.addBurdens > 1 ? 'x' : ''}
+                                    )
+                                </S.ActionButton>
+                            )}
+
                         {targetingOnConfirm && (
                             <S.ActionButton
                                 style={{ marginTop: '12px', width: '100%' }}

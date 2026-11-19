@@ -18536,7 +18536,7 @@
           }
         ],
         "source": "SELF",
-        "text": "MANEUVER: Spot a ranger to discard a roaming minion.",
+        "text": "MANEUVER: Spot a ranger to discard a roaming minion",
         "textFr": "**Manœuvre :** Désignez un rôdeur pour défausser un séide errant."
       }
     ],
@@ -25223,7 +25223,7 @@
           }
         ],
         "source": "SELF",
-        "text": "SHADOW: Spot a sauron Orc to discard an elven condition.",
+        "text": "SHADOW: Spot a sauron Orc to discard an elven condition",
         "textFr": "**Ombre :** Désignez un Orque <symbol>sauron</symbol> pour défausser une situation <symbol>œ</symbol>."
       }
     ],
@@ -43995,7 +43995,7 @@
           }
         ],
         "source": "SELF",
-        "text": "MANEUVER: Spot 3 dunland Men to discard a Free Peoples possession or condition.",
+        "text": "MANEUVER: Spot 3 dunland Men to discard a Free Peoples possession or condition",
         "textFr": "**Manœuvre :** Désignez 3 Hommes <symbol>dunland</symbol> pour défausser une situation ou une possession des Peuples Libres."
       }
     ],
@@ -45123,7 +45123,7 @@
           }
         ],
         "source": "SELF",
-        "text": "ARCHERY: Spot 2 Elf companions to discard a condition.",
+        "text": "ARCHERY: Spot 2 Elf companions to discard a condition",
         "textFr": "**Archerie :** Désignez 2 compagnons Elfes pour défausser une situation."
       }
     ],
@@ -47074,7 +47074,7 @@
           }
         ],
         "source": "SELF",
-        "text": "MANEUVER: Spot Gandalf to discard a Shadow possession or Shadow artifact."
+        "text": "MANEUVER: Spot Gandalf to discard a Shadow possession or Shadow artifact"
       }
     ],
     "phases": [
@@ -68902,7 +68902,56 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "EVENT",
+    "abilities": [
+      {
+        "id": "6R82:0",
+        "phases": [
+          "MANEUVER"
+        ],
+        "cost": [
+          {
+            "spot": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "RAIDER",
+                    "MAN"
+                  ]
+                ],
+                "bearing": [
+                  [
+                    "MOUNT"
+                  ]
+                ]
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "DISCARD",
+            "count": 1,
+            "target": [
+              [
+                "COMPANION"
+              ]
+            ],
+            "excludeRingBearer": true,
+            "fpMayPrevent": {
+              "addTwilight": 4
+            }
+          }
+        ],
+        "source": "SELF",
+        "text": "MANEUVER: Spot a mounted raider Man to discard a companion (except the Ring-bearer)",
+        "textFr": "**Manœuvre :** Désignez un Homme <symbol>raider</symbol> qui détient une monture pour défausser un compagnon (sauf le Porteur de l’Anneau). Le joueur des Peuples Libres peut ajouter <symbol>twilight4</symbol> pour empêcher ceci."
+      }
+    ],
     "phases": [
+      "MANEUVER"
+    ],
+    "actionPhases": [
       "MANEUVER"
     ],
     "culture": "RAIDER",

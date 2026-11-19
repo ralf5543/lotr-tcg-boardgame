@@ -916,6 +916,11 @@ export type AbilityEffect =
               min: number;
               count: number;
           };
+          /**
+           * FP peut empêcher : +N fardeaux ou +N crépuscule
+           * (Trample : add twilight4…).
+           */
+          fpMayPrevent?: { addBurdens: number } | { addTwilight: number };
       }
     | {
           /**
@@ -1999,11 +2004,15 @@ export interface PendingAddBurdenEvent {
     byShadowCard?: boolean;
 }
 
-/** Carte sur le point d’être défaussée (réponses type Scouring). */
+/** Carte sur le point d’être défaussée (réponses type Scouring / Trample). */
 export interface PendingDiscardEvent {
     type: 'ABOUT_TO_DISCARD';
     targetId: string;
     byShadowCard?: boolean;
+    /** FP empêche en ajoutant N crépuscule (Trample…). */
+    addTwilight?: number;
+    /** FP empêche en ajoutant N fardeaux. */
+    addBurdens?: number;
 }
 
 /** Soin réel effectué (réponses type Enquëa). */

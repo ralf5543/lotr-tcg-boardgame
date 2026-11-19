@@ -489,6 +489,15 @@ function fpCanPreventExhaust(G: GameState): boolean {
     return event.addBurdens > 0;
 }
 
+function fpCanPreventDiscard(G: GameState): boolean {
+    const event = G.pendingEvent;
+    if (!event || event.type !== 'ABOUT_TO_DISCARD') return false;
+    return (
+        (typeof event.addTwilight === 'number' && event.addTwilight > 0) ||
+        (typeof event.addBurdens === 'number' && event.addBurdens > 0)
+    );
+}
+
 function fpCanPreventForceAssign(G: GameState): boolean {
     const event = G.pendingEvent;
     if (!event || event.type !== 'ABOUT_TO_FORCE_ASSIGN') return false;
@@ -563,6 +572,14 @@ function responseWindowMessage(G: GameState): string {
         return `${n} point${n > 1 ? 's' : ''}-fardeau ${n > 1 ? 'vont' : 'va'} être ajouté${n > 1 ? 's' : ''}. Jouez une réponse ou passez.`;
     }
     if (G.pendingEvent?.type === 'ABOUT_TO_DISCARD') {
+        const twilight = G.pendingEvent.addTwilight;
+        if (typeof twilight === 'number' && twilight > 0) {
+            return `Une carte va être défaussée. Ajoutez ${twilight} crépuscule${twilight > 1 ? 's' : ''} pour empêcher, ou passez.`;
+        }
+        const burdens = G.pendingEvent.addBurdens;
+        if (typeof burdens === 'number' && burdens > 0) {
+            return `Une carte va être défaussée. Ajoutez ${burdens} fardeau${burdens > 1 ? 'x' : ''} pour empêcher, ou passez.`;
+        }
         return 'Une carte va être défaussée. Jouez une réponse ou passez.';
     }
     if (G.pendingEvent?.type === 'HEAL') {
@@ -662,6 +679,13 @@ export function playerHasEligibleResponse(
         return (
             playerID === (G.fpPlayerId || '0') && fpCanPreventAddThreats(G)
         );
+    }
+
+    if (
+        G.pendingEvent.type === 'ABOUT_TO_DISCARD' &&
+        fpCanPreventDiscard(G)
+    ) {
+        return playerID === (G.fpPlayerId || '0');
     }
 
     const player = G.players[playerID];
@@ -1712,6 +1736,29 @@ export function preventPendingEffect(
         return 'APPLIED';
     }
 
+    if (event.type === 'ABOUT_TO_DISCARD') {
+        if (playerID !== (G.fpPlayerId || '0')) return 'INVALID';
+        if (typeof event.addTwilight === 'number' && event.addTwilight > 0) {
+            const n = event.addTwilight;
+            G.twilightPool = (G.twilightPool || 0) + n;
+            G.pendingEvent = undefined;
+            closeResponseWindow(G);
+            G.statusMessage = `Les Peuples Libres empêchent la défausse (+${n} crépuscule${n > 1 ? 's' : ''}).`;
+            flushPendingActionYield(G);
+            return 'APPLIED';
+        }
+        if (typeof event.addBurdens === 'number' && event.addBurdens > 0) {
+            const n = event.addBurdens;
+            addFpBurdens(G, n);
+            G.pendingEvent = undefined;
+            closeResponseWindow(G);
+            G.statusMessage = `Les Peuples Libres empêchent la défausse (+${n} fardeau${n > 1 ? 'x' : ''}).`;
+            flushPendingActionYield(G);
+            return 'APPLIED';
+        }
+        return 'INVALID';
+    }
+
     return 'INVALID';
 }
 
@@ -1783,12 +1830,16 @@ export function requestAddBurdens(
 
 /**
  * Défausse depuis le jeu : ouvre ABOUT_TO_DISCARD s’il existe une réponse
- * (Scouring…), sinon défausse tout de suite.
+ * (Scouring…) ou un coût FP pour empêcher (Trample…), sinon défausse tout
+ * de suite.
  */
 export function requestDiscardFromPlay(
     G: GameState,
     card: CardState,
-    options?: { byShadowCard?: boolean }
+    options?: {
+        byShadowCard?: boolean;
+        fpMayPrevent?: { addTwilight: number } | { addBurdens: number };
+    }
 ): boolean {
     if (!card) return false;
     const targetId = card.instanceId || card.id;
@@ -1796,17 +1847,34 @@ export function requestDiscardFromPlay(
     if (G.responseWindow?.isOpen || G.pendingEvent) {
         return discardCardFromPlay(G, card);
     }
+    const prevent = options?.fpMayPrevent;
+    const addTwilight =
+        prevent && 'addTwilight' in prevent ? prevent.addTwilight : undefined;
+    const addBurdens =
+        prevent && 'addBurdens' in prevent ? prevent.addBurdens : undefined;
     G.pendingEvent = {
         type: 'ABOUT_TO_DISCARD',
         targetId,
         ...(options?.byShadowCard ? { byShadowCard: true } : {}),
+        ...(typeof addTwilight === 'number' && addTwilight > 0
+            ? { addTwilight }
+            : {}),
+        ...(typeof addBurdens === 'number' && addBurdens > 0
+            ? { addBurdens }
+            : {}),
     };
     if (!hasAnyEligibleResponse(G)) {
         G.pendingEvent = undefined;
         return discardCardFromPlay(G, card);
     }
     openResponseWindow(G);
-    G.statusMessage = 'Réponse : empêcher la défausse ou passer.';
+    if (typeof addTwilight === 'number' && addTwilight > 0) {
+        G.statusMessage = `Réponse Peuples Libres : ajouter ${addTwilight} crépuscule${addTwilight > 1 ? 's' : ''} pour empêcher la défausse, ou passer.`;
+    } else if (typeof addBurdens === 'number' && addBurdens > 0) {
+        G.statusMessage = `Réponse Peuples Libres : ajouter ${addBurdens} fardeau${addBurdens > 1 ? 'x' : ''} pour empêcher la défausse, ou passer.`;
+    } else {
+        G.statusMessage = 'Réponse : empêcher la défausse ou passer.';
+    }
     return true;
 }
 

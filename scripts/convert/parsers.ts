@@ -14701,28 +14701,63 @@ function isOnlyShadowPreventClause(leftover: string): boolean {
 }
 
 /**
- * « The Free Peoples player may add N burdens to prevent this ».
- * Uniquement add burdens — autre coût FP = inconnu (inerte).
+ * « The Free Peoples player may add N burdens | twilightN to prevent this ».
+ * Autre coût FP = inconnu (inerte).
  */
 function parseFpMayPrevent(
     leftover: string
-): { addBurdens: number } | null {
+): { addBurdens: number } | { addTwilight: number } | null {
     const plain = stripAbilityMarkup(leftover).replace(/[.\s]+$/g, '').trim();
     if (!plain) return null;
-    const match = plain.match(
+    const burdens = plain.match(
         /^The Free Peoples player may add\s+(\d+)\s+burdens?\s+to prevent this$/i
     );
-    if (!match) return null;
-    const n = parseInt(match[1], 10);
-    if (!Number.isFinite(n) || n <= 0) return null;
-    return { addBurdens: n };
+    if (burdens) {
+        const n = parseInt(burdens[1], 10);
+        if (!Number.isFinite(n) || n <= 0) return null;
+        return { addBurdens: n };
+    }
+    const twilight = plain.match(
+        /^The Free Peoples player may add\s+twilight(\d+)\s+to prevent this$/i
+    );
+    if (twilight) {
+        const n = parseInt(twilight[1], 10);
+        if (!Number.isFinite(n) || n <= 0) return null;
+        return { addTwilight: n };
+    }
+    return null;
 }
 
-/** Leftover vide, ou prevent FP fardeaux reconnu. Sinon → ne pas émettre. */
+/** Leftover vide, ou prevent FP (fardeaux / crépuscule) reconnu. */
 function isOnlyFpPreventClause(leftover: string): boolean {
     const plain = stripAbilityMarkup(leftover).replace(/[.\s]+$/g, '').trim();
     if (!plain) return true;
     return parseFpMayPrevent(leftover) !== null;
+}
+
+/**
+ * « a mounted [classe] » → spot + bearing monture (Line of Defense, Trample…).
+ */
+function parseMountedSpotSubject(
+    raw: string
+): { count: number; target: string[][]; bearing: string[][] } | null {
+    const cleaned = raw.replace(/\s+/g, ' ').trim();
+    const match = cleaned.match(/^(?:a|an)\s+mounted\s+(.+)$/i);
+    if (!match) return null;
+    const classRaw = match[1].trim();
+    const plain = stripAbilityMarkup(classRaw).replace(/\s+/g, ' ').trim();
+    if (
+        /\b(and|or|each|other|whose|bearing|except|from|to|may)\b/i.test(plain)
+    ) {
+        return null;
+    }
+    const filters = parseClassFilters(classRaw);
+    if (filters.length === 0) return null;
+    return {
+        count: 1,
+        target: [filters],
+        bearing: [['MOUNT']],
+    };
 }
 
 /**
@@ -18231,26 +18266,47 @@ export function parseAbilities(
             return;
         }
 
-        // Spot X to discard Y (events / special abilities)
+        // Spot X to discard Y [. FP may add twilightN|N burdens to prevent]
+        // (Trample : mounted raider Man ; Acharné Face au Désespoir…)
         const spotDiscardMatch = body.match(
             /^Spot\s+([\s\S]+?)\s+to discard\s+([\s\S]+)/i
         );
         if (spotDiscardMatch) {
-            if (/\b(and|or)\b/i.test(spotDiscardMatch[1])) return;
-            const spotSubject = parseExertSubject(
-                spotDiscardMatch[1],
-                cardTitle,
-                text
-            );
+            if (/\band\b/i.test(spotDiscardMatch[1])) return;
+            const mountedSpot = parseMountedSpotSubject(spotDiscardMatch[1]);
+            const spotSubject =
+                mountedSpot ||
+                parseExertSubject(spotDiscardMatch[1], cardTitle, text);
             if (!spotSubject) return;
+            if (
+                /\bor\b/i.test(spotDiscardMatch[1]) &&
+                !(
+                    Array.isArray(spotSubject.target) &&
+                    spotSubject.target.length >= 2
+                )
+            ) {
+                return;
+            }
+
+            const discardChunk = spotDiscardMatch[2];
+            const discardSentence = discardChunk.split(/\./)[0] || '';
+            const leftoverAfterDot = discardChunk
+                .slice(discardSentence.length)
+                .replace(/^\./, '')
+                .trim();
+            if (!isOnlyFpPreventClause(leftoverAfterDot)) return;
+
             const discardParsed = parseCountedDiscardTarget(
-                spotDiscardMatch[2],
+                discardSentence,
                 cardTitle
             );
             if (!discardParsed) return;
 
+            const fpMayPrevent =
+                parseFpMayPrevent(leftoverAfterDot) || undefined;
+
             const spotDiscardClause =
-                `${marker.phase}: Spot ${spotDiscardMatch[1].trim()} to discard ${spotDiscardMatch[2]}`
+                `${marker.phase}: Spot ${spotDiscardMatch[1].trim()} to discard ${discardSentence.trim()}`
                     .replace(/<[^>]+>/g, '')
                     .replace(/\s+/g, ' ')
                     .replace(/\s+\./g, '.')
@@ -18266,6 +18322,10 @@ export function parseAbilities(
                             {
                                 count: spotSubject.count,
                                 target: spotSubject.target,
+                                ...('bearing' in spotSubject &&
+                                spotSubject.bearing
+                                    ? { bearing: spotSubject.bearing }
+                                    : {}),
                             },
                         ],
                     },
@@ -18278,6 +18338,7 @@ export function parseAbilities(
                         ...(discardParsed.excludeRingBearer
                             ? { excludeRingBearer: true }
                             : {}),
+                        ...(fpMayPrevent ? { fpMayPrevent } : {}),
                     },
                 ],
                 source: 'SELF',

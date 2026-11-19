@@ -2252,8 +2252,12 @@ function applyOneEffect(
     }
 
     if (effect.type === 'DISCARD') {
-        if (source.kind === 'SHADOW') {
-            return requestDiscardFromPlay(G, target, { byShadowCard: true });
+        const fpMayPrevent = effect.fpMayPrevent;
+        if (source.kind === 'SHADOW' || fpMayPrevent) {
+            return requestDiscardFromPlay(G, target, {
+                byShadowCard: source.kind === 'SHADOW',
+                ...(fpMayPrevent ? { fpMayPrevent } : {}),
+            });
         }
         return discardCardFromPlay(G, target);
     }
