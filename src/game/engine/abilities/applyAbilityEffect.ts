@@ -41,7 +41,10 @@ import {
     discardCardsFromHand,
     playNextSiteDeckPlayerId,
 } from './payAbilityCost';
-import { playerHasInitiative } from '../../logic/initiative';
+import {
+    addCardToPlayerHand,
+    playerHasInitiative,
+} from '../../logic/initiative';
 import { addThreats } from '../../logic/threats';
 import { getMoveLimit } from '../../logic/moveLimit';
 import { syncMusterStateAfterGain } from '../../logic/musterHelpers';
@@ -857,8 +860,7 @@ export function applyAbilityEffect(
             if (idx < 0) return false;
             const [taken] = player.discard.splice(idx, 1);
             if (!taken) return false;
-            if (!player.hand) player.hand = [];
-            player.hand.push(taken);
+            addCardToPlayerHand(G, ownerId, taken);
             continue;
         }
 
@@ -2582,8 +2584,7 @@ function returnCardToOwnerHand(G: GameState, card: CardState): boolean {
     if (!removed) return false;
     removed.wounds = 0;
     removed.isDead = false;
-    if (!player.hand) player.hand = [];
-    player.hand.push(removed);
+    addCardToPlayerHand(G, ownerId, removed);
     return true;
 }
 

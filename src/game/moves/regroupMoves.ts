@@ -275,6 +275,11 @@ export const discardForMuster = (
     if (cardIndex < 0 || cardIndex >= player.hand.length) return 'INVALID_MOVE';
 
     // Clic en main = Défausse pour le Ralliement
+    const fpPlayerId = G.fpPlayerId || '0';
+    const watchInitiative = String(playerID) === String(fpPlayerId);
+    const hadInitiative = watchInitiative
+        ? freePeoplesHasInitiative(G)
+        : false;
     const [discardedCard] = player.hand.splice(cardIndex, 1);
     if (discardedCard) {
         placeCardIntoDiscardPile(G, playerID, discardedCard);
@@ -286,6 +291,9 @@ export const discardForMuster = (
             named: `${name} a défaussé ${cardName} (ralliement ${musterState.discardedCount}/${musterState.allowedCount}).`,
         });
         G.statusMessage = `${name} a défaussé ${cardName} (ralliement ${musterState.discardedCount}/${musterState.allowedCount}).`;
+        if (watchInitiative) {
+            announceInitiativeIfChanged(G, hadInitiative);
+        }
     }
 };
 

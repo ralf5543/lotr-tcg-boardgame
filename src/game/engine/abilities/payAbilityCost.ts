@@ -487,18 +487,17 @@ export function discardCardsFromHand(
     const unique = [...new Set(cardIds)];
     if (unique.length !== cardIds.length || unique.length === 0) return false;
 
-    const fpId = G.fpPlayerId || '0';
-    const watchInitiative = String(ownerId) === String(fpId);
-    const hadInitiative = watchInitiative
-        ? freePeoplesHasInitiative(G)
-        : false;
-
     const picked: CardState[] = [];
     for (const id of unique) {
         const card = player.hand.find((item) => matchCard(item, id));
         if (!card) return false;
         picked.push(card);
     }
+
+    // Une annonce unique (franchissement 4→3), pas une par carte.
+    const fpId = G.fpPlayerId || '0';
+    const watch = String(ownerId) === String(fpId);
+    const hadInitiative = watch ? freePeoplesHasInitiative(G) : false;
 
     for (const card of picked) {
         const index = player.hand.findIndex((item) =>
@@ -509,7 +508,7 @@ export function discardCardsFromHand(
         if (!removed) return false;
         placeCardIntoDiscardPile(G, ownerId, removed);
     }
-    if (watchInitiative) {
+    if (watch) {
         announceInitiativeIfChanged(G, hadInitiative);
     }
     return true;

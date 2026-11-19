@@ -140,37 +140,34 @@ export const applyDevPreset = (
     if (!fpPlayer) return { startPhase: 'startOfFellowship' };
 
     switch (presetType) {
-        case 'RANGERS_MERCHANT': {
-            // Manœuvre : initiative + défausse 2 → numéro de site d’un séide +2
-            // jusqu’au ralliement (ici 4 → 6 → errant au site 4).
+        case 'RANGERS_HARDY_GARRISON': {
+            // Initiative OK (≥4) → jouer J’Irai (4→3) → toaster Garrison → blesser.
             resetBoardForPreset(G);
             setupDevPath(G, 3, RANGERS_PATH);
             G.twilightPool = 0;
             fpPlayer.burdens = 0;
             const frodo = {
-                ...clonePresetCard('11S164', 'dev-mer-frodo'),
-                attachments: [clonePresetCard('4R1', 'dev-mer-ring')],
+                ...clonePresetCard('11S164', 'dev-hg-frodo'),
+                attachments: [clonePresetCard('4R1', 'dev-hg-ring')],
             };
-            const merchant = clonePresetCard('7R97', 'dev-mer-merchant');
-            // Allié (pas compagnon) — même aire de compagnie côté plateau.
-            const ranger = clonePresetCard('7C116', 'dev-mer-ranger');
-            fpPlayer.fellowshipArea = [frodo, ranger, merchant];
+            const ranger = clonePresetCard('7C116', 'dev-hg-ranger');
+            const garrison = clonePresetCard('10U33', 'dev-hg-garrison');
+            fpPlayer.fellowshipArea = [frodo, ranger];
+            fpPlayer.supportArea = [garrison];
             fpPlayer.hand = [
-                clonePresetCard('1C119', 'dev-mer-h1'),
-                clonePresetCard('1C106', 'dev-mer-h2'),
-                clonePresetCard('1C117', 'dev-mer-h3'),
-                clonePresetCard('1C119', 'dev-mer-h4'),
-                clonePresetCard('1C106', 'dev-mer-h5'),
-                clonePresetCard('1C117', 'dev-mer-h6'),
+                clonePresetCard('7C105', 'dev-hg-iwillgo'),
+                clonePresetCard('1C119', 'dev-hg-h2'),
+                clonePresetCard('1C106', 'dev-hg-h3'),
+                clonePresetCard('1C117', 'dev-hg-h4'),
             ];
             const minion = {
-                ...clonePresetCard('5C76', 'dev-mer-minion'),
+                ...clonePresetCard('5C76', 'dev-hg-minion'),
                 minionSiteNumber: 4,
             };
             G.battlefield = [minion];
             G.statusMessage =
-                '[DEV] Marchand gondorien (allié) · Manœuvre, initiative OK (≥4 en main). Activer le Marchand → défausser 2 → choisir le séide (site 4 → 6, devient errant). Relancer le preset.';
-            return { startPhase: 'maneuver' };
+                '[DEV] Garnison résistante · Compagnie, initiative OK (4 en main). Jouez J’Irai sur le rôdeur (4→3) → toaster Activer → blesser le séide. Relancer le preset.';
+            return { startPhase: 'fellowship' };
         }
 
         default:

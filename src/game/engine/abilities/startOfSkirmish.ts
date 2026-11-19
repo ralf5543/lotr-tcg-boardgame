@@ -16,6 +16,7 @@ import { getEffectiveVitality } from '../../../utils/cardStats';
 import { findForcedChoiceSource } from './startOfManeuver';
 import { abilityHasLegalEffectTarget } from './designation';
 import { pauseActionYieldForResponses } from '../responseWindow';
+import { addCardToPlayerHand } from '../../logic/initiative';
 
 function abilityHasChooseOne(ability: Ability): boolean {
     return (ability.effects || []).some((e) => e.type === 'CHOOSE_ONE');
@@ -275,8 +276,7 @@ export function cancelForcedChoice(
             if (idx >= 0) {
                 const [card] = discard.splice(idx, 1);
                 if (card) {
-                    if (!player.hand) player.hand = [];
-                    player.hand.push(card);
+                    addCardToPlayerHand(G, restore.playerId, card);
                 }
             }
             G.twilightPool = Math.max(

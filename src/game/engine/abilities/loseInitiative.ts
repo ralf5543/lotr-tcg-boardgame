@@ -28,7 +28,17 @@ export function maybeOfferLoseInitiativeResponse(G: GameState): void {
             const ownerId = abilityOwnerPlayerId(G, source) || fpId;
             // « you lose initiative » = le camp FP (initiative King block).
             if (String(ownerId) !== String(fpId)) continue;
-            if ((G.players[fpId]?.burdens || 0) < 1) continue;
+            // Fardeaux : seulement si l’effet en retire (A Light…).
+            const removesBurdens = (ability.effects || []).some(
+                (e) => e.type === 'REMOVE_BURDENS'
+            );
+            if (removesBurdens) {
+                const need = (ability.effects || []).reduce((sum, e) => {
+                    if (e.type !== 'REMOVE_BURDENS') return sum;
+                    return sum + (e.count || 1);
+                }, 0);
+                if ((G.players[fpId]?.burdens || 0) < need) continue;
+            }
             if (!canPayAbilityCost(G, source, ability.cost, ownerId)) {
                 continue;
             }

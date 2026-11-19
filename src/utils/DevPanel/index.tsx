@@ -349,12 +349,12 @@ export const DevPanel: React.FC<DevPanelProps> = ({
                             <S.ActionButton
                                 onClick={() =>
                                     moves.devLoadPreset?.(
-                                        'RANGERS_MERCHANT'
+                                        'RANGERS_HARDY_GARRISON'
                                     )
                                 }
-                                title="Marchand gondorien : initiative + défausse 2 → site séide +2"
+                                title="Garnison résistante : perdre l’initiative → blesser un séide"
                             >
-                                Marchand
+                                Garnison
                             </S.ActionButton>
                         </S.ButtonGroup>
                     </S.Section>

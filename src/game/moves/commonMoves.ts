@@ -285,6 +285,7 @@ export const attachCard = (
     );
     const fpId = G.fpPlayerId || '0';
     const isFP = actingPlayerId === fpId;
+    const hadInitiative = isFP ? freePeoplesHasInitiative(G) : false;
 
     const [attachedCard] = player.hand.splice(cardIndex, 1);
     if (isFP) {
@@ -304,6 +305,9 @@ export const attachCard = (
         playerId: actingPlayerId,
         phase: ctx.phase,
     });
+    if (isFP) {
+        announceInitiativeIfChanged(G, hadInitiative);
+    }
     if (G.pendingWhenPlayed) {
         pauseActionYieldForResponses(G, actingPlayerId);
     }

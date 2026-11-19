@@ -1,4 +1,4 @@
-import type { GameState } from '../types';
+import type { CardState, GameState } from '../types';
 import { maybeOfferLoseInitiativeResponse } from '../engine/abilities/loseInitiative';
 
 /**
@@ -42,4 +42,35 @@ export function withInitiativeWatch(G: GameState, run: () => void): void {
     const before = freePeoplesHasInitiative(G);
     run();
     announceInitiativeIfChanged(G, before);
+}
+
+/**
+ * Mutation de la main d’un joueur : n’annonce que si c’est le camp FP
+ * (l’initiative ne dépend que de sa main).
+ */
+export function withFpHandChange(
+    G: GameState,
+    ownerId: string | null | undefined,
+    mutate: () => void
+): void {
+    const fpId = G.fpPlayerId || '0';
+    const watch =
+        ownerId != null && String(ownerId) === String(fpId);
+    const before = watch ? freePeoplesHasInitiative(G) : false;
+    mutate();
+    if (watch) announceInitiativeIfChanged(G, before);
+}
+
+/** Ajoute une carte en main (+ initiative si FP). */
+export function addCardToPlayerHand(
+    G: GameState,
+    ownerId: string,
+    card: CardState
+): void {
+    withFpHandChange(G, ownerId, () => {
+        const player = G.players[ownerId];
+        if (!player) return;
+        if (!player.hand) player.hand = [];
+        player.hand.push(card);
+    });
 }

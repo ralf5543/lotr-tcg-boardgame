@@ -5,6 +5,10 @@ import { findInPlayCardOwnerId } from './cultureTokens';
 import { getEffectiveTwilightCost } from '../../utils/roamingDetection';
 import { getWhileTwilightCostModifier } from './stats/mechanics/whileModifier';
 import {
+    addCardToPlayerHand,
+    withFpHandChange,
+} from './initiative';
+import {
     detachCardFromBattlefield,
     getCurrentSiteIndex,
     placeCardIntoDiscardPile,
@@ -13,7 +17,7 @@ import {
 const matchCard = (card: CardState | undefined | null, targetId: string) =>
     Boolean(card && (card.instanceId === targetId || card.id === targetId));
 
-/** Retire une carte de la main du propriétaire. */
+/** Retire une carte de la main du propriétaire (+ initiative si FP). */
 export function removeCardFromHand(
     G: GameState,
     ownerId: string,
@@ -23,8 +27,12 @@ export function removeCardFromHand(
     if (!player?.hand) return null;
     const index = player.hand.findIndex((card) => matchCard(card, cardId));
     if (index < 0) return null;
-    const [removed] = player.hand.splice(index, 1);
-    return removed || null;
+    let removed: CardState | null = null;
+    withFpHandChange(G, ownerId, () => {
+        const [card] = player.hand.splice(index, 1);
+        removed = card || null;
+    });
+    return removed;
 }
 
 /**
@@ -93,8 +101,7 @@ export function takeStackedCardToHand(
     const [taken] = host.stacked.splice(index, 1);
     if (!taken) return false;
 
-    if (!player.hand) player.hand = [];
-    player.hand.push(taken);
+    addCardToPlayerHand(G, ownerId, taken);
     return true;
 }
 

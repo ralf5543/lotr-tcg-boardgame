@@ -3991,6 +3991,42 @@ function parseLoseInitiativeSpotRemoveBurdenAbilities(
 }
 
 /**
+ * Hardy Garrison : Each time you lose initiative, you may wound a minion.
+ */
+function parseLoseInitiativeWoundAbilities(
+    text: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const re =
+        /Each time you lose initiative,\s*you may wound ((?:a|an)\s+[^.]+)\./gi;
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(text)) !== null) {
+        const sentence = match[0];
+        if (/\bspot\b/i.test(sentence)) continue;
+        const filters = parseClassFilters(match[1]);
+        if (filters.length === 0) continue;
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:lose-init-wound`,
+            phases: [],
+            optional: true,
+            trigger: { type: 'LOSE_INITIATIVE' },
+            cost: [],
+            effects: [
+                {
+                    type: 'WOUND',
+                    count: 1,
+                    target: [filters],
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(sentence),
+        });
+    }
+    return found;
+}
+
+/**
  * While [Name] is the Ring-bearer, at the start of each skirmish involving him,
  * add N burdens or wound him twice / add M threats.
  * (Boromir Bearer of Council, Gimli Bearer of Grudges, Faramir Bearer of Quality…)
@@ -19116,6 +19152,13 @@ export function parseAbilities(
             });
         }
     );
+
+    parseLoseInitiativeWoundAbilities(text, cardId).forEach((ability) => {
+        abilities.push({
+            ...ability,
+            id: `${cardId || 'ability'}:${abilities.length}`,
+        });
+    });
 
     parseRingBearerStartOfSkirmishChoiceAbilities(
         text,

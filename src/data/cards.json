@@ -97306,6 +97306,30 @@
         ]
       }
     ],
+    "abilities": [
+      {
+        "id": "10U33:0",
+        "phases": [],
+        "optional": true,
+        "trigger": {
+          "type": "LOSE_INITIATIVE"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "WOUND",
+            "count": 1,
+            "target": [
+              [
+                "MINION"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "Each time you lose initiative, you may wound a minion."
+      }
+    ],
     "culture": "GONDOR",
     "twilightCost": 2,
     "imageUrl": "/cards_visuals/o_10_033.jpg",

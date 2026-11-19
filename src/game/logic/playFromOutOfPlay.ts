@@ -10,7 +10,11 @@ import { getEffectiveTwilightCost } from '../../utils/roamingDetection';
 import { getWhileTwilightCostModifier } from './stats/mechanics/whileModifier';
 import { getCurrentSiteIndex, placeCardIntoDiscardPile } from './sites';
 import { applyAutomaticToPlayCosts } from './applyToPlayCosts';
-import { playerHasInitiative } from './initiative';
+import {
+    freePeoplesHasInitiative,
+    announceInitiativeIfChanged,
+    playerHasInitiative,
+} from './initiative';
 
 const matchCard = (card: CardState | undefined | null, targetId: string) =>
     Boolean(card && (card.instanceId === targetId || card.id === targetId));
@@ -310,14 +314,15 @@ export function playCardFromHand(
 
     const fpId = G.fpPlayerId || '0';
     const isFP = ownerId === fpId;
+    const hadInitiative = isFP ? freePeoplesHasInitiative(G) : false;
     const [removed] = player.hand.splice(index, 1);
     if (!removed) return null;
     const restore = () => {
         player.hand.splice(index, 0, removed);
     };
-
     const finishPlay = (): CardState => {
         applyAutomaticToPlayCosts(G, removed, ownerId, phase);
+        if (isFP) announceInitiativeIfChanged(G, hadInitiative);
         return removed;
     };
 
