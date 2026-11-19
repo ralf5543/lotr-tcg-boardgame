@@ -358,11 +358,13 @@ export const DevPanel: React.FC<DevPanelProps> = ({
                             </S.ActionButton>
                             <S.ActionButton
                                 onClick={() =>
-                                    moves.devLoadPreset?.('RANGERS_CIRION')
+                                    moves.devLoadPreset?.(
+                                        'RANGERS_SIXTH_LEVEL'
+                                    )
                                 }
-                                title="Cirion : force +2 avec 4 ou 5 cartes en main"
+                                title="Sixième niveau : affaiblir → fortification depuis la défausse (limit 1)"
                             >
-                                Cirion
+                                6ᵉ niveau
                             </S.ActionButton>
                         </S.ButtonGroup>
                     </S.Section>

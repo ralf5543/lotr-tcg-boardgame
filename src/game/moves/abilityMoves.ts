@@ -34,6 +34,7 @@ import {
     tryOpenPutsOnTheOneRing,
 } from '../engine/responseWindow';
 import { abilityMeetsPlayRestrictions } from '../engine/abilities/abilityRestrictions';
+import { recordAbilityUseThisPhase } from '../logic/abilityPhaseUses';
 import { afterSiteStartAbilityResolved } from '../logic/siteStartAbility';
 import { hasActionableStartOfPhaseCards } from '../logic/hasActionableStartOfPhaseCards';
 import { tryExitStartOfManeuver } from './maneuverMoves';
@@ -228,6 +229,9 @@ export const activateAbility = (
         )
     ) {
         return 'INVALID_MOVE';
+    } else {
+        // Coût payé = capacité engagée (limite par phase).
+        recordAbilityUseThisPhase(G, source, ability);
     }
     // Si le 5ᵉ arg est présent, c’est la cible d’effet — même quand le coût
     // nom propre a été résolu sans désignation (Mere : site en 5ᵉ).

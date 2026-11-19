@@ -89031,6 +89031,48 @@
     "keywords": [
       "FORTIFICATION"
     ],
+    "abilities": [
+      {
+        "id": "8U44:0",
+        "phases": [
+          "REGROUP"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "GONDOR",
+                    "MAN"
+                  ]
+                ],
+                "mode": "DESIGNATION"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "PLAY_FROM_DECK_OR_DISCARD",
+            "from": "DISCARD",
+            "target": [
+              [
+                "GONDOR",
+                "FORTIFICATION"
+              ]
+            ]
+          }
+        ],
+        "limitPerPhase": 1,
+        "source": "SELF",
+        "text": "Regroup: Exert a gondor Man to play a gondor fortification from your discard pile (limit 1)."
+      }
+    ],
+    "actionPhases": [
+      "REGROUP"
+    ],
     "culture": "GONDOR",
     "twilightCost": 2,
     "imageUrl": "/cards_visuals/o_08_044.jpg",

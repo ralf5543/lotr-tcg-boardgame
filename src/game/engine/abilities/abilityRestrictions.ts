@@ -12,6 +12,7 @@ import {
     isSkirmishActionForbidden,
     isSkirmishSpecialAbility,
 } from '../../logic/skirmishActionRestrictions';
+import { abilityWithinPhaseLimit } from '../../logic/abilityPhaseUses';
 
 function cardTitleOf(card: CardState): string {
     return (
@@ -131,6 +132,9 @@ export function abilityMeetsPlayRestrictions(
         ) {
             return false;
         }
+    }
+    if (!abilityWithinPhaseLimit(G, source, ability)) {
+        return false;
     }
     return true;
 }

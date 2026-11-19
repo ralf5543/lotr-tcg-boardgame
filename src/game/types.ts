@@ -1686,6 +1686,11 @@ export interface Ability {
      * (Marchand gondorien…).
      */
     requiresInitiative?: boolean;
+    /**
+     * « (limit N) » — usages max de cette capacité par phase
+     * (Sixth Level…).
+     */
+    limitPerPhase?: number;
 }
 
 export interface CardState {
@@ -2144,6 +2149,11 @@ export interface GameState {
      * cette phase d’Ombre (réinitialisé en début d’Ombre).
      */
     hunterMinionPlayedThisShadowPhase?: boolean;
+    /**
+     * Usages de capacités à `limitPerPhase` cette phase
+     * (clé `instanceId::abilityId`). Remis à zéro en début de phase.
+     */
+    abilityUsesThisPhase?: Record<string, number>;
     /**
      * Shores of Nen Hithoel : la compagnie ne peut plus avancer
      * ce tour (réinitialisé en fin de tour).

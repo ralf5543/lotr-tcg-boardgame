@@ -7878,10 +7878,12 @@ function parseExertPlayFromDiscardAbilities(
     const found: Record<string, unknown>[] = [];
     const phaseTok =
         '(?:\\*\\*|<(?:keyword)>)(Fellowship|Shadow|Maneuver|Archery|Assignment|Skirmish|Regroup):?(?:\\s*</(?:keyword)>)?(?:\\*\\*)?';
+    // Sixth Level : « … discard pile (limit 1). » — limit avant le point.
+    const limitTok = '(?:\\s*\\(limit\\s+(\\d+)\\))?';
     const reduceTok =
         '(?:\\s*Its twilight cost is\\s*-\\s*(\\d+)\\.)?';
     const classRe = new RegExp(
-        `${phaseTok}\\s*Exert\\s+(.+?)\\s+to play\\s+(?:a|an)\\s+(.+?)\\s+from your discard pile\\.${reduceTok}`,
+        `${phaseTok}\\s*Exert\\s+(.+?)\\s+to play\\s+(?:a|an)\\s+(.+?)\\s+from your discard pile${limitTok}\\.${reduceTok}`,
         'gi'
     );
     let match: RegExpExecArray | null;
@@ -7892,8 +7894,10 @@ function parseExertPlayFromDiscardAbilities(
         if (!subject) continue;
         const filters = parseClassFilters(match[3].trim());
         if (filters.length === 0) continue;
-        const reduce = match[4] ? parseInt(match[4], 10) : 0;
-        if (match[4] && (!Number.isFinite(reduce) || reduce <= 0)) continue;
+        const limitRaw = match[4] ? parseInt(match[4], 10) : 0;
+        if (match[4] && (!Number.isFinite(limitRaw) || limitRaw <= 0)) continue;
+        const reduce = match[5] ? parseInt(match[5], 10) : 0;
+        if (match[5] && (!Number.isFinite(reduce) || reduce <= 0)) continue;
         found.push({
             id: `${cardId || 'ability'}:${found.length}:exert-play-discard`,
             phases: [phase],
@@ -7906,6 +7910,7 @@ function parseExertPlayFromDiscardAbilities(
                     ...(reduce > 0 ? { twilightReduce: reduce } : {}),
                 },
             ],
+            ...(limitRaw > 0 ? { limitPerPhase: limitRaw } : {}),
             source: 'SELF',
             text: stripAbilityMarkup(match[0]),
         });
@@ -7914,7 +7919,7 @@ function parseExertPlayFromDiscardAbilities(
     const nameTok =
         "([A-ZÀ-Ÿ][\\p{L}’'\\-]*(?:\\s+[A-ZÀ-Ÿ][\\p{L}’'\\-]*)*)";
     const namedRe = new RegExp(
-        `${phaseTok}\\s*Exert\\s+(.+?)\\s+to play\\s+${nameTok}\\s+from your discard pile\\.${reduceTok}`,
+        `${phaseTok}\\s*Exert\\s+(.+?)\\s+to play\\s+${nameTok}\\s+from your discard pile${limitTok}\\.${reduceTok}`,
         'giu'
     );
     while ((match = namedRe.exec(text)) !== null) {
@@ -7926,8 +7931,10 @@ function parseExertPlayFromDiscardAbilities(
         if (!name || !isProperNameToken(name.split(/\s+/)[0] || '')) continue;
         // Éviter de re-matcher les clauses « a/an … » déjà prises.
         if (/^(a|an)$/i.test(name.split(/\s+/)[0] || '')) continue;
-        const reduce = match[4] ? parseInt(match[4], 10) : 0;
-        if (match[4] && (!Number.isFinite(reduce) || reduce <= 0)) continue;
+        const limitRaw = match[4] ? parseInt(match[4], 10) : 0;
+        if (match[4] && (!Number.isFinite(limitRaw) || limitRaw <= 0)) continue;
+        const reduce = match[5] ? parseInt(match[5], 10) : 0;
+        if (match[5] && (!Number.isFinite(reduce) || reduce <= 0)) continue;
         found.push({
             id: `${cardId || 'ability'}:${found.length}:exert-play-named-discard`,
             phases: [phase],
@@ -7940,6 +7947,7 @@ function parseExertPlayFromDiscardAbilities(
                     ...(reduce > 0 ? { twilightReduce: reduce } : {}),
                 },
             ],
+            ...(limitRaw > 0 ? { limitPerPhase: limitRaw } : {}),
             source: 'SELF',
             text: stripAbilityMarkup(match[0]),
         });

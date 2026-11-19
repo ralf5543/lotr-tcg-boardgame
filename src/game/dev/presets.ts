@@ -170,27 +170,28 @@ export const applyDevPreset = (
             return { startPhase: 'fellowship' };
         }
 
-        case 'RANGERS_CIRION': {
-            // 4 cartes en main → Cirion force +2 ; défausser / piocher pour sortir de 4–5.
+        case 'RANGERS_SIXTH_LEVEL': {
+            // Regroup : affaiblir Homme Gondor → jouer fortif depuis défausse (limit 1).
             resetBoardForPreset(G);
             setupDevPath(G, 3, RANGERS_PATH);
             G.twilightPool = 0;
             fpPlayer.burdens = 0;
             const frodo = {
-                ...clonePresetCard('11S164', 'dev-cirion-frodo'),
-                attachments: [clonePresetCard('4R1', 'dev-cirion-ring')],
+                ...clonePresetCard('11S164', 'dev-sl-frodo'),
+                attachments: [clonePresetCard('4R1', 'dev-sl-ring')],
             };
-            const cirion = clonePresetCard('7C82', 'dev-cirion');
-            fpPlayer.fellowshipArea = [frodo, cirion];
-            fpPlayer.hand = [
-                clonePresetCard('1C119', 'dev-cirion-h1'),
-                clonePresetCard('1C106', 'dev-cirion-h2'),
-                clonePresetCard('1C117', 'dev-cirion-h3'),
-                clonePresetCard('7C105', 'dev-cirion-h4'),
+            const ranger = clonePresetCard('7C116', 'dev-sl-ranger');
+            const sixth = clonePresetCard('8U44', 'dev-sl-sixth');
+            fpPlayer.fellowshipArea = [frodo, ranger];
+            fpPlayer.supportArea = [sixth];
+            fpPlayer.discard = [
+                clonePresetCard('7C92', 'dev-sl-first'),
+                clonePresetCard('5C33', 'dev-sl-wall'),
             ];
+            fpPlayer.hand = [];
             G.statusMessage =
-                '[DEV] Cirion · Compagnie, 4 cartes en main → force +2. Défaussez ou piochez pour sortir de 4–5 et voir le bonus tomber.';
-            return { startPhase: 'fellowship' };
+                '[DEV] Sixième niveau · Regroupement. Affaiblissez le rôdeur → jouez une fortification depuis la défausse (limit 1 : une seule fois).';
+            return { startPhase: 'regroup' };
         }
 
         default:
