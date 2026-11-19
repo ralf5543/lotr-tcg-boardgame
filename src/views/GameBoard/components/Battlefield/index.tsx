@@ -113,7 +113,7 @@ export const Battlefield: React.FC<BattlefieldProps> = ({
 
                     return (
                         <BoardCharacterStack
-                            key={minion.id}
+                            key={minion.instanceId || minion.id}
                             character={minion}
                             index={idx}
                             isOpponent={isOpponent}

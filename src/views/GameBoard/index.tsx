@@ -103,7 +103,10 @@ import {
 import { isSiteReplaceForbidden } from '../../game/logic/siteReplaceRestrictions';
 import { findEventAbilityForPhase } from '../../game/engine/abilities/playEventAbility';
 import { abilityMatchesPhase } from '../../game/engine/abilities/collectAbilities';
-import { findOptionalToasterResponseAbility } from '../../game/engine/responseWindow';
+import {
+    findOptionalToasterResponseAbility,
+    getForceAssignPreventDiscardCandidates,
+} from '../../game/engine/responseWindow';
 import { cardMatchesTarget } from '../../game/engine/validations/matchers';
 import {
     getToilAmount,
@@ -112,6 +115,8 @@ import {
 } from '../../game/logic/toil';
 import { useCardPlayAudio } from '../../hooks/audio/useCardPlayAudio';
 import { useDiscardAudio } from '../../hooks/audio/useDiscardAudio';
+import { useBoardDiscardGhosts } from './hooks/useBoardDiscardGhosts';
+import { BoardDiscardGhostLayer } from './components/BoardDiscardGhostLayer';
 import { useStackAudio } from '../../hooks/audio/useStackAudio';
 import { useArcheryAudio } from '../../hooks/audio/useArcheryAudio';
 import { useWoundAudio } from '../../hooks/audio/useWoundAudio';
@@ -274,6 +279,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
 }) => {
     useCardPlayAudio(G);
     useDiscardAudio(G);
+    const boardDiscardGhosts = useBoardDiscardGhosts(G);
     useStackAudio(G);
     useArcheryAudio(G);
     useWoundAudio(G);
@@ -1911,6 +1917,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         const movePending = G.pendingSiteMoveAbility;
         const followerPending = G.pendingSiteFollowerTransfer;
         const fpDiscardPending = G.pendingFpDiscard;
+        const forceAssignPreventPending = G.pendingForceAssignPreventDiscard;
         const phaseDesignationPending = G.pendingSitePhaseDesignation;
         const moveMine =
             Boolean(movePending) &&
@@ -1921,17 +1928,27 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         const fpDiscardMine =
             Boolean(fpDiscardPending) &&
             String(fpDiscardPending!.playerId) === String(myId);
+        const forceAssignPreventMine =
+            Boolean(forceAssignPreventPending) &&
+            String(forceAssignPreventPending!.playerId) === String(myId);
         const phaseDesignationMine =
             Boolean(phaseDesignationPending) &&
             String(phaseDesignationPending!.playerId) === String(myId);
 
-        if (moveMine || followerMine || fpDiscardMine || phaseDesignationMine)
+        if (
+            moveMine ||
+            followerMine ||
+            fpDiscardMine ||
+            forceAssignPreventMine ||
+            phaseDesignationMine
+        )
             return;
 
         if (
             movePending ||
             followerPending ||
             fpDiscardPending ||
+            forceAssignPreventPending ||
             phaseDesignationPending
         ) {
             stopTargeting();
@@ -1941,6 +1958,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         G.pendingSiteMoveAbility,
         G.pendingSiteFollowerTransfer,
         G.pendingFpDiscard,
+        G.pendingForceAssignPreventDiscard,
         G.pendingSitePhaseDesignation,
         myId,
         targetingKind,
@@ -1978,6 +1996,36 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         });
     }, [
         G.pendingFpDiscard,
+        G,
+        myId,
+        isTargetingActive,
+        startTargeting,
+        stopTargeting,
+        setHoveredCard,
+        moves,
+    ]);
+
+    /** Southron Commander : halo sur les compagnons dissociés à défausser. */
+    useEffect(() => {
+        const pending = G.pendingForceAssignPreventDiscard;
+        if (!pending || String(pending.playerId) !== String(myId)) return;
+        if (isTargetingActive) return;
+
+        const candidates = getForceAssignPreventDiscardCandidates(G);
+        if (candidates.length === 0) return;
+
+        startTargeting({
+            kind: 'DESIGNATION',
+            targetableCardIds: candidates.flatMap(cardTargetIds),
+            message: 'Défaussez un compagnon dissocié pour empêcher.',
+            onSelectTarget: (cardId) => {
+                stopTargeting();
+                setHoveredCard(null);
+                moves.resolveForceAssignPreventDiscardChoice?.(cardId);
+            },
+        });
+    }, [
+        G.pendingForceAssignPreventDiscard,
         G,
         myId,
         isTargetingActive,
@@ -3955,6 +4003,10 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                     <DesignationOverlay G={G} myId={myId} />
                     <BoardTargetingArrow />
                     <RemoteTargetingArrow />
+                    <BoardDiscardGhostLayer
+                        ghosts={boardDiscardGhosts}
+                        G={G}
+                    />
                     <PhaseBanner
                         key={canonicalPhaseName(ctx.phase)}
                         phaseName={ctx.phase || ''}

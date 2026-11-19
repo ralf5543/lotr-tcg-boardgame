@@ -1747,7 +1747,9 @@ export const GameControls: React.FC<GameControlsProps> = ({
                                         moves.preventPendingEffect?.();
                                     }}
                                 >
-                                    Empêcher (affaiblir ce compagnon)
+                                    {G.pendingEvent.preventDiscardUnbound
+                                        ? 'Empêcher (défausser un compagnon dissocié)'
+                                        : 'Empêcher (affaiblir ce compagnon)'}
                                 </S.ActionButton>
                             )}
 

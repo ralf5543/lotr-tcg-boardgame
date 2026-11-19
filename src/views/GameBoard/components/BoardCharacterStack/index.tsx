@@ -437,6 +437,7 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
                             return (
                                 <S.MinionWrapper
                                     key={minion.instanceId || minion.id}
+                                    data-board-card-id={minionKey}
                                     ref={(el) => {
                                         registerArrowAnchor(minionKey, el);
                                         if (
@@ -651,6 +652,7 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
                                 ? { zIndex: duplicateCount + 1 }
                                 : undefined
                         }
+                        data-board-card-id={cardKey}
                         data-card={JSON.stringify(character)}
                         data-draggable={canDragCharacter ? 'true' : undefined}
                         ref={(el) => {
@@ -681,10 +683,11 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
                             // 🎯 Si c'est ciblable, on déclenche directement la sélection au clic
                             if (isTargetable) {
                                 e.stopPropagation();
+                                // Toujours l’instance unique — jamais l’id
+                                // imprimé partagé (copies identiques).
                                 const pickId =
                                     [
                                         cardKey,
-                                        character.id,
                                         ...(duplicateInstanceIds || []),
                                     ].find(
                                         (id) => id && isCardTargetable(id)
@@ -773,6 +776,7 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
                                         attTargetable,
                                         attDesignation
                                     )}
+                                    data-board-card-id={attKey}
                                     data-draggable={
                                         canDragAttachment ? 'true' : undefined
                                     }
@@ -796,7 +800,7 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
                                             selectCard(
                                                 isCardTargetable(attKey)
                                                     ? attKey
-                                                    : attachment.id
+                                                    : attKey || attachment.id
                                             );
                                             return;
                                         }
@@ -900,7 +904,7 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
                                         selectCard(
                                             isCardTargetable(stackedKey)
                                                 ? stackedKey
-                                                : stacked.id
+                                                : stackedKey || stacked.id
                                         );
                                     }}
                                 >

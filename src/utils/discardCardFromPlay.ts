@@ -4,8 +4,15 @@ import { appendJournal } from '../game/logic/journal';
 import { reconcileActiveSkirmishAfterLeave } from '../game/logic/skirmishVacated';
 import { discardDestinationPile } from '../game/logic/sites';
 
-const matchCard = (card: CardState | undefined | null, targetId: string) =>
-    Boolean(card && (card.instanceId === targetId || card.id === targetId));
+/**
+ * Match strict : si la carte a un `instanceId`, on ne matche que celui-ci.
+ * Évite de défausser la 1ʳᵉ copie quand on passe l’id imprimé partagé.
+ */
+const matchCard = (card: CardState | undefined | null, targetId: string) => {
+    if (!card || !targetId) return false;
+    if (card.instanceId) return card.instanceId === targetId;
+    return card.id === targetId;
+};
 
 function removeFromList(
     list: CardState[] | undefined,

@@ -1421,13 +1421,27 @@ export function applyAbilityEffect(
                 companion = findBearer(G, source);
             } else {
                 const companionPick = chosenIds[0];
-                if (!companionPick) return false;
-                companion = resolveAbilityTarget(
-                    G,
-                    source,
-                    effect.companion,
-                    companionPick
-                );
+                if (companionPick) {
+                    companion = resolveAbilityTarget(
+                        G,
+                        source,
+                        effect.companion,
+                        companionPick
+                    );
+                } else if (Array.isArray(effect.companion)) {
+                    // Porteur unique (Southron Commander…) : pas de clic.
+                    const matches = resolveCostTarget(
+                        G,
+                        source,
+                        effect.companion
+                    ).filter(
+                        (c) =>
+                            c &&
+                            !c.isDead &&
+                            c.type === 'COMPANION'
+                    );
+                    if (matches.length === 1) companion = matches[0]!;
+                }
             }
             if (!companion || companion.type !== 'COMPANION') return false;
             if (

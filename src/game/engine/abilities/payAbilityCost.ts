@@ -16,6 +16,7 @@ import {
     resolveCostTarget,
     resolveSkirmishingOpponents,
 } from './resolveCostTarget';
+import { findUniqueCardByTargetId } from './designation';
 import { getCalculatedStrength } from '../../logic/stats/statCalculator';
 import { cardMatchesTarget } from '../validations/matchers';
 import {
@@ -58,8 +59,12 @@ export function effectiveExertCount(
     return base;
 }
 
-const matchCard = (card: CardState | undefined | null, targetId: string) =>
-    Boolean(card && (card.instanceId === targetId || card.id === targetId));
+/** Match strict : `instanceId` si présent, sinon id imprimé. */
+const matchCard = (card: CardState | undefined | null, targetId: string) => {
+    if (!card || !targetId) return false;
+    if (card.instanceId) return card.instanceId === targetId;
+    return card.id === targetId;
+};
 
 function cardHasKeyword(card: CardState, keyword: CardKeyword): boolean {
     return getKeywordValue(card, keyword) >= 0;
@@ -462,9 +467,7 @@ function pickExertTarget(
 ): CardState | undefined {
     const payable = cards.filter((c) => getEffectiveVitality(c) > count);
     if (chosenTargetId) {
-        return payable.find(
-            (c) => c.instanceId === chosenTargetId || c.id === chosenTargetId
-        );
+        return findUniqueCardByTargetId(payable, chosenTargetId);
     }
     // Une seule cible possible : pas de choix (même si mode DESIGNATION).
     if (payable.length === 1) return payable[0];
@@ -629,7 +632,7 @@ function payOption(
                 if (!target || !discardCardFromPlay(G, target)) return false;
             } else if (Array.isArray(req.target)) {
                 const target = chosenTargetId
-                    ? cards.find((card) => matchCard(card, chosenTargetId))
+                    ? findUniqueCardByTargetId(cards, chosenTargetId)
                     : undefined;
                 if (!target || target.isDead) return false;
                 if (!discardCardFromPlay(G, target)) return false;

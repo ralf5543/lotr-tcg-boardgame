@@ -8772,6 +8772,39 @@ function parseAssignmentForceAssignAbilities(
         });
     }
 
+    // Spot N companions to assign this minion to the Ring-bearer.
+    // FP may discard an unbound companion to prevent. (Southron Commander…)
+    const spotAssignRbRe =
+        /(?:\*\*|<(?:keyword)>)?Assignment:?\s*(?:<\/(?:keyword)>)?(?:\*\*)?\s*Spot\s+(\d+)\s+companions?\s+to assign this minion to the Ring[\u2013\u2014\-]?bearer\.\s*The Free Peoples player may discard an unbound companion to prevent this\.?/gi;
+    while ((match = spotAssignRbRe.exec(normalized)) !== null) {
+        const n = parseInt(match[1], 10);
+        if (!Number.isFinite(n) || n <= 0) continue;
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:force-assign-rb-spot`,
+            phases: ['ASSIGNMENT'],
+            cost: [
+                {
+                    spot: [
+                        {
+                            count: n,
+                            target: [['COMPANION']],
+                        },
+                    ],
+                },
+            ],
+            effects: [
+                {
+                    type: 'FORCE_ASSIGN',
+                    minion: 'SELF',
+                    companion: [['RING-BEARER']],
+                    fpMayPrevent: { discardUnboundCompanion: true },
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+
     // Desertion : Assign an [culture] minion with less strength than bearer
     // to skirmish bearer. Discard this condition.
     const desertionRe =

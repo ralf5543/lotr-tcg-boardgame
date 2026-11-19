@@ -54534,6 +54534,48 @@
       "AMBUSH 1",
       "SOUTHRON"
     ],
+    "abilities": [
+      {
+        "id": "4U249:0",
+        "phases": [
+          "ASSIGNMENT"
+        ],
+        "cost": [
+          {
+            "spot": [
+              {
+                "count": 6,
+                "target": [
+                  [
+                    "COMPANION"
+                  ]
+                ]
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "FORCE_ASSIGN",
+            "minion": "SELF",
+            "companion": [
+              [
+                "RING-BEARER"
+              ]
+            ],
+            "fpMayPrevent": {
+              "discardUnboundCompanion": true
+            }
+          }
+        ],
+        "source": "SELF",
+        "text": "Assignment: Spot 6 companions to assign this minion to the Ring-bearer. The Free Peoples player may discard an unbound companion to prevent this.",
+        "textFr": "**Affectation :** Désignez 6 compagnons pour affecter ce séide au Porteur de l’Anneau. Le joueur des Peuples Libres peut défausser un compagnon dissocié pour empêcher ceci."
+      }
+    ],
+    "actionPhases": [
+      "ASSIGNMENT"
+    ],
     "culture": "RAIDER",
     "race": "MAN",
     "twilightCost": 5,

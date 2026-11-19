@@ -64,6 +64,7 @@ import {
     passResponseWindow as resolveResponsePass,
     pauseActionYieldForResponses,
     preventPendingEffect as resolvePreventPending,
+    resolveForceAssignPreventDiscard as resolveForceAssignPreventDiscardFn,
     requestWounds,
     tryOpenHealResponse,
 } from '../engine/responseWindow';
@@ -921,6 +922,28 @@ export const resolveFpDiscardChoice = (
     }
 };
 
+/** Southron Commander : FP défausse un dissocié pour empêcher l’affectation. */
+export const resolveForceAssignPreventDiscardChoice = (
+    { G, playerID }: LotrMoveContext,
+    chosenTargetId: string
+) => {
+    if (
+        !G.pendingForceAssignPreventDiscard ||
+        G.pendingForceAssignPreventDiscard.playerId !== playerID
+    ) {
+        return 'INVALID_MOVE';
+    }
+    if (
+        !resolveForceAssignPreventDiscardFn(
+            G,
+            String(playerID),
+            chosenTargetId
+        )
+    ) {
+        return 'INVALID_MOVE';
+    }
+};
+
 /** Falls of Rauros : le FP place une carte de sa pile de mort hors jeu. */
 export const resolveDeadPileRemovalChoice = (
     { G, events, playerID }: LotrMoveContext,
@@ -1312,6 +1335,7 @@ export const commonMoves = {
     resolveSitePhaseDesignationChoice,
     resolveSiteFollowerTransferAbilityChoice,
     resolveFpDiscardChoice,
+    resolveForceAssignPreventDiscardChoice,
     resolveDeadPileRemovalChoice,
     assignSiteCharacterWound: assignSiteCharacterWoundMove,
     resolveForcedChoiceMove,

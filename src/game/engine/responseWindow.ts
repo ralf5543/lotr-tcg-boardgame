@@ -17,6 +17,7 @@ import {
     abilityHasLegalEffectTarget,
     abilityNeedsCostDesignation,
     abilityNeedsEffectDesignation,
+    findUniqueCardByTargetId,
 } from './abilities/designation';
 import { abilityMeetsPlayRestrictions } from './abilities/abilityRestrictions';
 import {
@@ -498,9 +499,20 @@ function fpCanPreventDiscard(G: GameState): boolean {
     );
 }
 
+function listUnboundCompanions(G: GameState): CardState[] {
+    const fpId = G.fpPlayerId || '0';
+    return (G.players[fpId]?.fellowshipArea || []).filter((card) => {
+        if (!card || card.isDead || card.type !== 'COMPANION') return false;
+        return cardMatchesTarget(card, [['UNBOUND', 'COMPANION']]);
+    });
+}
+
 function fpCanPreventForceAssign(G: GameState): boolean {
     const event = G.pendingEvent;
     if (!event || event.type !== 'ABOUT_TO_FORCE_ASSIGN') return false;
+    if (event.preventDiscardUnbound) {
+        return listUnboundCompanions(G).length > 0;
+    }
     const companion = findTargetCard(G, event.companionId) as CardState | null;
     return Boolean(companion && getEffectiveVitality(companion) > 1);
 }
@@ -561,6 +573,9 @@ function responseWindowMessage(G: GameState): string {
         return `Un personnage va être épuisé. Ajoutez ${n} fardeau${n > 1 ? 'x' : ''} pour empêcher, ou passez.`;
     }
     if (G.pendingEvent?.type === 'ABOUT_TO_FORCE_ASSIGN') {
+        if (G.pendingEvent.preventDiscardUnbound) {
+            return 'Un séide va être affecté au Porteur. Défaussez un compagnon dissocié pour empêcher, ou passez.';
+        }
         return 'Un séide va être affecté à un compagnon. Affaiblissez ce compagnon pour empêcher, ou passez.';
     }
     if (G.pendingEvent?.type === 'ABOUT_TO_ADD_THREATS') {
@@ -1593,21 +1608,44 @@ export function requestExhaust(
 }
 
 /**
- * Affectation forcée : si le FP peut empêcher (exert), ouvre la fenêtre ;
+ * Affectation forcée : si le FP peut empêcher, ouvre la fenêtre ;
  * sinon assigne tout de suite.
  */
 export function requestForceAssign(
     G: GameState,
     minion: CardState,
     companion: CardState,
-    fpMayPrevent?: { exert: true }
+    fpMayPrevent?: { exert: true } | { discardUnboundCompanion: true }
 ): boolean {
     if (!minion || !companion || companion.isDead) return false;
     const minionId = minion.instanceId || minion.id;
     const companionId = companion.instanceId || companion.id;
     if (!minionId || !companionId) return false;
 
-    if (fpMayPrevent?.exert && getEffectiveVitality(companion) > 1) {
+    if (
+        fpMayPrevent &&
+        'discardUnboundCompanion' in fpMayPrevent &&
+        fpMayPrevent.discardUnboundCompanion &&
+        listUnboundCompanions(G).length > 0
+    ) {
+        G.pendingEvent = {
+            type: 'ABOUT_TO_FORCE_ASSIGN',
+            minionId,
+            companionId,
+            preventDiscardUnbound: true,
+        };
+        openResponseWindow(G);
+        G.statusMessage =
+            'Réponse Peuples Libres : défaussez un compagnon dissocié pour empêcher l’affectation, ou passez.';
+        return true;
+    }
+
+    if (
+        fpMayPrevent &&
+        'exert' in fpMayPrevent &&
+        fpMayPrevent.exert &&
+        getEffectiveVitality(companion) > 1
+    ) {
         G.pendingEvent = {
             type: 'ABOUT_TO_FORCE_ASSIGN',
             minionId,
@@ -1710,6 +1748,29 @@ export function preventPendingEffect(
 
     if (event.type === 'ABOUT_TO_FORCE_ASSIGN') {
         if (playerID !== (G.fpPlayerId || '0')) return 'INVALID';
+        if (event.preventDiscardUnbound) {
+            const unbound = listUnboundCompanions(G);
+            if (unbound.length === 0) return 'INVALID';
+            if (unbound.length === 1) {
+                const victim = unbound[0]!;
+                discardCardFromPlay(G, victim);
+                G.pendingEvent = undefined;
+                closeResponseWindow(G);
+                G.statusMessage = `Les Peuples Libres empêchent l’affectation (${victim.i18n?.fr?.title || victim.title || 'compagnon'} défaussé).`;
+                flushPendingActionYield(G);
+                return 'APPLIED';
+            }
+            G.pendingForceAssignPreventDiscard = {
+                playerId: String(playerID),
+                minionId: event.minionId,
+                companionId: event.companionId,
+            };
+            G.pendingEvent = undefined;
+            closeResponseWindow(G);
+            G.statusMessage =
+                'Choisissez un compagnon dissocié à défausser pour empêcher l’affectation.';
+            return 'APPLIED';
+        }
         const companion = findTargetCard(
             G,
             event.companionId
@@ -1825,6 +1886,37 @@ export function requestAddBurdens(
     openResponseWindow(G);
     G.statusMessage =
         'Réponse : empêcher l’ajout de point-fardeau ou passer.';
+    return true;
+}
+
+/** Cibles pour empêcher une affectation en défaussant un dissocié. */
+export function getForceAssignPreventDiscardCandidates(
+    G: GameState
+): CardState[] {
+    return listUnboundCompanions(G);
+}
+
+/**
+ * FP a choisi le compagnon dissocié à défausser pour empêcher l’affectation.
+ */
+export function resolveForceAssignPreventDiscard(
+    G: GameState,
+    playerID: string,
+    chosenTargetId: string
+): boolean {
+    const pending = G.pendingForceAssignPreventDiscard;
+    if (!pending || String(pending.playerId) !== String(playerID)) {
+        return false;
+    }
+    const victim = findUniqueCardByTargetId(
+        listUnboundCompanions(G),
+        chosenTargetId
+    );
+    if (!victim) return false;
+    discardCardFromPlay(G, victim);
+    G.pendingForceAssignPreventDiscard = undefined;
+    G.statusMessage = `Les Peuples Libres empêchent l’affectation (${victim.i18n?.fr?.title || victim.title || 'compagnon'} défaussé).`;
+    flushPendingActionYield(G);
     return true;
 }
 

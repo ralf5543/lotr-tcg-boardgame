@@ -1,6 +1,9 @@
 import type { CardState, GameState } from '../types';
 import { applyAbilityEffect } from '../engine/abilities/applyAbilityEffect';
-import { getFpDiscardCandidates } from '../engine/abilities/designation';
+import {
+    findUniqueCardByTargetId,
+    getFpDiscardCandidates,
+} from '../engine/abilities/designation';
 import { findTargetCard } from '../../utils/cardUtils';
 
 /**
@@ -25,9 +28,7 @@ export function resolvePendingFpDiscard(
     }
 
     const legal = getFpDiscardCandidates(G, source, ability);
-    const target = legal.find(
-        (c) => c.instanceId === chosenTargetId || c.id === chosenTargetId
-    );
+    const target = findUniqueCardByTargetId(legal, chosenTargetId);
     if (!target) return false;
 
     // Appliquer seulement l’effet DISCARD (coût déjà payé à l’activation).

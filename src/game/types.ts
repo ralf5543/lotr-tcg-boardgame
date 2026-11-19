@@ -1207,7 +1207,13 @@ export type AbilityEffect =
           minion: AbilityTargetRef | 'COST_TARGET';
           companion: AbilityTargetRef;
           excludeRingBearer?: boolean;
-          fpMayPrevent?: { exert: true };
+          /**
+           * Empêcher : affaiblir le compagnon ciblé, ou défausser
+           * un compagnon dissocié (Southron Commander…).
+           */
+          fpMayPrevent?:
+              | { exert: true }
+              | { discardUnboundCompanion: true };
       }
     | {
           /** Affaiblir (exert) une cible — effet, pas coût. */
@@ -2029,11 +2035,13 @@ export interface PendingExhaustEvent {
     addBurdens: number;
 }
 
-/** Affectation forcée ; le compagnon peut s’affaiblir pour empêcher. */
+/** Affectation forcée ; le FP peut encore empêcher. */
 export interface PendingForceAssignEvent {
     type: 'ABOUT_TO_FORCE_ASSIGN';
     minionId: string;
     companionId: string;
+    /** Défausser un compagnon dissocié (sinon : affaiblir le compagnon ciblé). */
+    preventDiscardUnbound?: boolean;
 }
 
 export interface PendingFellowshipMovesEvent {
@@ -2359,6 +2367,15 @@ export interface GameState {
         playerId: string;
         sourceInstanceId: string;
         abilityId: string;
+    };
+    /**
+     * Affectation forcée : FP choisit un compagnon dissocié à défausser
+     * pour empêcher (plusieurs candidats).
+     */
+    pendingForceAssignPreventDiscard?: {
+        playerId: string;
+        minionId: string;
+        companionId: string;
     };
     /**
      * Falls of Rauros : le FP place une carte de sa pile de mort hors jeu.

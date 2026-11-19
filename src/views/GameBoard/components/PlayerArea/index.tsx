@@ -164,7 +164,10 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
                                 {fellowshipArea.map(
                                     (companion, companionIdx) => (
                                         <BoardCharacterStack
-                                            key={companion.id}
+                                            key={
+                                                companion.instanceId ||
+                                                companion.id
+                                            }
                                             character={companion}
                                             index={companionIdx}
                                             isOpponent={isOpponent}
@@ -264,7 +267,7 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
 
                         return (
                             <BoardCharacterStack
-                                key={companion.id}
+                                key={companion.instanceId || companion.id}
                                 character={companion}
                                 index={companionIdx}
                                 isOpponent={isOpponent}

@@ -65,6 +65,7 @@ export const resetBoardForPreset = (G: GameState): void => {
     G.pendingSitePhaseDesignation = undefined;
     G.pendingSiteFollowerTransfer = undefined;
     G.pendingFpDiscard = undefined;
+    G.pendingForceAssignPreventDiscard = undefined;
     G.pendingDeadPileRemoval = undefined;
     G.pendingSiteCharacterWounds = undefined;
     G.pendingWhenPlayed = undefined;
@@ -140,6 +141,37 @@ export const applyDevPreset = (
     if (!fpPlayer) return { startPhase: 'startOfFellowship' };
 
     switch (presetType) {
+        case 'RANGERS_SOUTHRON_COMMANDER': {
+            // 7 compagnons (Porteur + 6) : après 1 défausse Empêcher, spot 6 tient →
+            // l’Ombre peut rejouer la capacité de phase au prochain tour d’action.
+            resetBoardForPreset(G);
+            setupDevPath(G, 3, RANGERS_PATH);
+            G.twilightPool = 2;
+            fpPlayer.burdens = 0;
+            const frodo = {
+                ...clonePresetCard('11S164', 'dev-sc-frodo'),
+                attachments: [clonePresetCard('4R1', 'dev-sc-ring')],
+                keywords: [
+                    ...(getCardById('11S164')?.keywords || []),
+                    'RING-BEARER',
+                    'RING-BOUND',
+                ],
+            };
+            const rangers = [1, 2, 3, 4, 5, 6].map((n) =>
+                clonePresetCard('7C116', `dev-sc-ranger-${n}`)
+            );
+            fpPlayer.fellowshipArea = [frodo, ...rangers];
+            fpPlayer.hand = [];
+            const commander = {
+                ...clonePresetCard('4U249', 'dev-sc-commander'),
+                minionSiteNumber: 4,
+            };
+            G.battlefield = [commander];
+            G.statusMessage =
+                '[DEV] Commandant Suderon · 7 compagnons (spot 6). Ombre : bulle → FP Empêcher (1 dissocié) ou Passer. Après Empêcher, spot 6 reste → Ombre peut rejouer au prochain tour d’action.';
+            return { startPhase: 'assignment' };
+        }
+
         default:
             G.statusMessage = `[DEV] Aucun preset actif (« ${presetType} »).`;
             return { startPhase: 'startOfFellowship' };

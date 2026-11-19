@@ -93,9 +93,42 @@ import { cardMatchesTarget } from '../validations/matchers';
 import { getKeywordValue } from '../keywords/keywordUtils';
 import { getCalculatedStrength } from '../../logic/stats/statCalculator';
 
+/**
+ * Id unique pour le ciblage UI / la défausse.
+ * En jeu on privilégie `instanceId` : plusieurs copies partagent le même
+ * id imprimé (`7C116`) et ne doivent jamais être confondues.
+ */
+export function uniqueCardTargetId(
+    card: CardState | null | undefined
+): string | undefined {
+    if (!card) return undefined;
+    return card.instanceId || card.id || undefined;
+}
+
+/** Ids exposés au ciblage : uniquement l’id unique (pas l’id imprimé en plus). */
 export function cardTargetIds(card: CardState): string[] {
-    const ids = [card.instanceId, card.id].filter(Boolean);
-    return [...new Set(ids)];
+    const id = uniqueCardTargetId(card);
+    return id ? [id] : [];
+}
+
+/**
+ * Choisit une carte parmi des candidats sans ambiguïté d’id imprimé.
+ * `instanceId` d’abord ; repli sur `id` seulement s’il n’y a qu’une correspondance.
+ */
+export function findUniqueCardByTargetId(
+    candidates: CardState[],
+    chosenTargetId: string
+): CardState | undefined {
+    if (!chosenTargetId) return undefined;
+    const byInstance = candidates.filter(
+        (c) => c && c.instanceId === chosenTargetId
+    );
+    if (byInstance.length === 1) return byInstance[0];
+    if (byInstance.length > 1) return undefined;
+
+    const byPrinted = candidates.filter((c) => c && c.id === chosenTargetId);
+    if (byPrinted.length === 1) return byPrinted[0];
+    return undefined;
 }
 
 function uniqueCards(cards: CardState[]): CardState[] {
@@ -694,6 +727,13 @@ export function getEffectDesignationCandidates(
         if (forceAssign.companion === 'BEARER') {
             return [];
         }
+        // Southron Commander : Porteur unique → résolution directe.
+        if (Array.isArray(forceAssign.companion)) {
+            const flat = forceAssign.companion.flat();
+            if (flat.length === 1 && flat[0] === 'RING-BEARER') {
+                return [];
+            }
+        }
         return candidatesForEffect(G, source, ability, {
             type: 'WOUND',
             count: 1,
@@ -1280,6 +1320,19 @@ export function abilityHasLegalEffectTarget(
             }
             if (effect.companion === 'BEARER') {
                 if (!findBearer(G, source)) return false;
+            } else if (
+                Array.isArray(effect.companion) &&
+                effect.companion.flat().length === 1 &&
+                effect.companion.flat()[0] === 'RING-BEARER'
+            ) {
+                // Porteur unique : pas de liste de désignation.
+                if (
+                    resolveCostTarget(G, source, effect.companion).filter(
+                        (c) => c && !c.isDead && c.type === 'COMPANION'
+                    ).length < 1
+                ) {
+                    return false;
+                }
             } else if (
                 getEffectDesignationCandidates(
                     G,
