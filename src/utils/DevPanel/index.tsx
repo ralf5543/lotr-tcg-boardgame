@@ -342,23 +342,6 @@ export const DevPanel: React.FC<DevPanelProps> = ({
                         </S.ButtonGroup>
                     </S.Section>
 
-                    {/* Presets playtest (vague en cours) */}
-                    <S.Section>
-                        <S.Label>Preset playtest :</S.Label>
-                        <S.ButtonGroup>
-                            <S.ActionButton
-                                onClick={() =>
-                                    moves.devLoadPreset?.(
-                                        'RANGERS_SOUTHRON_COMMANDER'
-                                    )
-                                }
-                                title="Commandant Suderon : 7 compagnons, spot 6 → affectation Porteur ; FP peut défausser 1 dissocié ; rejouable si spot 6 tient"
-                            >
-                                Cmd Suderon
-                            </S.ActionButton>
-                        </S.ButtonGroup>
-                    </S.Section>
-
                     {/* Session / debug UI */}
                     <S.Section>
                         <S.Label>Session :</S.Label>
