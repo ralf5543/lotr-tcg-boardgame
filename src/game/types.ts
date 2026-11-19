@@ -347,7 +347,11 @@ export type AbilityEffect =
               target: string[][];
               /** « who has resistance N or more ». */
               minResistance?: number;
+              /** Plafond du bonus (Trust Me… limit +3). */
+              limit?: number;
           };
+          /** Bonus = value × menaces FP (At His Command…). */
+          perThreats?: boolean;
           /** Bonus = value × cultures distinctes spotées (Unabated…). */
           perDistinctCulture?: boolean;
           /**

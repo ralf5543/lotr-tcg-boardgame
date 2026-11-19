@@ -349,12 +349,12 @@ export const DevPanel: React.FC<DevPanelProps> = ({
                             <S.ActionButton
                                 onClick={() =>
                                     moves.devLoadPreset?.(
-                                        'RANGERS_ARAGORN_SIGNET'
+                                        'SIGNET_HARD_CHOICE'
                                     )
                                 }
-                                title="Aragorn : début de tour → soigner un compagnon au sceau Aragorn"
+                                title="Choix difficile : spot Aragorn → soigner ×2 un compagnon au sceau"
                             >
-                                Aragorn
+                                Sceaux
                             </S.ActionButton>
                         </S.ButtonGroup>
                     </S.Section>

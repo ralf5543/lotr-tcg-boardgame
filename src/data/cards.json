@@ -29559,6 +29559,42 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "abilities": [
+      {
+        "id": "1P364:0",
+        "phases": [
+          "FELLOWSHIP"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "PLAY_FROM_HAND",
+            "target": [
+              [
+                "COMPANION",
+                "SIGNET_GANDALF"
+              ]
+            ],
+            "twilightReduce": 2
+          }
+        ],
+        "source": "SELF",
+        "text": "FELLOWSHIP: Exert Gandalf to play a companion who has the Gandalf signet. The twilight cost of that companion is -2.",
+        "textFr": "**Compagnie :** Affaiblissez Gandalf pour jouer un compagnon qui a le sceau Gandalf. Le coût crépusculaire de ce compagnon est de -2."
+      }
+    ],
+    "actionPhases": [
+      "FELLOWSHIP"
+    ],
     "culture": "GANDALF",
     "race": "WIZARD",
     "signet": "GANDALF",
@@ -37570,6 +37606,57 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "abilities": [
+      {
+        "id": "3U35:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "Gandalf"
+                  ]
+                ],
+                "mode": "DESIGNATION"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_TEMP_STAT",
+            "stat": "STRENGTH",
+            "value": 1,
+            "target": [
+              [
+                "COMPANION"
+              ]
+            ],
+            "expiresAtPhase": "SKIRMISH",
+            "perSpot": {
+              "target": [
+                [
+                  "COMPANION",
+                  "SIGNET_GANDALF"
+                ]
+              ],
+              "limit": 3
+            }
+          }
+        ],
+        "source": "SELF",
+        "text": "SKIRMISH: Exert Gandalf to make a companion strength +1 for each companion with the Gandalf signet you spot (limit +3).",
+        "textFr": "**Combat :** Affaiblissez Gandalf pour donner +1 en force à un compagnon pour chaque compagnon possédant le sceau de Gandalf (limite de +3)."
+      }
+    ],
+    "actionPhases": [
+      "SKIRMISH"
+    ],
     "culture": "GANDALF",
     "twilightCost": 2,
     "imageUrl": "/cards_visuals/o_03_035.jpg",
@@ -46633,7 +46720,47 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
+    "abilities": [
+      {
+        "id": "4C93:0",
+        "phases": [
+          "FELLOWSHIP"
+        ],
+        "cost": [
+          {
+            "spot": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "Gandalf"
+                  ]
+                ]
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "HEAL",
+            "count": 2,
+            "target": [
+              [
+                "UNBOUND",
+                "COMPANION"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "FELLOWSHIP: Spot Gandalf to heal a unbound companion twice.",
+        "textFr": "**Compagnie :** Désignez Gandalf pour guérir deux fois un compagnon dissocié."
+      }
+    ],
     "phases": [
+      "FELLOWSHIP"
+    ],
+    "actionPhases": [
       "FELLOWSHIP"
     ],
     "culture": "GANDALF",
@@ -48133,7 +48260,47 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
+    "abilities": [
+      {
+        "id": "4U123:0",
+        "phases": [
+          "FELLOWSHIP"
+        ],
+        "cost": [
+          {
+            "spot": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "Aragorn"
+                  ]
+                ]
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "HEAL",
+            "count": 2,
+            "target": [
+              [
+                "COMPANION",
+                "SIGNET_ARAGORN"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "FELLOWSHIP: Spot Aragorn to heal a companion who has the Aragorn signet twice.",
+        "textFr": "**Compagnie :** Désignez Aragorn pour guérir deux fois un compagnon qui possède le sceau Aragorn."
+      }
+    ],
     "phases": [
+      "FELLOWSHIP"
+    ],
+    "actionPhases": [
       "FELLOWSHIP"
     ],
     "culture": "GONDOR",
@@ -48147,22 +48314,22 @@
       },
       "fr": {
         "title": "Choix Difficile",
-        "gameText": "**Manœuvre :** Désignez Aragorn pour guérir deux fois un compagnon qui possède le sceau Aragorn.",
+        "gameText": "**Compagnie :** Désignez Aragorn pour guérir deux fois un compagnon qui possède le sceau Aragorn.",
         "loreText": "Nous reposerons-nous la nuit, ou continuerons-nous tant que notre volonté et nos forces tiendront?"
       },
       "de": {
         "title": "Schwierige Entscheidung",
-        "gameText": "**Manöver:** Entdecke Aragorn, um einen Gefährten mit dem Aragornsiegel zweimal zu heilen.",
+        "gameText": "**Gemeinschaft:** Entdecke Aragorn, um einen Gefährten mit dem Aragornsiegel zweimal zu heilen.",
         "loreText": "Sollen wir bei Nacht ruhen oder weitergehen, solange unser Wille und unsere Kraft reichen?"
       },
       "it": {
         "title": "Scelta Difficile",
-        "gameText": "**Manovra:** Avvista Aragorn per curare due volte un compagno che abbia il sigillo di Aragorn.",
+        "gameText": "**Compagnia:** Avvista Aragorn per curare due volte un compagno che abbia il sigillo di Aragorn.",
         "loreText": "Riposare durante la notte, o proseguire finché forza e volontà reggono ancora?"
       },
       "es": {
         "title": "Difícil Elección",
-        "gameText": "**Maniobra:** Avista a Aragorn para curar dos veces un compañero que tenga el sello de Aragorn.",
+        "gameText": "**Comunidad:** Avista a Aragorn para curar dos veces un compañero que tenga el sello de Aragorn.",
         "loreText": "¿Descansaremos de noche o seguiremos adelante mientras tengamos voluntad y fuerzas?"
       }
     }
@@ -55820,7 +55987,49 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
+    "abilities": [
+      {
+        "id": "4U275:0",
+        "phases": [
+          "MANEUVER"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "Théoden"
+                  ]
+                ],
+                "mode": "DESIGNATION"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_TEMP_KEYWORD",
+            "keyword": "DEFENDER +1",
+            "target": [
+              [
+                "COMPANION",
+                "SIGNET_THEODEN"
+              ]
+            ],
+            "expiresAtPhase": "REGROUP"
+          }
+        ],
+        "source": "SELF",
+        "text": "MANEUVER: Exert Théoden to make a companion who has the Théoden signet defender +1 until the regroup phase.",
+        "textFr": "**Manœuvre :** Affaiblissez Théoden pour rendre un compagnon qui possède le sceau Théoden **défenseur +1.**"
+      }
+    ],
     "phases": [
+      "MANEUVER"
+    ],
+    "actionPhases": [
       "MANEUVER"
     ],
     "culture": "ROHAN",
@@ -66055,7 +66264,53 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
+    "abilities": [
+      {
+        "id": "6C34:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "ENT"
+                  ]
+                ],
+                "mode": "DESIGNATION"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_TEMP_STAT",
+            "stat": "STRENGTH",
+            "value": 1,
+            "target": "SELF",
+            "expiresAtPhase": "SKIRMISH",
+            "perSpot": {
+              "target": [
+                [
+                  "ENT"
+                ]
+              ],
+              "limit": 4
+            }
+          }
+        ],
+        "source": "SELF",
+        "text": "SKIRMISH: Exert an Ent to make him strength +1 for each Ent you spot (limit +4).",
+        "textFr": "**Combat :** Affaiblissez un Ent pour lui donner +1 en force pour chaque Ent que vous pouvez désigner (limite de +4)."
+      }
+    ],
     "phases": [
+      "SKIRMISH"
+    ],
+    "actionPhases": [
       "SKIRMISH"
     ],
     "culture": "GANDALF",
@@ -69535,6 +69790,53 @@
     "type": "MINION",
     "keywords": [
       "TWILIGHT"
+    ],
+    "abilities": [
+      {
+        "id": "6C99:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_TEMP_STAT",
+            "stat": "STRENGTH",
+            "value": 1,
+            "target": [
+              [
+                "SAURON",
+                "TWILIGHT",
+                "MINION"
+              ]
+            ],
+            "expiresAtPhase": "SKIRMISH",
+            "perSpot": {
+              "target": [
+                [
+                  "TWILIGHT",
+                  "MINION"
+                ]
+              ]
+            }
+          }
+        ],
+        "source": "SELF",
+        "text": "SKIRMISH: Exert this minion to make a sauron or twilight minion strength +1 for each twilight minion you spot.",
+        "textFr": "**Combat :** Affaiblissez ce séide pour donner +1 en force à un séide <symbol>sauron</symbol> ou crépusculaire, et ce, pour chaque séide crépusculaire que vous pouvez désigner."
+      }
+    ],
+    "actionPhases": [
+      "SKIRMISH"
     ],
     "culture": "SAURON",
     "race": "WRAITH",
@@ -88468,6 +88770,45 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
+    "abilities": [
+      {
+        "id": "8C31:0",
+        "phases": [],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "Aragorn"
+                  ]
+                ],
+                "mode": "DESIGNATION"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_TEMP_STAT",
+            "stat": "STRENGTH",
+            "value": 1,
+            "target": [
+              [
+                "UNBOUND",
+                "COMPANION",
+                "SIGNET_ARAGORN"
+              ]
+            ],
+            "expiresAtPhase": "SKIRMISH",
+            "perThreats": true
+          }
+        ],
+        "source": "SELF",
+        "text": "Exert Aragorn to make an unbound companion with the Aragorn signet strength +1 for each threat you can spot."
+      }
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -92301,6 +92642,45 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
+    "abilities": [
+      {
+        "id": "8C114:0",
+        "phases": [],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "Frodo"
+                  ]
+                ],
+                "mode": "DESIGNATION"
+              }
+            ],
+            "spot": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "SIGNET_FRODO"
+                  ]
+                ]
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "REMOVE_TWILIGHT",
+            "countFromSpot": true
+          }
+        ],
+        "source": "SELF",
+        "text": "Exert Frodo to remove twilight1 for each Frodo signet you spot."
+      }
+    ],
     "phases": [
       "REGROUP"
     ],

@@ -140,26 +140,27 @@ export const applyDevPreset = (
     if (!fpPlayer) return { startPhase: 'startOfFellowship' };
 
     switch (presetType) {
-        case 'RANGERS_ARAGORN_SIGNET': {
-            // Début de compagnie : soigner un autre compagnon au sceau Aragorn.
+        case 'SIGNET_HARD_CHOICE': {
+            // Spot Aragorn → soigner ×2 un compagnon au sceau Aragorn.
             resetBoardForPreset(G);
             setupDevPath(G, 3, RANGERS_PATH);
             G.twilightPool = 0;
             fpPlayer.burdens = 0;
             const frodo = {
-                ...clonePresetCard('11S164', 'dev-aragorn-frodo'),
-                attachments: [clonePresetCard('4R1', 'dev-aragorn-ring')],
+                ...clonePresetCard('11S164', 'dev-hc-frodo'),
+                attachments: [clonePresetCard('4R1', 'dev-hc-ring')],
             };
-            const aragorn = clonePresetCard('1P365', 'dev-aragorn');
+            const aragorn = clonePresetCard('1P365', 'dev-hc-aragorn');
             const boromir = {
-                ...clonePresetCard('1R96', 'dev-aragorn-boromir'),
-                wounds: 1,
+                ...clonePresetCard('1R96', 'dev-hc-boromir'),
+                wounds: 2,
             };
+            const hardChoice = clonePresetCard('4U123', 'dev-hc-event');
             fpPlayer.fellowshipArea = [frodo, aragorn, boromir];
-            fpPlayer.hand = [];
+            fpPlayer.hand = [hardChoice];
             G.statusMessage =
-                '[DEV] Aragorn · Début de compagnie. Bulle sur Aragorn → soignez Boromir (sceau Aragorn, 1 blessure). Passer possible.';
-            return { startPhase: 'startOfFellowship' };
+                '[DEV] Choix difficile · Compagnie. Jouez l’événement (spot Aragorn) → soignez Boromir deux fois (sceau Aragorn).';
+            return { startPhase: 'fellowship' };
         }
 
         default:

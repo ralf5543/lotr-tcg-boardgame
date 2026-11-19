@@ -1104,14 +1104,36 @@ function isProperNameToken(word: string): boolean {
     return /^[A-ZÀ-ŸÉ][a-zà-ÿ]/.test(word);
 }
 
+/** Sceaux connus (CSV / matchers) — accents retirés (Théoden → THEODEN). */
+const KNOWN_SIGNETS = new Set(['ARAGORN', 'FRODO', 'GANDALF', 'THEODEN']);
+
+function normalizeSignetToken(name: string): string {
+    return String(name || '')
+        .normalize('NFD')
+        .replace(/\p{M}/gu, '')
+        .toUpperCase();
+}
+
 /**
- * « (who has|with) the Frodo signet » → jeton SIGNET_FRODO (filtres de classe).
+ * « who has|with the Frodo signet » / forme nue « Frodo signet »
+ * → jeton SIGNET_FRODO (filtres de classe).
  */
 function collapseSignetPhrases(raw: string): string {
-    return raw.replace(
-        /\b(?:who has|with) the (\w+) signet\b/gi,
-        (_m, name: string) => ` SIGNET_${String(name).toUpperCase()} `
+    let out = raw.replace(
+        /\b(?:who has|with) the ([\p{L}]+)\s+signet\b/giu,
+        (_m, name: string) => {
+            const token = normalizeSignetToken(name);
+            if (!KNOWN_SIGNETS.has(token)) return _m;
+            return ` SIGNET_${token} `;
+        }
     );
+    // « for each Frodo signet you spot » / « Gandalf signet »
+    out = out.replace(/\b([\p{L}]+)\s+signet\b/giu, (_m, name: string) => {
+        const token = normalizeSignetToken(name);
+        if (!KNOWN_SIGNETS.has(token)) return _m;
+        return ` SIGNET_${token} `;
+    });
+    return out;
 }
 
 /** Filtres de classe : uniquement tokens connus (ou nom propre). Reste inconnu → []. */
@@ -13986,6 +14008,120 @@ function parseStandaloneExertWoundSkirmishingAbilities(
 }
 
 /**
+ * Exert Name to remove twilightN for each X signet you spot.
+ * (Straining Towards Us…) — phases = colonne Class.
+ */
+function parseStandaloneExertRemoveTwilightPerSpotAbilities(
+    text: string,
+    cardTitle?: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const re =
+        /^Exert\s+([\s\S]+?)\s+to remove\s+(?:<symbol>)?twilight(\d+)(?:<\/symbol>)?\s+for each\s+([\s\S]+?)\s+you(?: can)? spot\.?$/i;
+    const raw = String(text || '')
+        .replace(/<\/?keyword>/gi, '')
+        .replace(/<br\s*\/?>/gi, ' ')
+        .replace(/\*\*/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+    const m = raw.match(re);
+    if (!m) return found;
+    if (/\b(and|or)\b/i.test(m[1])) return found;
+    const subject = parseExertSubject(m[1].trim(), cardTitle, text);
+    if (!subject) return found;
+    const twilightPer = parseInt(m[2], 10);
+    if (!Number.isFinite(twilightPer) || twilightPer <= 0) return found;
+    const spotCollapsed = collapseSignetPhrases(m[3]);
+    const spotFilters = parseClassFilters(spotCollapsed);
+    if (spotFilters.length === 0) return found;
+    // 1 crépuscule × N spotés (twilight1) — countFromSpot.
+    if (twilightPer !== 1) return found;
+    found.push({
+        id: `${cardId || 'ability'}:${found.length}:exert-twilight-per-spot`,
+        phases: [],
+        cost: [
+            {
+                exert: [
+                    {
+                        count: subject.count,
+                        target: subject.target,
+                        ...(subject.mode ? { mode: subject.mode } : {}),
+                    },
+                ],
+                spot: [
+                    {
+                        count: 1,
+                        target: [spotFilters],
+                    },
+                ],
+            },
+        ],
+        effects: [{ type: 'REMOVE_TWILIGHT', countFromSpot: true }],
+        source: 'SELF',
+        text: stripAbilityMarkup(m[0]),
+    });
+    return found;
+}
+
+/**
+ * Exert Name to make an unbound companion with the X signet strength +N
+ * for each threat you can spot. (At His Command…)
+ */
+function parseStandaloneExertMakePerThreatAbilities(
+    text: string,
+    cardTitle?: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const raw = String(text || '')
+        .replace(/<\/?keyword>/gi, '')
+        .replace(/<br\s*\/?>/gi, ' ')
+        .replace(/\*\*/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+    const m = raw.match(
+        /^Exert\s+([\s\S]+?)\s+to make\s+(?:a|an)\s+([\s\S]+?)\s+strength\s*\+\s*(\d+)\s+for each threat you(?: can)? spot\.?$/i
+    );
+    if (!m) return found;
+    if (/\b(and|or)\b/i.test(m[1])) return found;
+    const subject = parseExertSubject(m[1].trim(), cardTitle, text);
+    if (!subject) return found;
+    const filters = parseClassFilters(m[2].trim());
+    if (filters.length === 0) return found;
+    const value = parseInt(m[3], 10);
+    if (!Number.isFinite(value) || value <= 0) return found;
+    found.push({
+        id: `${cardId || 'ability'}:${found.length}:exert-make-per-threat`,
+        phases: [],
+        cost: [
+            {
+                exert: [
+                    {
+                        count: subject.count,
+                        target: subject.target,
+                        ...(subject.mode ? { mode: subject.mode } : {}),
+                    },
+                ],
+            },
+        ],
+        effects: [
+            {
+                type: 'ADD_TEMP_STAT',
+                stat: 'STRENGTH',
+                value,
+                target: [filters],
+                expiresAtPhase: 'SKIRMISH',
+                perThreats: true,
+            },
+        ],
+        source: 'SELF',
+        text: stripAbilityMarkup(m[0]),
+    });
+    return found;
+}
+
+/**
  * Événements sans balise de phase (phase = colonne Class) :
  * « Make a raider Man strength +3 (or +6 if you have initiative). »
  * (New Strength Came Now…) — refuse and / Damage / named-only complex.
@@ -16043,9 +16179,12 @@ export function parseAbilities(
             return;
         }
 
-        // Exert X twice to make him strength +N for each Y you spot. (Pippin's Sword…)
-        const exertMakePerSpot = bodyPlain.match(
-            /^Exert\s+([\s\S]+?)\s+to make\s+(him|her|it|bearer|this (?:companion|minion)|[\p{L}’'\-]+)\s+strength\s*\+\s*(\d+)\s+for each\s+([\s\S]+?)\s+you(?: can)? spot\.?$/iu
+        // Exert X to make him|a companion strength +N for each Y you spot (limit +M).
+        // (Pippin's Sword… / Trust Me as You Once Did…)
+        const { text: perSpotBody, limit: perSpotLimit } =
+            stripMakeStatLimit(bodyPlain);
+        const exertMakePerSpot = perSpotBody.match(
+            /^Exert\s+([\s\S]+?)\s+to make\s+(him|her|it|bearer|this (?:companion|minion)|(?:a|an)\s+[\s\S]+?|[\p{L}’'\-]+)\s+strength\s*\+\s*(\d+)\s+for each\s+([\s\S]+?)\s+you(?: can)? spot\.?$/iu
         );
         if (exertMakePerSpot) {
             if (/\b(and|or)\b/i.test(exertMakePerSpot[1])) return;
@@ -16071,19 +16210,26 @@ export function parseAbilities(
                 whoRaw.toLowerCase() === cardTitle.toLowerCase()
             ) {
                 makeTarget = 'SELF';
+            } else if (/^(a|an)\s+/i.test(whoRaw)) {
+                const filters = parseClassFilters(
+                    whoRaw.replace(/^(a|an)\s+/i, '')
+                );
+                if (filters.length === 0) return;
+                makeTarget = [filters];
             }
             if (!makeTarget) return;
             const value = parseInt(exertMakePerSpot[3], 10);
             if (!Number.isFinite(value) || value <= 0) return;
-            const spotFilters = parseClassFilters(exertMakePerSpot[4]);
-            if (spotFilters.length === 0) return;
+            const spotCollapsed = collapseSignetPhrases(exertMakePerSpot[4]);
             if (
                 /\b(and|or|who|whose|that|with|from|to|may)\b/i.test(
-                    exertMakePerSpot[4]
+                    spotCollapsed
                 )
             ) {
                 return;
             }
+            const spotFilters = parseClassFilters(spotCollapsed);
+            if (spotFilters.length === 0) return;
             const expiresAtPhase = parseUntilExpiry(
                 bodyPlain,
                 marker.phase
@@ -16112,14 +16258,19 @@ export function parseAbilities(
                         value,
                         target: makeTarget,
                         expiresAtPhase,
-                        perSpot: { target: [spotFilters] },
+                        perSpot: {
+                            target: [spotFilters],
+                            ...(perSpotLimit != null
+                                ? { limit: perSpotLimit }
+                                : {}),
+                        },
                     },
                 ],
                 source:
                     subject.target === 'BEARER' || makeTarget === 'BEARER'
                         ? 'ATTACHMENT'
                         : 'SELF',
-                text: `${marker.phase}: Exert ${exertMakePerSpot[1].trim()} to make ${whoRaw} strength +${value} for each ${stripAbilityMarkup(exertMakePerSpot[4])} you spot.`
+                text: `${marker.phase}: Exert ${exertMakePerSpot[1].trim()} to make ${whoRaw} strength +${value} for each ${stripAbilityMarkup(exertMakePerSpot[4])} you spot${perSpotLimit != null ? ` (limit +${perSpotLimit})` : ''}.`
                     .replace(/<[^>]+>/g, '')
                     .replace(/\s+/g, ' ')
                     .trim(),
@@ -17856,6 +18007,102 @@ export function parseAbilities(
                 effects: [effect],
                 source: 'SELF',
                 text: clause,
+            });
+            return;
+        }
+
+        // Spot X to heal a Y [twice]. (Hard Choice…)
+        const spotHealMatch = bodyPlain.match(
+            /^Spot\s+([\s\S]+?)\s+to heal\s+(?:a|an)\s+([\s\S]+?)(?:\s+(twice))?\.?$/i
+        );
+        if (spotHealMatch) {
+            if (/\b(and|or)\b/i.test(spotHealMatch[1])) return;
+            const spotSubject = parseExertSubject(
+                spotHealMatch[1].trim(),
+                cardTitle,
+                text
+            );
+            if (!spotSubject) return;
+            const healFilters = parseClassFilters(spotHealMatch[2].trim());
+            if (healFilters.length === 0) return;
+            const healCount = spotHealMatch[3] ? 2 : 1;
+            abilities.push({
+                id: `${cardId || 'ability'}:${abilities.length}`,
+                phases,
+                cost: [
+                    {
+                        spot: [
+                            {
+                                count: spotSubject.count,
+                                target: spotSubject.target,
+                            },
+                        ],
+                    },
+                ],
+                effects: [
+                    {
+                        type: 'HEAL',
+                        count: healCount,
+                        target: [healFilters],
+                    },
+                ],
+                source: 'SELF',
+                text: `${marker.phase}: Spot ${spotHealMatch[1].trim()} to heal a ${stripAbilityMarkup(spotHealMatch[2]).trim()}${healCount > 1 ? ' twice' : ''}.`
+                    .replace(/<[^>]+>/g, '')
+                    .replace(/\s+/g, ' ')
+                    .trim(),
+            });
+            return;
+        }
+
+        // Exert X to play a companion who has the Y signet. Twilight cost −N.
+        // (Gandalf 1P364…)
+        const exertPlaySignetMatch = bodyPlain.match(
+            /^Exert\s+([\s\S]+?)\s+to play\s+(?:a|an)\s+([\s\S]+?)\s*\.\s*The twilight cost of that companion is\s*-\s*(\d+)\.?$/i
+        );
+        if (exertPlaySignetMatch) {
+            if (/\b(and|or)\b/i.test(exertPlaySignetMatch[1])) return;
+            const subject = parseExertSubject(
+                exertPlaySignetMatch[1].trim(),
+                cardTitle,
+                text
+            );
+            if (!subject) return;
+            const playFilters = parseClassFilters(
+                exertPlaySignetMatch[2].trim()
+            );
+            if (playFilters.length === 0) return;
+            if (!playFilters.includes('COMPANION')) return;
+            const reduce = parseInt(exertPlaySignetMatch[3], 10);
+            if (!Number.isFinite(reduce) || reduce <= 0) return;
+            abilities.push({
+                id: `${cardId || 'ability'}:${abilities.length}`,
+                phases,
+                cost: [
+                    {
+                        exert: [
+                            {
+                                count: subject.count,
+                                target: subject.target,
+                                ...(subject.mode
+                                    ? { mode: subject.mode }
+                                    : {}),
+                            },
+                        ],
+                    },
+                ],
+                effects: [
+                    {
+                        type: 'PLAY_FROM_HAND',
+                        target: [playFilters],
+                        twilightReduce: reduce,
+                    },
+                ],
+                source: 'SELF',
+                text: `${marker.phase}: Exert ${exertPlaySignetMatch[1].trim()} to play a ${stripAbilityMarkup(exertPlaySignetMatch[2]).trim()}. The twilight cost of that companion is -${reduce}.`
+                    .replace(/<[^>]+>/g, '')
+                    .replace(/\s+/g, ' ')
+                    .trim(),
             });
             return;
         }
@@ -19908,6 +20155,26 @@ export function parseAbilities(
 
     if (markers.length === 0) {
         parseStandaloneExertWoundSkirmishingAbilities(
+            text,
+            cardTitle,
+            cardId
+        ).forEach((ability) => {
+            abilities.push({
+                ...ability,
+                id: `${cardId || 'ability'}:${abilities.length}`,
+            });
+        });
+        parseStandaloneExertRemoveTwilightPerSpotAbilities(
+            text,
+            cardTitle,
+            cardId
+        ).forEach((ability) => {
+            abilities.push({
+                ...ability,
+                id: `${cardId || 'ability'}:${abilities.length}`,
+            });
+        });
+        parseStandaloneExertMakePerThreatAbilities(
             text,
             cardTitle,
             cardId

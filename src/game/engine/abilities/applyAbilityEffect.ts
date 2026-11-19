@@ -2083,6 +2083,18 @@ function applyOneEffect(
             }
             const n = spotted.length;
             value = effect.value * n;
+            if (
+                typeof effect.perSpot.limit === 'number' &&
+                effect.perSpot.limit > 0
+            ) {
+                value = Math.min(value, effect.perSpot.limit);
+            }
+            if (value <= 0) return false;
+        }
+        if (effect.perThreats) {
+            const fpId = G.fpPlayerId || '0';
+            value =
+                effect.value * Math.max(0, G.players[fpId]?.threats || 0);
             if (value <= 0) return false;
         }
         if (effect.countFromSpot) {
@@ -2558,9 +2570,17 @@ function countFromSpotCost(
     source: CardState,
     ability: Ability
 ): number {
-    const spot = ability.cost?.[0]?.spot?.[0];
-    if (!spot) return 0;
-    return resolveCostTarget(G, source, spot.target).length;
+    // Spot peut cohabiter avec exert dans la même option de coût.
+    let spotTarget: string[][] | undefined;
+    for (const opt of ability.cost || []) {
+        const spot = opt.spot?.[0];
+        if (spot?.target) {
+            spotTarget = spot.target as string[][];
+            break;
+        }
+    }
+    if (!spotTarget) return 0;
+    return resolveCostTarget(G, source, spotTarget).length;
 }
 
 export { countFromSpotCost };
