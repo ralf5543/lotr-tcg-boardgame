@@ -486,6 +486,18 @@ export function whileConditionHolds(
         if (!anyOk) return false;
     }
 
+    if (trigger.bearerKeywordOrAtSiteKeyword) {
+        const { bearerKeyword, siteKeyword } =
+            trigger.bearerKeywordOrAtSiteKeyword;
+        const bearer = findBearer(G, source) || source;
+        const bearerOk = cardMatchesTarget(bearer, [[bearerKeyword]]);
+        const siteOk =
+            siteKeyword === 'SANCTUARY'
+                ? isCurrentSiteSanctuary(G)
+                : isAtSiteWithKeyword(G, siteKeyword);
+        if (!bearerOk && !siteOk) return false;
+    }
+
     if (trigger.unlessAtSiteKeyword) {
         if (trigger.unlessAtSiteKeyword === 'SANCTUARY') {
             if (isCurrentSiteSanctuary(G)) return false;

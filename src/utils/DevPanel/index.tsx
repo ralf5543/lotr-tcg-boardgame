@@ -356,6 +356,16 @@ export const DevPanel: React.FC<DevPanelProps> = ({
                             >
                                 Garnison
                             </S.ActionButton>
+                            <S.ActionButton
+                                onClick={() =>
+                                    moves.devLoadPreset?.(
+                                        'RANGERS_GONDORIAN_BLADE'
+                                    )
+                                }
+                                title="Lame gondorienne : Damage +1 si rôdeur ou site rivière"
+                            >
+                                Lame
+                            </S.ActionButton>
                         </S.ButtonGroup>
                     </S.Section>
 

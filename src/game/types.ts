@@ -1492,6 +1492,14 @@ export type AbilityTrigger =
            */
           atSiteKeywords?: CardKeyword[];
           /**
+           * « While bearer is a ranger or at a river site… » (Gondorian Blade) :
+           * vrai si le porteur a le mot-clé **ou** le site a le terrain.
+           */
+          bearerKeywordOrAtSiteKeyword?: {
+              bearerKeyword: string;
+              siteKeyword: CardKeyword;
+          };
+          /**
            * Vrai tant que la compagnie n’est PAS sur un site avec ce mot-clé
            * (« Discard The Balrog if not underground »).
            */

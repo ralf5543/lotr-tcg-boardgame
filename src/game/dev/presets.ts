@@ -170,6 +170,32 @@ export const applyDevPreset = (
             return { startPhase: 'fellowship' };
         }
 
+        case 'RANGERS_GONDORIAN_BLADE': {
+            // Site 4 = Ettenmoors (plaines) : rôdeur + lame → Damage +1.
+            // Cirion + lame : rien (hors rivière). Cas rivière = tests.
+            resetBoardForPreset(G);
+            setupDevPath(G, 3, RANGERS_PATH);
+            G.twilightPool = 0;
+            fpPlayer.burdens = 0;
+            const frodo = {
+                ...clonePresetCard('11S164', 'dev-gb-frodo'),
+                attachments: [clonePresetCard('4R1', 'dev-gb-ring')],
+            };
+            const ranger = {
+                ...clonePresetCard('7C116', 'dev-gb-ranger'),
+                attachments: [clonePresetCard('11U59', 'dev-gb-blade-ranger')],
+            };
+            const cirion = {
+                ...clonePresetCard('7C82', 'dev-gb-cirion'),
+                attachments: [clonePresetCard('11U59', 'dev-gb-blade-cirion')],
+            };
+            fpPlayer.fellowshipArea = [frodo, ranger, cirion];
+            fpPlayer.hand = [];
+            G.statusMessage =
+                '[DEV] Lame gondorienne · Compagnie, site sans rivière. Le rôdeur doit avoir Damage +1 ; Cirion non. Cas rivière couvert par les tests.';
+            return { startPhase: 'fellowship' };
+        }
+
         default:
             G.statusMessage = `[DEV] Aucun preset actif (« ${presetType} »).`;
             return { startPhase: 'startOfFellowship' };

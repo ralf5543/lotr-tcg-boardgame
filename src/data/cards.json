@@ -104262,6 +104262,29 @@
         "MAN"
       ]
     ],
+    "abilities": [
+      {
+        "id": "11U59:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "bearerKeywordOrAtSiteKeyword": {
+            "bearerKeyword": "RANGER",
+            "siteKeyword": "RIVER"
+          }
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_KEYWORD",
+            "keyword": "DAMAGE +1",
+            "target": "BEARER"
+          }
+        ],
+        "source": "ATTACHMENT",
+        "text": "While bearer is a ranger or at a river site, he or she is Damage +1."
+      }
+    ],
     "culture": "GONDOR",
     "twilightCost": 1,
     "strength": 2,

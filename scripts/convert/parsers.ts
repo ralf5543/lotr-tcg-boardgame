@@ -6113,6 +6113,49 @@ function parseWhileHaveInitiativeEachKeywordAbilities(
 }
 
 /**
+ * While bearer is a ranger or at a river site, he or she is Damage +1.
+ * (Gondorian Blade — OR entre mot-clé porteur et terrain du site.)
+ */
+function parseWhileBearerKeywordOrAtSiteKeywordAbilities(
+    text: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const re =
+        /While bearer is a(?:n)?\s+(\w+)\s+or at a(?:n)?\s+(\w+)\s+site,\s*(?:he or she|bearer)\s+is\s+((?:<keyword>[^<]*<\/keyword>|\*\*[^*]+\*\*|damage\s*\+\s*\d+|defender\s*\+\s*\d+|fierce)\.?)/gi;
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(text)) !== null) {
+        const bearerKeyword = match[1].toUpperCase();
+        const siteKeyword = parseSiteLocationKeyword(match[2]);
+        if (!siteKeyword) continue;
+        const grant = parseWhileKeywordGrant(match[3]);
+        if (!grant) continue;
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:while-bearer-kw-or-site`,
+            phases: [],
+            trigger: {
+                type: 'WHILE',
+                bearerKeywordOrAtSiteKeyword: {
+                    bearerKeyword,
+                    siteKeyword,
+                },
+            },
+            cost: [],
+            effects: [
+                {
+                    type: 'MODIFY_KEYWORD',
+                    keyword: grant.keyword,
+                    target: 'BEARER',
+                },
+            ],
+            source: 'ATTACHMENT',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+    return found;
+}
+
+/**
  * If you have initiative, bearer is defender +N | strength ±N | Damage +N | fierce.
  * (I Will Go / Besieging Pike…) — « If » = passif WHILE initiative.
  */
@@ -19327,6 +19370,14 @@ export function parseAbilities(
             id: `${cardId || 'ability'}:${abilities.length}`,
         });
     });
+    parseWhileBearerKeywordOrAtSiteKeywordAbilities(text, cardId).forEach(
+        (ability) => {
+            abilities.push({
+                ...ability,
+                id: `${cardId || 'ability'}:${abilities.length}`,
+            });
+        }
+    );
     parseIfCannotSpotThreatKeywordAbilities(text, cardTitle, cardId).forEach(
         (ability) => {
             abilities.push({
