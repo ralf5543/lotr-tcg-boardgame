@@ -1530,6 +1530,11 @@ export type AbilityTrigger =
           /** « While you have initiative… » — propriétaire de la source. */
           hasInitiative?: boolean;
           /**
+           * « While you have only 4 or 5 cards in hand… » (Cirion) —
+           * taille de main du propriétaire entre min et max (inclus).
+           */
+          handSizeBetween?: { min: number; max: number };
+          /**
            * « While you can spot a companion of strength N or more… »
            * (Wandering Hillman…). Force effective ; garde anti-récursion.
            */

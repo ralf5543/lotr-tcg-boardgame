@@ -358,13 +358,11 @@ export const DevPanel: React.FC<DevPanelProps> = ({
                             </S.ActionButton>
                             <S.ActionButton
                                 onClick={() =>
-                                    moves.devLoadPreset?.(
-                                        'RANGERS_GONDORIAN_BLADE'
-                                    )
+                                    moves.devLoadPreset?.('RANGERS_CIRION')
                                 }
-                                title="Lame gondorienne : Damage +1 si rôdeur ou site rivière"
+                                title="Cirion : force +2 avec 4 ou 5 cartes en main"
                             >
-                                Lame
+                                Cirion
                             </S.ActionButton>
                         </S.ButtonGroup>
                     </S.Section>

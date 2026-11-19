@@ -6016,6 +6016,52 @@ function parseForEachCultureTokenStrengthAbilities(
 }
 
 /**
+ * While you have only A or B cards in hand, Name is strength ±N.
+ * (Cirion — plage inclusive A…B.)
+ */
+function parseWhileHandSizeBetweenStrengthAbilities(
+    text: string,
+    cardTitle?: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const re =
+        /While you have only (\d+) or (\d+) cards in hand,\s*((?:this (?:minion|companion)|Bearer|[A-ZÀ-ŸÉ][^,.]*?)) is strength\s*([+-]\d+)\.?/gi;
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(text)) !== null) {
+        const a = parseInt(match[1], 10);
+        const b = parseInt(match[2], 10);
+        if (!Number.isFinite(a) || !Number.isFinite(b) || a < 0 || b < 0) {
+            continue;
+        }
+        const min = Math.min(a, b);
+        const max = Math.max(a, b);
+        if (max > 12) continue;
+        const who = parseWhileStrengthWho(match[3], cardTitle);
+        if (!who) continue;
+        const value = parseInt(match[4], 10);
+        if (!Number.isFinite(value) || value === 0) continue;
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:while-hand-between`,
+            phases: [],
+            trigger: { type: 'WHILE', handSizeBetween: { min, max } },
+            cost: [],
+            effects: [
+                {
+                    type: 'MODIFY_STAT',
+                    stat: 'STRENGTH',
+                    value,
+                    target: who,
+                },
+            ],
+            source: who === 'BEARER' ? 'ATTACHMENT' : 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+    return found;
+}
+
+/**
  * « While you have initiative, X is strength ±N. »
  * (Gimli 7C6, Orc Chaser / Pursuer / Stalker…)
  * Refuse each / of your / damage / discard / Response / multi-clauses.
@@ -19348,6 +19394,14 @@ export function parseAbilities(
         }
     );
 
+    parseWhileHandSizeBetweenStrengthAbilities(text, cardTitle, cardId).forEach(
+        (ability) => {
+            abilities.push({
+                ...ability,
+                id: `${cardId || 'ability'}:${abilities.length}`,
+            });
+        }
+    );
     parseWhileHaveInitiativeStrengthAbilities(text, cardTitle, cardId).forEach(
         (ability) => {
             abilities.push({

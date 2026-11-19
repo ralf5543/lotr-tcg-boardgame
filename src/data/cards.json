@@ -74642,6 +74642,30 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "abilities": [
+      {
+        "id": "7C82:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "handSizeBetween": {
+            "min": 4,
+            "max": 5
+          }
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 2,
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "While you have only 4 or 5 cards in hand, Cirion is strength +2."
+      }
+    ],
     "culture": "GONDOR",
     "race": "MAN",
     "twilightCost": 2,

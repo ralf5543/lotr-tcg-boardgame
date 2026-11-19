@@ -611,6 +611,14 @@ export function whileConditionHolds(
         if (!ownerId || !playerHasInitiative(G, ownerId)) return false;
     }
 
+    if (trigger.handSizeBetween) {
+        const { min, max } = trigger.handSizeBetween;
+        const ownerId = findInPlayCardOwnerId(G, source);
+        if (!ownerId) return false;
+        const n = G.players[ownerId]?.hand?.length || 0;
+        if (n < min || n > max) return false;
+    }
+
     if (trigger.spotMinStrength) {
         const min = trigger.spotMinStrength.min;
         const target = trigger.spotMinStrength.target;

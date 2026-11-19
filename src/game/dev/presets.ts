@@ -170,29 +170,26 @@ export const applyDevPreset = (
             return { startPhase: 'fellowship' };
         }
 
-        case 'RANGERS_GONDORIAN_BLADE': {
-            // Site 4 = Ettenmoors (plaines) : rôdeur + lame → Damage +1.
-            // Cirion + lame : rien (hors rivière). Cas rivière = tests.
+        case 'RANGERS_CIRION': {
+            // 4 cartes en main → Cirion force +2 ; défausser / piocher pour sortir de 4–5.
             resetBoardForPreset(G);
             setupDevPath(G, 3, RANGERS_PATH);
             G.twilightPool = 0;
             fpPlayer.burdens = 0;
             const frodo = {
-                ...clonePresetCard('11S164', 'dev-gb-frodo'),
-                attachments: [clonePresetCard('4R1', 'dev-gb-ring')],
+                ...clonePresetCard('11S164', 'dev-cirion-frodo'),
+                attachments: [clonePresetCard('4R1', 'dev-cirion-ring')],
             };
-            const ranger = {
-                ...clonePresetCard('7C116', 'dev-gb-ranger'),
-                attachments: [clonePresetCard('11U59', 'dev-gb-blade-ranger')],
-            };
-            const cirion = {
-                ...clonePresetCard('7C82', 'dev-gb-cirion'),
-                attachments: [clonePresetCard('11U59', 'dev-gb-blade-cirion')],
-            };
-            fpPlayer.fellowshipArea = [frodo, ranger, cirion];
-            fpPlayer.hand = [];
+            const cirion = clonePresetCard('7C82', 'dev-cirion');
+            fpPlayer.fellowshipArea = [frodo, cirion];
+            fpPlayer.hand = [
+                clonePresetCard('1C119', 'dev-cirion-h1'),
+                clonePresetCard('1C106', 'dev-cirion-h2'),
+                clonePresetCard('1C117', 'dev-cirion-h3'),
+                clonePresetCard('7C105', 'dev-cirion-h4'),
+            ];
             G.statusMessage =
-                '[DEV] Lame gondorienne · Compagnie, site sans rivière. Le rôdeur doit avoir Damage +1 ; Cirion non. Cas rivière couvert par les tests.';
+                '[DEV] Cirion · Compagnie, 4 cartes en main → force +2. Défaussez ou piochez pour sortir de 4–5 et voir le bonus tomber.';
             return { startPhase: 'fellowship' };
         }
 
