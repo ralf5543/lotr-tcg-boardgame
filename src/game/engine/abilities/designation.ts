@@ -571,6 +571,15 @@ export function getEffectDesignationCandidates(
             if (matches.length < 1) return [];
             return uniqueCards(matches);
         }
+        if (transferSelf.attachTo === 'TARGET') {
+            const filter = transferSelf.attachTarget;
+            if (!filter) return [];
+            const matches = resolveCostTarget(G, source, filter).filter(
+                (c) => c && !c.isDead
+            );
+            if (matches.length < 1) return [];
+            return uniqueCards(matches);
+        }
         // SKIRMISH_LOSER : un seul perdant typique → pas de désignation.
         return [];
     }
@@ -1093,6 +1102,16 @@ export function abilityHasLegalEffectTarget(
                 const filter = effect.skirmishingWith;
                 if (!filter) return false;
                 if (charactersSkirmishingWith(G, filter).length < 1) {
+                    return false;
+                }
+            } else if (effect.attachTo === 'TARGET') {
+                const filter = effect.attachTarget;
+                if (!filter) return false;
+                if (
+                    resolveCostTarget(G, source, filter).filter(
+                        (c) => c && !c.isDead
+                    ).length < 1
+                ) {
                     return false;
                 }
             } else if (effect.attachTo === 'SKIRMISH_LOSER') {

@@ -75563,6 +75563,87 @@
     "keywords": [
       "FORTIFICATION"
     ],
+    "abilities": [
+      {
+        "id": "7C92:0",
+        "phases": [
+          "MANEUVER"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "GONDOR",
+                    "MAN"
+                  ]
+                ],
+                "mode": "DESIGNATION"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "TRANSFER_SELF",
+            "from": [
+              "SUPPORT"
+            ],
+            "attachTo": "TARGET",
+            "attachTarget": [
+              [
+                "MINION"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "MANEUVER: Exert a gondor Man to transfer this condition from your support area to a minion.",
+        "textFr": "**Manœuvre :** Affaiblissez un Homme <symbol>gondor</symbol> ou désignez un chevalier pour transférer cette situation de votre aire de soutien à un séide."
+      },
+      {
+        "id": "7C92:1",
+        "phases": [
+          "MANEUVER"
+        ],
+        "cost": [
+          {
+            "spot": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "KNIGHT"
+                  ]
+                ]
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "TRANSFER_SELF",
+            "from": [
+              "SUPPORT"
+            ],
+            "attachTo": "TARGET",
+            "attachTarget": [
+              [
+                "MINION"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "MANEUVER: Spot a knight to transfer this condition from your support area to a minion.",
+        "textFr": "**Manœuvre :** Affaiblissez un Homme <symbol>gondor</symbol> ou désignez un chevalier pour transférer cette situation de votre aire de soutien à un séide."
+      }
+    ],
+    "actionPhases": [
+      "MANEUVER"
+    ],
     "culture": "GONDOR",
     "twilightCost": 1,
     "strength": -1,
@@ -77013,6 +77094,87 @@
     "subtype": "SUPPORT-AREA",
     "keywords": [
       "FORTIFICATION"
+    ],
+    "abilities": [
+      {
+        "id": "7C118:0",
+        "phases": [
+          "MANEUVER"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "GONDOR",
+                    "MAN"
+                  ]
+                ],
+                "mode": "DESIGNATION"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "TRANSFER_SELF",
+            "from": [
+              "SUPPORT"
+            ],
+            "attachTo": "TARGET",
+            "attachTarget": [
+              [
+                "MINION"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "MANEUVER: Exert a gondor Man to transfer this condition from your support area to a minion.",
+        "textFr": "**Manœuvre :** Affaiblissez un Homme <symbol>gondor</symbol> ou désignez un rôdeur pour transférer cette situation de votre aire de soutien à un séide."
+      },
+      {
+        "id": "7C118:1",
+        "phases": [
+          "MANEUVER"
+        ],
+        "cost": [
+          {
+            "spot": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "RANGER"
+                  ]
+                ]
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "TRANSFER_SELF",
+            "from": [
+              "SUPPORT"
+            ],
+            "attachTo": "TARGET",
+            "attachTarget": [
+              [
+                "MINION"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "MANEUVER: Spot a ranger to transfer this condition from your support area to a minion.",
+        "textFr": "**Manœuvre :** Affaiblissez un Homme <symbol>gondor</symbol> ou désignez un rôdeur pour transférer cette situation de votre aire de soutien à un séide."
+      }
+    ],
+    "actionPhases": [
+      "MANEUVER"
     ],
     "culture": "GONDOR",
     "twilightCost": 1,
@@ -153811,6 +153973,87 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "abilities": [
+      {
+        "id": "18U46:0",
+        "phases": [
+          "MANEUVER"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "GONDOR",
+                    "MAN"
+                  ]
+                ],
+                "mode": "DESIGNATION"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "TRANSFER_SELF",
+            "from": [
+              "SUPPORT"
+            ],
+            "attachTo": "TARGET",
+            "attachTarget": [
+              [
+                "MINION"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "MANEUVER: Exert a gondor Man to transfer this condition from your support area to a minion.",
+        "textFr": "**Manœuvre :** Affaiblissez un Homme <symbol>gondor</symbol> ou désignez un rôdeur pour transférer cette situation de votre aire de soutien à un séide."
+      },
+      {
+        "id": "18U46:1",
+        "phases": [
+          "MANEUVER"
+        ],
+        "cost": [
+          {
+            "spot": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "RANGER"
+                  ]
+                ]
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "TRANSFER_SELF",
+            "from": [
+              "SUPPORT"
+            ],
+            "attachTo": "TARGET",
+            "attachTarget": [
+              [
+                "MINION"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "MANEUVER: Spot a ranger to transfer this condition from your support area to a minion.",
+        "textFr": "**Manœuvre :** Affaiblissez un Homme <symbol>gondor</symbol> ou désignez un rôdeur pour transférer cette situation de votre aire de soutien à un séide."
+      }
+    ],
+    "actionPhases": [
+      "MANEUVER"
+    ],
     "culture": "GONDOR",
     "twilightCost": 2,
     "strength": -1,

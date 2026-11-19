@@ -930,13 +930,16 @@ export type AbilityEffect =
     | {
           /**
            * Transfère **cette** carte (soutien → personnage).
-           * Éclat de Lame (perdant) / Sauron’s Gaze (désigné).
+           * Éclat de Lame (perdant) / Sauron’s Gaze (désigné) /
+           * Second Level (séide désigné).
            */
           type: 'TRANSFER_SELF';
           from: Array<'SUPPORT' | 'DISCARD'>;
-          attachTo: 'SKIRMISH_LOSER' | 'SKIRMISHING_WITH';
+          attachTo: 'SKIRMISH_LOSER' | 'SKIRMISHING_WITH' | 'TARGET';
           /** Obligatoire si `attachTo: 'SKIRMISHING_WITH'` (ex. Nazgûl). */
           skirmishingWith?: string[][];
+          /** Obligatoire si `attachTo: 'TARGET'` (ex. `[['MINION']]`). */
+          attachTarget?: string[][];
           limitOnePerCharacter?: boolean;
       }
     | {

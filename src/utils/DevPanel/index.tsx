@@ -349,12 +349,12 @@ export const DevPanel: React.FC<DevPanelProps> = ({
                             <S.ActionButton
                                 onClick={() =>
                                     moves.devLoadPreset?.(
-                                        'SIGNET_HARD_CHOICE'
+                                        'RANGERS_SECOND_LEVEL'
                                     )
                                 }
-                                title="Choix difficile : spot Aragorn → soigner ×2 un compagnon au sceau"
+                                title="Second niveau : transfert fortification sur un séide"
                             >
-                                Sceaux
+                                2ᵉ niveau
                             </S.ActionButton>
                         </S.ButtonGroup>
                     </S.Section>

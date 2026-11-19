@@ -18011,6 +18011,69 @@ export function parseAbilities(
             return;
         }
 
+        // Exert X or spot Y to transfer this condition … to a minion.
+        // (Second Level / First Level…) — deux bulles (exert OU spot).
+        const exertOrSpotTransfer = bodyPlain.match(
+            /^Exert\s+([\s\S]+?)\s+or spot\s+([\s\S]+?)\s+to transfer this condition from your support area to a minion\.?$/i
+        );
+        if (exertOrSpotTransfer) {
+            const exertSubject = parseExertSubject(
+                exertOrSpotTransfer[1].trim(),
+                cardTitle,
+                text
+            );
+            const spotSubject = parseExertSubject(
+                exertOrSpotTransfer[2].trim(),
+                cardTitle,
+                text
+            );
+            if (exertSubject && spotSubject) {
+                const transferEffect = {
+                    type: 'TRANSFER_SELF',
+                    from: ['SUPPORT'],
+                    attachTo: 'TARGET',
+                    attachTarget: [['MINION']],
+                };
+                abilities.push({
+                    id: `${cardId || 'ability'}:${abilities.length}`,
+                    phases,
+                    cost: [
+                        {
+                            exert: [exertSelectorFromSubject(exertSubject)],
+                        },
+                    ],
+                    effects: [transferEffect],
+                    source: 'SELF',
+                    text: `${marker.phase}: Exert ${stripAbilityMarkup(exertOrSpotTransfer[1]).trim()} to transfer this condition from your support area to a minion.`
+                        .replace(/<[^>]+>/g, '')
+                        .replace(/\s+/g, ' ')
+                        .trim(),
+                });
+                abilities.push({
+                    id: `${cardId || 'ability'}:${abilities.length}`,
+                    phases,
+                    cost: [
+                        {
+                            // Spot = condition d’existence, pas une désignation.
+                            spot: [
+                                {
+                                    count: spotSubject.count,
+                                    target: spotSubject.target,
+                                },
+                            ],
+                        },
+                    ],
+                    effects: [transferEffect],
+                    source: 'SELF',
+                    text: `${marker.phase}: Spot ${stripAbilityMarkup(exertOrSpotTransfer[2]).trim()} to transfer this condition from your support area to a minion.`
+                        .replace(/<[^>]+>/g, '')
+                        .replace(/\s+/g, ' ')
+                        .trim(),
+                });
+                return;
+            }
+        }
+
         // Spot X to heal a Y [twice]. (Hard Choice…)
         const spotHealMatch = bodyPlain.match(
             /^Spot\s+([\s\S]+?)\s+to heal\s+(?:a|an)\s+([\s\S]+?)(?:\s+(twice))?\.?$/i

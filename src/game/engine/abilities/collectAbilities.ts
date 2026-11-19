@@ -1155,6 +1155,40 @@ function formatCostWho(
     return source.i18n?.fr?.title || source.title || 'cette carte';
 }
 
+/**
+ * Libellé « Désigner … » pour une option dont le seul coût est un spot
+ * (bulles scindées « Affaiblir X ou désigner Y »). Pas pour un spot
+ * condition amont d’un autre coût.
+ */
+function formatSpotDesignationCostLabel(
+    ability: Ability,
+    source: CardState
+): string {
+    const option = ability.cost[0];
+    const spot = option?.spot?.[0];
+    if (!spot) return '';
+    if (option?.exert?.length) return '';
+    if (option?.discardFromPlay?.length) return '';
+    if (option?.discardFromHand) return '';
+    if (option?.discardEntireHand) return '';
+    if (option?.removeCultureTokens) return '';
+    if (option?.addTwilight) return '';
+    if (option?.removeTwilight) return '';
+    if (option?.addBurdens) return '';
+    if (option?.removeBurdens) return '';
+    if (option?.addThreats) return '';
+    if (option?.removeThreats) return '';
+    if (option?.addThreatsEqualTo) return '';
+    if (option?.spotBurdens) return '';
+    const tokens = Array.isArray(spot.target) ? spot.target.flat() : [];
+    if (tokens.includes('PIPE')) return 'Désigner X pipes';
+    const n = spot.count || 1;
+    if (n > 1) {
+        return `Désigner ${n} ${formatCostWho(spot.target, source, false)}`;
+    }
+    return `Désigner ${formatCostWho(spot.target, source, true)}`;
+}
+
 function formatCostLabel(ability: Ability, source: CardState): string {
     const option = ability.cost[0];
     const parts: string[] = [];
@@ -1183,6 +1217,8 @@ function formatCostLabel(ability: Ability, source: CardState): string {
     const spot = option?.spot?.[0];
     // « spot » n’est pas un coût à désigner (condition amont), sauf pipes
     // où le nombre spoté détermine l’effet (X pipes → retirer X…).
+    // Exception bulles scindées : voir formatSpotDesignationCostLabel
+    // + dual-cost-ability-label.mdc (appel depuis formatAbilityLabelParts).
     if (spot) {
         const tokens = Array.isArray(spot.target) ? spot.target.flat() : [];
         if (tokens.includes('PIPE')) {
@@ -1370,6 +1406,9 @@ export function formatAbilityLabelParts(
     host?: CardState
 ): { cost: string; effect: string } {
     // Préférer la clause FR papier (`textFr`) ; sinon génération depuis le modèle.
+    // Voir `.cursor/rules/dual-cost-ability-label.mdc` : si le papier joint
+    // plusieurs coûts (« Affaiblissez X ou désignez Y »), chaque bulle AST
+    // n’en a qu’un → coût depuis le modèle, effet papier conservé.
     const fromAst = formatAbilityLabelFromAst(ability, source);
     let cost = fromAst.cost;
     let effect = fromAst.effect;
@@ -1380,8 +1419,18 @@ export function formatAbilityLabelParts(
         // Clause sans « pour » alors que le modèle a un coût → garder l’AST
         // (évite d’avaler le coût dans la ligne d’effet).
         if (fromText.effect && (hasPour || !fromAst.cost)) {
-            cost = fromText.cost;
-            effect = fromText.effect;
+            // Coûts alternatifs collés dans le papier (« X ou Y pour … »)
+            // alors que chaque ability n’en a qu’un → séparer via l’AST.
+            if (/\sou\s/i.test(fromText.cost)) {
+                const spotCost = capitalizeLabel(
+                    formatSpotDesignationCostLabel(ability, source)
+                );
+                cost = fromAst.cost || spotCost;
+                effect = fromText.effect;
+            } else {
+                cost = fromText.cost;
+                effect = fromText.effect;
+            }
         }
     }
 

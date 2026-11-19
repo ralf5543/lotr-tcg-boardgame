@@ -1,0 +1,37 @@
+---
+description: Bulles scindées — un coût distinct par option (« Affaiblir X ou désigner Y »)
+alwaysApply: true
+---
+
+# Libellé : coûts alternatifs (même effet)
+
+**Format : Standard (règles modernes).** Voir `.cursor/rules/format-standard.mdc`.
+
+## Règle
+
+Quand le parseur **scinde** une clause papier « coût A **ou** coût B pour effet » en **deux** abilities (même effet, coûts différents), chaque bulle-info doit montrer **son** coût — pas la phrase « A ou B » collée deux fois.
+
+| Bulle | Coût affiché | Effet |
+| --- | --- | --- |
+| Option A | Coût A seul (ex. « Affaiblir un Homme gondor ») | Effet commun |
+| Option B | Coût B seul (ex. « Désigner un rôdeur ») | Effet commun |
+
+## Pourquoi ça casse
+
+`attachAbilityTextFr` réutilise la **même** clause FR pour les deux abilities scindées. `formatAbilityLabelParts` préférait ce `textFr` → les deux bulles affichaient « Affaiblissez X ou désignez Y ».
+
+## Implémentation
+
+- `formatAbilityLabelParts` : si le coût extrait de `textFr` contient `\sou\s` **et** le modèle AST a déjà un coût → **garder le coût AST**, conserver l’effet papier.
+- `formatCostLabel` : option **spot seule** (pas d’exert / défausse / jetons…) → libellé « Désigner … » (comme les pipes). Spot en condition amont d’un autre coût → toujours masqué.
+
+## Exemples
+
+- **Second / First Level** : Affaiblir Homme Gondor **/** Désigner un rôdeur (ou chevalier) → transfert.
+- **Wandering Hillman** : Retirer 2 fardeaux **/** Retirer 2 menaces → contrôler un site.
+- **Discard this or remove a token** : Défausser … **/** Retirer N jetons → même effet.
+
+## Hors scope
+
+- « Gollum **ou** Sméagol » dans **un** coût (DNF) : ce n’est pas deux bulles ; le « ou » reste dans le libellé AST.
+- Choix forcé `CHOOSE_ONE` (toaster d’options) : autre mécanisme — voir [`forced-choice-cancel.mdc`](forced-choice-cancel.mdc).

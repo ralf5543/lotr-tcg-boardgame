@@ -131,13 +131,15 @@ describe('Wandering Hillman 15U94', () => {
         const threats = (hillman.abilities || []).find(
             (ab) => ab.cost?.[0]?.removeThreats === 2
         )!;
+        // textFr papier joint les deux coûts (« fardeaux ou menaces ») →
+        // chaque bulle sépare via l’AST (dual-cost-ability-label).
         expect(formatAbilityLabelParts(burdens, hillman)).toEqual({
             cost: 'Retirer 2 fardeaux',
-            effect: 'prendre le contrôle d’un site',
+            effect: 'contrôler un site',
         });
         expect(formatAbilityLabelParts(threats, hillman)).toEqual({
             cost: 'Retirer 2 menaces',
-            effect: 'prendre le contrôle d’un site',
+            effect: 'contrôler un site',
         });
     });
 

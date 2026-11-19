@@ -140,27 +140,29 @@ export const applyDevPreset = (
     if (!fpPlayer) return { startPhase: 'startOfFellowship' };
 
     switch (presetType) {
-        case 'SIGNET_HARD_CHOICE': {
-            // Spot Aragorn → soigner ×2 un compagnon au sceau Aragorn.
+        case 'RANGERS_SECOND_LEVEL': {
+            // Manœuvre : spot rôdeur (ou affaiblir Homme Gondor) → transfert sur séide.
             resetBoardForPreset(G);
             setupDevPath(G, 3, RANGERS_PATH);
             G.twilightPool = 0;
             fpPlayer.burdens = 0;
             const frodo = {
-                ...clonePresetCard('11S164', 'dev-hc-frodo'),
-                attachments: [clonePresetCard('4R1', 'dev-hc-ring')],
+                ...clonePresetCard('11S164', 'dev-sl2-frodo'),
+                attachments: [clonePresetCard('4R1', 'dev-sl2-ring')],
             };
-            const aragorn = clonePresetCard('1P365', 'dev-hc-aragorn');
-            const boromir = {
-                ...clonePresetCard('1R96', 'dev-hc-boromir'),
-                wounds: 2,
+            const ranger = clonePresetCard('7C116', 'dev-sl2-ranger');
+            const second = clonePresetCard('7C118', 'dev-sl2-second');
+            fpPlayer.fellowshipArea = [frodo, ranger];
+            fpPlayer.supportArea = [second];
+            fpPlayer.hand = [];
+            const minion = {
+                ...clonePresetCard('5C76', 'dev-sl2-minion'),
+                minionSiteNumber: 4,
             };
-            const hardChoice = clonePresetCard('4U123', 'dev-hc-event');
-            fpPlayer.fellowshipArea = [frodo, aragorn, boromir];
-            fpPlayer.hand = [hardChoice];
+            G.battlefield = [minion];
             G.statusMessage =
-                '[DEV] Choix difficile · Compagnie. Jouez l’événement (spot Aragorn) → soignez Boromir deux fois (sceau Aragorn).';
-            return { startPhase: 'fellowship' };
+                '[DEV] Second niveau · Manœuvre. Bulle « spot rôdeur » (ou affaiblir) → cliquez le séide : la fortification se transfère dessus.';
+            return { startPhase: 'maneuver' };
         }
 
         default:

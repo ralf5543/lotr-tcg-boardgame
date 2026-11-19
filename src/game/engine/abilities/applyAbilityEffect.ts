@@ -888,6 +888,7 @@ export function applyAbilityEffect(
                     effect.from,
                     effect.attachTo,
                     effect.skirmishingWith,
+                    effect.attachTarget,
                     Boolean(effect.limitOnePerCharacter),
                     chosenIds[0]
                 )
@@ -2460,8 +2461,9 @@ function applyTransferSelf(
     G: GameState,
     source: CardState,
     from: Array<'SUPPORT' | 'DISCARD'>,
-    attachTo: 'SKIRMISH_LOSER' | 'SKIRMISHING_WITH',
+    attachTo: 'SKIRMISH_LOSER' | 'SKIRMISHING_WITH' | 'TARGET',
     skirmishingWith: string[][] | undefined,
+    attachTarget: string[][] | undefined,
     limitOnePerCharacter: boolean,
     chosenTargetId?: string
 ): boolean {
@@ -2490,6 +2492,15 @@ function applyTransferSelf(
         if (hosts.length === 0) {
             G.statusMessage =
                 'Aucun personnage n’escarmouche la classe indiquée.';
+            return false;
+        }
+    } else if (attachTo === 'TARGET') {
+        if (!attachTarget || attachTarget.length === 0) return false;
+        hosts = resolveCostTarget(G, source, attachTarget).filter(
+            (c) => c && !c.isDead
+        );
+        if (hosts.length === 0) {
+            G.statusMessage = 'Aucune cible pour le transfert.';
             return false;
         }
     } else {
