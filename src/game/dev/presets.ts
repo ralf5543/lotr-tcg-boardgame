@@ -140,58 +140,26 @@ export const applyDevPreset = (
     if (!fpPlayer) return { startPhase: 'startOfFellowship' };
 
     switch (presetType) {
-        case 'RANGERS_HARDY_GARRISON': {
-            // Initiative OK (≥4) → jouer J’Irai (4→3) → toaster Garrison → blesser.
+        case 'RANGERS_ARAGORN_SIGNET': {
+            // Début de compagnie : soigner un autre compagnon au sceau Aragorn.
             resetBoardForPreset(G);
             setupDevPath(G, 3, RANGERS_PATH);
             G.twilightPool = 0;
             fpPlayer.burdens = 0;
             const frodo = {
-                ...clonePresetCard('11S164', 'dev-hg-frodo'),
-                attachments: [clonePresetCard('4R1', 'dev-hg-ring')],
+                ...clonePresetCard('11S164', 'dev-aragorn-frodo'),
+                attachments: [clonePresetCard('4R1', 'dev-aragorn-ring')],
             };
-            const ranger = clonePresetCard('7C116', 'dev-hg-ranger');
-            const garrison = clonePresetCard('10U33', 'dev-hg-garrison');
-            fpPlayer.fellowshipArea = [frodo, ranger];
-            fpPlayer.supportArea = [garrison];
-            fpPlayer.hand = [
-                clonePresetCard('7C105', 'dev-hg-iwillgo'),
-                clonePresetCard('1C119', 'dev-hg-h2'),
-                clonePresetCard('1C106', 'dev-hg-h3'),
-                clonePresetCard('1C117', 'dev-hg-h4'),
-            ];
-            const minion = {
-                ...clonePresetCard('5C76', 'dev-hg-minion'),
-                minionSiteNumber: 4,
+            const aragorn = clonePresetCard('1P365', 'dev-aragorn');
+            const boromir = {
+                ...clonePresetCard('1R96', 'dev-aragorn-boromir'),
+                wounds: 1,
             };
-            G.battlefield = [minion];
-            G.statusMessage =
-                '[DEV] Garnison résistante · Compagnie, initiative OK (4 en main). Jouez J’Irai sur le rôdeur (4→3) → toaster Activer → blesser le séide. Relancer le preset.';
-            return { startPhase: 'fellowship' };
-        }
-
-        case 'RANGERS_SIXTH_LEVEL': {
-            // Regroup : affaiblir Homme Gondor → jouer fortif depuis défausse (limit 1).
-            resetBoardForPreset(G);
-            setupDevPath(G, 3, RANGERS_PATH);
-            G.twilightPool = 0;
-            fpPlayer.burdens = 0;
-            const frodo = {
-                ...clonePresetCard('11S164', 'dev-sl-frodo'),
-                attachments: [clonePresetCard('4R1', 'dev-sl-ring')],
-            };
-            const ranger = clonePresetCard('7C116', 'dev-sl-ranger');
-            const sixth = clonePresetCard('8U44', 'dev-sl-sixth');
-            fpPlayer.fellowshipArea = [frodo, ranger];
-            fpPlayer.supportArea = [sixth];
-            fpPlayer.discard = [
-                clonePresetCard('7C92', 'dev-sl-first'),
-                clonePresetCard('5C33', 'dev-sl-wall'),
-            ];
+            fpPlayer.fellowshipArea = [frodo, aragorn, boromir];
             fpPlayer.hand = [];
             G.statusMessage =
-                '[DEV] Sixième niveau · Regroupement. Affaiblissez le rôdeur → jouez une fortification depuis la défausse (limit 1 : une seule fois).';
-            return { startPhase: 'regroup' };
+                '[DEV] Aragorn · Début de compagnie. Bulle sur Aragorn → soignez Boromir (sceau Aragorn, 1 blessure). Passer possible.';
+            return { startPhase: 'startOfFellowship' };
         }
 
         default:

@@ -1082,6 +1082,8 @@ function isKnownFilterToken(token: string): boolean {
         token === 'HUNTER' ||
         token === 'TOIL' ||
         token === 'AMBUSH' ||
+        // Sceau (SIGNET_ARAGORN…)
+        token.startsWith('SIGNET_') ||
         // État (While / spot) — pas un mot-clé imprimé
         token === 'EXHAUSTED' ||
         token === 'NOT_EXHAUSTED' ||
@@ -11883,6 +11885,42 @@ function parseSiteStartOfFellowshipAbilities(
 }
 
 /**
+ * At the start of each of your turns, you may heal another companion who has the Aragorn signet.
+ * (Aragorn 1P365 — début de compagnie optionnel.)
+ */
+function parseStartOfEachTurnHealAbilities(
+    text: string,
+    cardTitle?: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const re =
+        /At the start of each of your turns,\s*you may heal (another\s+[^.,]+)\./gi;
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(text)) !== null) {
+        const subject = parseExertSubject(match[1].trim(), cardTitle, text);
+        if (!subject || !Array.isArray(subject.target)) continue;
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:start-turn-heal`,
+            phases: ['START_OF_FELLOWSHIP'],
+            optional: true,
+            cost: [],
+            effects: [
+                {
+                    type: 'HEAL',
+                    count: 1,
+                    target: subject.target,
+                    ...(subject.excludeSource ? { excludeSource: true } : {}),
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+    return found;
+}
+
+/**
  * Isenwash : At the start of the regroup phase, each Shadow player may
  * exert a minion to exert a companion.
  */
@@ -19403,6 +19441,14 @@ export function parseAbilities(
     );
 
     parseWhileHandSizeBetweenStrengthAbilities(text, cardTitle, cardId).forEach(
+        (ability) => {
+            abilities.push({
+                ...ability,
+                id: `${cardId || 'ability'}:${abilities.length}`,
+            });
+        }
+    );
+    parseStartOfEachTurnHealAbilities(text, cardTitle, cardId).forEach(
         (ability) => {
             abilities.push({
                 ...ability,

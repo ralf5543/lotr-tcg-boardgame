@@ -349,22 +349,12 @@ export const DevPanel: React.FC<DevPanelProps> = ({
                             <S.ActionButton
                                 onClick={() =>
                                     moves.devLoadPreset?.(
-                                        'RANGERS_HARDY_GARRISON'
+                                        'RANGERS_ARAGORN_SIGNET'
                                     )
                                 }
-                                title="Garnison résistante : perdre l’initiative → blesser un séide"
+                                title="Aragorn : début de tour → soigner un compagnon au sceau Aragorn"
                             >
-                                Garnison
-                            </S.ActionButton>
-                            <S.ActionButton
-                                onClick={() =>
-                                    moves.devLoadPreset?.(
-                                        'RANGERS_SIXTH_LEVEL'
-                                    )
-                                }
-                                title="Sixième niveau : affaiblir → fortification depuis la défausse (limit 1)"
-                            >
-                                6ᵉ niveau
+                                Aragorn
                             </S.ActionButton>
                         </S.ButtonGroup>
                     </S.Section>

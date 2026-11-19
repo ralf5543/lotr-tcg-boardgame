@@ -29609,6 +29609,34 @@
     "keywords": [
       "RANGER"
     ],
+    "abilities": [
+      {
+        "id": "1P365:0",
+        "phases": [
+          "START_OF_FELLOWSHIP"
+        ],
+        "optional": true,
+        "cost": [],
+        "effects": [
+          {
+            "type": "HEAL",
+            "count": 1,
+            "target": [
+              [
+                "COMPANION",
+                "SIGNET_ARAGORN"
+              ]
+            ],
+            "excludeSource": true
+          }
+        ],
+        "source": "SELF",
+        "text": "At the start of each of your turns, you may heal another companion who has the Aragorn signet."
+      }
+    ],
+    "actionPhases": [
+      "START_OF_FELLOWSHIP"
+    ],
     "culture": "GONDOR",
     "race": "MAN",
     "signet": "ARAGORN",

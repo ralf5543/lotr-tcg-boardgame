@@ -242,7 +242,8 @@ function candidatesForEffect(
     }
     if (
         (effect.type === 'ADD_TEMP_STAT' ||
-            effect.type === 'ADD_TEMP_KEYWORD') &&
+            effect.type === 'ADD_TEMP_KEYWORD' ||
+            effect.type === 'HEAL') &&
         effect.excludeSource
     ) {
         const excludeIds = new Set<string>();

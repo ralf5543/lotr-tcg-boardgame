@@ -880,6 +880,8 @@ export type AbilityEffect =
           onePerCulture?: boolean;
           /** Résistance effective minimale (inclus). */
           minResistance?: number;
+          /** « another … » — exclut la source (Aragorn…). */
+          excludeSource?: boolean;
           target: AbilityTargetRef;
       }
     | {
