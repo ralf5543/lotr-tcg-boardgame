@@ -342,23 +342,6 @@ export const DevPanel: React.FC<DevPanelProps> = ({
                         </S.ButtonGroup>
                     </S.Section>
 
-                    {/* Presets playtest (vague en cours) */}
-                    <S.Section>
-                        <S.Label>Preset playtest :</S.Label>
-                        <S.ButtonGroup>
-                            <S.ActionButton
-                                onClick={() =>
-                                    moves.devLoadPreset?.(
-                                        'RANGERS_MUMAKS_INERTS'
-                                    )
-                                }
-                                title="7R95 / 18U58 / 10U47 / 7R152 — Still Stands (début regroupement), Cache (manœuvre), Cri de Ralliement, Cmd Mûmak (6 menaces)"
-                            >
-                                Inertes Rôd./Mûmak
-                            </S.ActionButton>
-                        </S.ButtonGroup>
-                    </S.Section>
-
                     {/* Session / debug UI */}
                     <S.Section>
                         <S.Label>Session :</S.Label>
