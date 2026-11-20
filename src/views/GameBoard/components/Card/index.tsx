@@ -604,6 +604,25 @@ export const Card: React.FC<CardProps> = ({
 
     const isRingBearer = isRingBearerProp ?? isRingBearerCard(card);
 
+    const cultureFrameSrc =
+        size !== 'sm' && card.culture
+            ? S.resolveCultureFrameSrc({
+                  $culture: card.culture,
+                  $type: card.type,
+                  $race: card.race,
+                  $kind: card.kind,
+              })
+            : null;
+    const artifactFrameSrc =
+        size !== 'sm' && card.culture
+            ? S.resolveArtifactOverlaySrc({
+                  $culture: card.culture,
+                  $type: card.type,
+                  $race: card.race,
+                  $kind: card.kind,
+              })
+            : null;
+
     const handleMouseEnter = () => {
         if (suppressHover || size === 'lg') return;
         setHoveredCard(card);
@@ -907,6 +926,24 @@ export const Card: React.FC<CardProps> = ({
                         />
                     )}
                 </S.VisualContainer>
+            )}
+
+            {/* Cadres culture / artefact : au-dessus du portrait (md/lg), sous le chrome. */}
+            {cultureFrameSrc && (
+                <S.CultureFrame
+                    src={cultureFrameSrc}
+                    alt=""
+                    draggable={false}
+                    aria-hidden
+                />
+            )}
+            {artifactFrameSrc && (
+                <S.ArtifactFrame
+                    src={artifactFrameSrc}
+                    alt=""
+                    draggable={false}
+                    aria-hidden
+                />
             )}
 
             {size !== 'sm' && (

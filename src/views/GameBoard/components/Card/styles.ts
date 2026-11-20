@@ -51,6 +51,67 @@ const isForSupportArea = (
     return subtype === 'SUPPORT-AREA' || !subtype;
 };
 
+export type CardFrameProps = Pick<
+    CardContainerProps,
+    '$culture' | '$type' | '$race' | '$kind'
+>;
+
+/**
+ * Cadre culture (perso / modificateur) — md & lg en `<img>` au-dessus du portrait.
+ * sm utilise `cultures_backgrounds` en background-image.
+ */
+export function resolveCultureFrameSrc(props: CardFrameProps): string {
+    // Balrog : fonds dédiés (perso + artefacts Moria)
+    if (props.$type === 'MINION' && props.$race === 'BALROG') {
+        return 'interface/cards_backgrounds/MORIA_BALROG_character.webp';
+    }
+    if (props.$culture === 'MORIA' && props.$type === 'ARTIFACT') {
+        return 'interface/cards_backgrounds/MORIA_BALROG_modifier.webp';
+    }
+
+    if (props.$culture === 'GOLLUM') {
+        if (props.$type === 'COMPANION' || props.$type === 'ALLY') {
+            return `interface/cards_backgrounds/${props.$culture}_freeps_character.webp`;
+        }
+        if (props.$type === 'MINION') {
+            return `interface/cards_backgrounds/${props.$culture}_shadow_character.webp`;
+        }
+        if (props.$kind === 'FREE_PEOPLE') {
+            return `interface/cards_backgrounds/${props.$culture}_freeps_modifier.webp`;
+        }
+        return `interface/cards_backgrounds/${props.$culture}_shadow_modifier.webp`;
+    }
+
+    if (
+        props.$type === 'COMPANION' ||
+        props.$type === 'ALLY' ||
+        props.$type === 'MINION'
+    ) {
+        return `interface/cards_backgrounds/${props.$culture}_character.webp`;
+    }
+    return `interface/cards_backgrounds/${props.$culture}_modifier.webp`;
+}
+
+/**
+ * Calque artefact, même taille que le cadre, au-dessus du cadre (md / lg).
+ * Nomenclature : `SHIRE_artifact.webp`, Gollum freeps/shadow, Moria Balrog…
+ */
+export function resolveArtifactOverlaySrc(
+    props: CardFrameProps
+): string | null {
+    if (props.$type !== 'ARTIFACT') return null;
+
+    if (props.$culture === 'MORIA') {
+        return 'interface/cards_backgrounds/MORIA_BALROG_artifact.webp';
+    }
+    if (props.$culture === 'GOLLUM') {
+        const side =
+            props.$kind === 'FREE_PEOPLE' ? 'freeps' : 'shadow';
+        return `interface/cards_backgrounds/GOLLUM_${side}_artifact.webp`;
+    }
+    return `interface/cards_backgrounds/${props.$culture}_artifact.webp`;
+}
+
 // 💥 ANIMATION D'IMPACT DYNAMIQUE (RECUL PHYSIQUE)
 const woundImpactAnimation = (recoilY: number) => keyframes`
   0% {
@@ -92,47 +153,20 @@ export const CardContainer = styled.div<CardContainerProps>`
     aspect-ratio: 1/1.39;
     width: 130px;
     z-index: 2;
-    background-image: ${(props) => {
-        // Balrog : fonds dédiés (perso + artefacts Moria)
-        if (props.$type === 'MINION' && props.$race === 'BALROG') {
-            return `url(interface/cards_backgrounds/MORIA_BALROG_character.webp)`;
-        }
-        if (props.$culture === 'MORIA' && props.$type === 'ARTIFACT') {
-            return `url(interface/cards_backgrounds/MORIA_BALROG_modifier.webp)`;
-        }
-
-        if (props.$culture === 'GOLLUM') {
-            if (props.$type === 'COMPANION' || props.$type === 'ALLY') {
-                return `url(interface/cards_backgrounds/${props.$culture}_freeps_character.webp)`;
-            } else if (props.$type === 'MINION') {
-                return `url(interface/cards_backgrounds/${props.$culture}_shadow_character.webp)`;
-            } else if (props.$kind === 'FREE_PEOPLE') {
-                return `url(interface/cards_backgrounds/${props.$culture}_freeps_modifier.webp)`;
-            } else {
-                return `url(interface/cards_backgrounds/${props.$culture}_shadow_modifier.webp)`;
-            }
-        } else {
-            if (
-                props.$type === 'COMPANION' ||
-                props.$type === 'ALLY' ||
-                props.$type === 'MINION'
-            ) {
-                return `url(interface/cards_backgrounds/${props.$culture}_character.webp)`;
-            } else {
-                return `url(interface/cards_backgrounds/${props.$culture}_modifier.webp)`;
-            }
-        }
-    }};
-
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: center;
+    /* md/lg : cadres en <img> (CultureFrame) au-dessus du portrait — pas en background. */
+    background-image: none;
     display: flex;
     flex-direction: column;
     position: relative;
     color: black;
     background-color: black;
     border-radius: 4px;
+    /* overflow:hidden seulement md/lg (cadres) — pas sm (drop-shadow / jetons). */
+    ${(props) =>
+        props.$size !== 'sm' &&
+        css`
+            overflow: hidden;
+        `}
 
     /* On gère le filtre visuel selon si la carte est jouable ou non */
     filter: ${(props) =>
@@ -643,12 +677,32 @@ export const CardContainer = styled.div<CardContainerProps>`
         `}
 `;
 
+/** Cadre culture plein format — au-dessus du visuel, sous titres / texte / badges. */
+export const CultureFrame = styled.img`
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: fill;
+    pointer-events: none;
+    user-select: none;
+    -webkit-user-drag: none;
+    z-index: 1;
+`;
+
+/** Calque artefact — même boîte que le cadre culture, juste au-dessus. */
+export const ArtifactFrame = styled(CultureFrame)`
+    z-index: 2;
+`;
+
 export const CardHeader = styled.div`
     display: flex;
     min-height: 15px;
     padding-block-start: 5px;
     padding-inline: 4px;
     line-height: 1;
+    /* Pas de position:relative ici : les titres non-perso sont en absolute
+       par rapport au CardContainer (écriture à 90°). */
 `;
 export const StatsDisplay = styled.div``;
 
@@ -657,18 +711,21 @@ export const CardTitles = styled.div<{ $type?: string }>`
     flex-direction: column;
     font-family: 'DecipherTitle', serif;
     font-variant: small-caps;
-    z-index: 2;
+    /* Au-dessus des cadres culture (z-index 1–2) ; relative pour les perso. */
+    position: relative;
+    z-index: 3;
     gap: 2px;
     margin-block-start: 3.5px;
     line-height: 0.7;
     ${(props) =>
         isNotCharacter(props.$type) &&
         css`
+            /* Absolute → référent = CardContainer (header non positionné). */
             position: absolute;
             inset: 28px 109px 79px 7px;
             writing-mode: sideways-lr;
             line-height: 0.8;
-            text-align: end;   
+            text-align: end;
             margin-block-start: 0;
             justify-content: center;
         `}
@@ -704,6 +761,7 @@ export const CardTypes = styled.div<{ $type?: string }>`
     inset: 104px 15px 66px 16px;
     display: flex;
     justify-content: center;
+    z-index: 3;
     ${(props) =>
         isNotCharacter(props.$type) &&
         css`
@@ -768,7 +826,8 @@ export const TwilightBadge = styled.span<{
     margin-inline-end: 4px;
     text-align: center;
     font-family: LOTRIcons;
-    z-index: 1;
+    position: relative;
+    z-index: 3;
     ${({ $pulseGen }) => valueChangePulseCss($pulseGen)}
 `;
 
@@ -777,6 +836,7 @@ export const VisualContainer = styled.figure<{ $type?: string }>`
     margin: 0px;
     padding-inline: 13px;
     position: relative;
+    z-index: 0;
     overflow: hidden;
     ${(props) =>
         isNotCharacter(props.$type) &&
@@ -914,6 +974,7 @@ export const TextContainer = styled.div`
     padding: 3px;
     position: absolute;
     inset: 114px 8px 10px 27px;
+    z-index: 3;
 `;
 
 export const GameText = styled.p`
@@ -950,7 +1011,7 @@ export const StrengthBadge = styled.span<{ $pulseGen?: number }>`
     inset-block-start: 113px;
     inset-inline-start: 3.5px;
     font-family: LOTRIcons;
-    z-index: 1;
+    z-index: 3;
     pointer-events: none;
     ${({ $pulseGen }) => valueChangePulseCss($pulseGen)}
 `;
@@ -972,7 +1033,7 @@ export const VitalityBadge = styled.span<{ $pulseGen?: number }>`
     inset-block-start: 139px;
     inset-inline-start: 8px;
     font-family: LOTRIcons;
-    z-index: 1;
+    z-index: 3;
     pointer-events: none;
     ${({ $pulseGen }) => valueChangePulseCss($pulseGen)}
 `;
@@ -996,7 +1057,7 @@ export const RoamingNumber = styled.span<{
     align-items: center;
     justify-content: center;
     font-size: 9px;
-    z-index: 1;
+    z-index: 3;
     font-family: LOTRIcons;
     ${({ $isRoaming }) =>
         $isRoaming &&
@@ -1032,12 +1093,12 @@ export const CardSignet = styled.span<{ $signet: string }>`
     position: absolute;
     inset-block-start: 156px;
     inset-inline-start: 9px;
-    z-index: 1;
+    z-index: 3;
 `;
 
 export const ResistanceWrapper = styled.div`
     position: absolute;
-    z-index: 1;
+    z-index: 3;
     inset-block-start: 156px;
     inset-inline-start: 8px;
     width: 17px;

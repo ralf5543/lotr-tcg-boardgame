@@ -342,6 +342,21 @@ export const DevPanel: React.FC<DevPanelProps> = ({
                         </S.ButtonGroup>
                     </S.Section>
 
+                    {/* Presets playtest (vague en cours) */}
+                    <S.Section>
+                        <S.Label>Preset playtest :</S.Label>
+                        <S.ButtonGroup>
+                            <S.ActionButton
+                                onClick={() =>
+                                    moves.devLoadPreset?.('ARTIFACT_OVERLAYS')
+                                }
+                                title="Calques artefact par culture — main (md) + plateau (survol lg)"
+                            >
+                                Calques artefacts
+                            </S.ActionButton>
+                        </S.ButtonGroup>
+                    </S.Section>
+
                     {/* Session / debug UI */}
                     <S.Section>
                         <S.Label>Session :</S.Label>
