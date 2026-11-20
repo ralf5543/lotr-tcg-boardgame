@@ -1041,6 +1041,19 @@ function formatEffectBit(
     if (effect.type === 'TAKE_FROM_DISCARD') {
         return 'prendre une carte de la défausse en main';
     }
+    if (effect.type === 'PLACE_FROM_DISCARD_ON_DECK') {
+        const who = formatTargetPhrase(effect.target);
+        return who
+            ? `placer ${who} de la défausse sur le dessus de la pioche`
+            : 'placer une carte de la défausse sur le dessus de la pioche';
+    }
+    if (effect.type === 'KILL') {
+        const who =
+            effect.target === 'SKIRMISHING'
+                ? 'le personnage adverse en combat'
+                : formatTargetPhrase(effect.target);
+        return who ? `tuer ${who}` : 'tuer un personnage';
+    }
     if (effect.type === 'REVEAL_OPPONENT_TOP') {
         return `révéler les ${effect.count} premières cartes de la pioche adverse`;
     }

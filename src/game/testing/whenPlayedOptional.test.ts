@@ -49,7 +49,11 @@ describe('When you play — optionnel (Old Toby)', () => {
                         hand: [oldToby],
                         deck: [deckCard],
                         fellowshipArea: [
-                            createCompanion({ id: 'frodo', title: 'Frodo' }),
+                            createCompanion({
+                                id: 'frodo',
+                                title: 'Frodo',
+                                keywords: ['RING-BEARER'],
+                            }),
                         ],
                     }),
                 },
@@ -108,6 +112,68 @@ describe('When you play — optionnel (Old Toby)', () => {
         expect(engine.getG().pendingWhenPlayed).toBeUndefined();
         expect(engine.getG().players['0']?.hand).toHaveLength(0);
         expect(engine.getG().players['0']?.deck).toHaveLength(1);
+
+        engine.stop();
+    });
+
+    it('jouer une autre carte = Passer le toaster (pas de pioche différée)', () => {
+        const oldToby = createCard({
+            id: '1C305',
+            title: 'Old Toby',
+            type: 'POSSESSION',
+            kind: 'FREE_PEOPLE',
+            culture: 'SHIRE',
+            twilightCost: 1,
+            keywords: ['PIPEWEED'],
+            abilities: [oldTobyAbility],
+        });
+        const other = createCard({
+            id: 'other-cond',
+            title: 'Other',
+            type: 'CONDITION',
+            kind: 'FREE_PEOPLE',
+            subtype: 'SUPPORT-AREA',
+            twilightCost: 0,
+        });
+        const deckCard = createCard({
+            id: 'deck-1',
+            title: 'Drawn',
+            type: 'EVENT',
+            kind: 'FREE_PEOPLE',
+        });
+
+        const engine = createEngineClient({
+            startPhase: 'fellowship',
+            playerID: '0',
+            G: {
+                twilightPool: 0,
+                players: {
+                    '0': createPlayerState('0', {
+                        hand: [oldToby, other],
+                        deck: [deckCard],
+                        fellowshipArea: [
+                            createCompanion({
+                                id: 'frodo',
+                                title: 'Frodo',
+                                keywords: ['RING-BEARER'],
+                            }),
+                        ],
+                    }),
+                },
+            },
+        });
+
+        engine.moves.playCard(0);
+        expect(engine.getG().pendingWhenPlayed?.abilityId).toBe('1C305:0');
+
+        // Autre carte pendant le toaster → auto-Passer.
+        engine.moves.playCard(0);
+        expect(engine.getG().pendingWhenPlayed).toBeUndefined();
+        expect(engine.getG().players['0']?.supportArea.map((c) => c.id)).toEqual(
+            ['1C305', 'other-cond']
+        );
+        expect(engine.getG().players['0']?.deck[0]?.id).toBe('deck-1');
+        expect(engine.getG().players['0']?.hand).toHaveLength(0);
 
         engine.stop();
     });

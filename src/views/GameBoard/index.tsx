@@ -76,6 +76,7 @@ import {
     abilityPlayFromDeckOrDiscardEffect,
     abilitySearchDeckToDiscardEffect,
     abilityTakeFromDiscardEffect,
+    abilityPlaceFromDiscardOnDeckEffect,
     abilityStacksOtherMinion,
     abilityPlaysOtherFromStack,
     isCostlessPlayFromCardStack,
@@ -1331,11 +1332,13 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         // Pioche / défausse avant le coût générique (Barazinbar / Incited : exert puis grille).
         if (abilityNeedsDeckOrDiscardPick(ability)) {
             const take = abilityTakeFromDiscardEffect(ability);
-            if (take) {
+            const placeOnDeck = abilityPlaceFromDiscardOnDeckEffect(ability);
+            if (take || placeOnDeck) {
+                const discardFilter = take?.target || placeOnDeck!.target;
                 const openTakePick = (costIds?: string | string[]) => {
                     const discard = G.players[myId]?.discard || [];
                     const selectable = discard.filter(
-                        (c) => c && cardMatchesTarget(c, take.target)
+                        (c) => c && cardMatchesTarget(c, discardFilter)
                     );
                     if (selectable.length === 0) return;
                     // Toujours ouvrir la grille (même 1 carte) — le joueur
@@ -1350,8 +1353,9 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                         deck: [],
                         discard: [...discard],
                         title: 'Défausse',
-                        subtitle:
-                            'Choisissez une carte à prendre dans votre main.',
+                        subtitle: take
+                            ? 'Choisissez une carte à prendre dans votre main.'
+                            : 'Choisissez une carte à placer sur le dessus de votre pioche.',
                     });
                 };
                 if (needsCost && !chosenTargetId) {

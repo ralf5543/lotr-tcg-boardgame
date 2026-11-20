@@ -398,6 +398,14 @@ export const GameControls: React.FC<GameControlsProps> = ({
             showPassButton: false,
             type: 'MUSTER',
         };
+    } else if (isForcedChoiceActive && !isMyTurnToAct) {
+        toastConfig = {
+            show: true,
+            title: G.pendingForcedChoice?.title || 'CHOIX FORCÉ',
+            body: `En attente de ${opponentName}…`,
+            showPassButton: false,
+            type: 'STANDARD',
+        };
     } else if (
         isForcedChoiceActive &&
         isMyTurnToAct &&
@@ -547,6 +555,14 @@ export const GameControls: React.FC<GameControlsProps> = ({
             ),
             showPassButton: false,
             type: 'SITE_PHASE_ABILITY',
+        };
+    } else if (isSitePhaseAbilityActive && !isMyTurnToAct) {
+        toastConfig = {
+            show: true,
+            title: 'EFFET DU SITE',
+            body: `${opponentName} décide d’utiliser l’effet du site…`,
+            showPassButton: false,
+            type: 'STANDARD',
         };
     } else if (isSiteFollowerTransferActive && isMyTurnToAct && !isTargetingActive) {
         const siteSource = G.pendingSiteFollowerTransfer
@@ -710,9 +726,11 @@ export const GameControls: React.FC<GameControlsProps> = ({
             (ab) => ab.id === G.pendingWhenPlayed?.abilityId
         );
         const fromSite = Boolean(G.pendingWhenPlayed?.fromSite);
+        const triggerType = whenPlayedAbility?.trigger?.type;
         const isEachTime =
-            whenPlayedAbility?.trigger?.type === 'YOU_PLAY' ||
+            triggerType === 'YOU_PLAY' ||
             /\beach time\b/i.test(whenPlayedAbility?.text || '');
+        const isStartOfSkirmish = triggerType === 'START_OF_SKIRMISH';
         // Clause de l’ability seule (pas tout le gametext) — textFr ou alignement EN→FR.
         const clause = getAbilityToastClause(
             whenPlayedAbility,
@@ -723,9 +741,11 @@ export const GameControls: React.FC<GameControlsProps> = ({
             show: true,
             title: fromSite
                 ? 'EFFET DU SITE'
-                : isEachTime
-                  ? 'CHAQUE FOIS'
-                  : 'QUAND VOUS JOUEZ',
+                : isStartOfSkirmish
+                  ? 'DÉBUT DU COMBAT'
+                  : isEachTime
+                    ? 'CHAQUE FOIS'
+                    : 'QUAND VOUS JOUEZ',
             body: clause ? (
                 <FormattedText text={clause} />
             ) : (
@@ -734,6 +754,25 @@ export const GameControls: React.FC<GameControlsProps> = ({
             ),
             showPassButton: false,
             type: 'WHEN_PLAYED_CHOICE',
+        };
+    } else if (isWhenPlayedChoiceActive && !isMyTurnToAct) {
+        const whenPlayedSource = G.pendingWhenPlayed
+            ? (findTargetCard(
+                  G,
+                  G.pendingWhenPlayed.sourceInstanceId
+              ) as CardState | null)
+            : null;
+        const whenPlayedAbility = whenPlayedSource?.abilities?.find(
+            (ab) => ab.id === G.pendingWhenPlayed?.abilityId
+        );
+        const isStartOfSkirmish =
+            whenPlayedAbility?.trigger?.type === 'START_OF_SKIRMISH';
+        toastConfig = {
+            show: true,
+            title: isStartOfSkirmish ? 'DÉBUT DU COMBAT' : 'EFFET OPTIONNEL',
+            body: `En attente de ${opponentName}…`,
+            showPassButton: false,
+            type: 'STANDARD',
         };
     } else if (G.pendingReveal) {
         const revealViewer =
@@ -802,6 +841,14 @@ export const GameControls: React.FC<GameControlsProps> = ({
             showPassButton: G.actionWindow?.canPass ?? true,
             type: 'STANDARD',
         };
+    } else if (isActionWindowActive && !isMyTurnToAct) {
+        toastConfig = {
+            show: true,
+            title: G.actionWindow?.title || 'TOUR D’ACTION',
+            body: `En attente de ${opponentName}…`,
+            showPassButton: false,
+            type: 'STANDARD',
+        };
     } else if (
         isAwaitingSiteActive &&
         currentPlayerId === siteSelectorPlayerId
@@ -814,6 +861,14 @@ export const GameControls: React.FC<GameControlsProps> = ({
                 targetSiteIdx === 0
                     ? 'Choisissez et posez votre premier site depuis votre deck de sites.'
                     : 'Choisissez et posez le prochain site sur la case inexplorée.',
+            showPassButton: false,
+            type: 'STANDARD',
+        };
+    } else if (isAwaitingSiteActive) {
+        toastConfig = {
+            show: true,
+            title: 'CHOIX DU SITE',
+            body: `En attente de ${opponentName}…`,
             showPassButton: false,
             type: 'STANDARD',
         };

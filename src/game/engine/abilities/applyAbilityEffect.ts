@@ -30,6 +30,7 @@ import {
     discardCardFromPlay,
     placeCardInDeadPile,
 } from '../../../utils/discardCardFromPlay';
+import { applyKillAndCheckDeath } from '../../../utils/applyWoundAndCheckDeath';
 import {
     findInPlayCardOwnerId,
     findTargetCard,
@@ -88,6 +89,7 @@ import {
     playStackedMinionFromCard,
     getCardsStackedOnHost,
 } from '../../logic/cardStack';
+import { areThreatRemovalsForbiddenForFpCard } from '../../logic/threatRestrictions';
 import {
     getDeckOrDiscardPlayCandidates,
     getHandPlayCandidates,
@@ -234,12 +236,27 @@ export function abilityTakeFromDiscardEffect(
     return effect && effect.type === 'TAKE_FROM_DISCARD' ? effect : null;
 }
 
+export function abilityPlaceFromDiscardOnDeckEffect(
+    ability: Ability
+): Extract<
+    Ability['effects'][number],
+    { type: 'PLACE_FROM_DISCARD_ON_DECK' }
+> | null {
+    const effect = (ability.effects || []).find(
+        (item) => item.type === 'PLACE_FROM_DISCARD_ON_DECK'
+    );
+    return effect && effect.type === 'PLACE_FROM_DISCARD_ON_DECK'
+        ? effect
+        : null;
+}
+
 /** Choix pioche/défausse (Captured…) — pas une désignation plateau. */
 export function abilityNeedsDeckOrDiscardPick(ability: Ability): boolean {
     return Boolean(
         abilityPlayFromDeckOrDiscardEffect(ability) ||
             abilitySearchDeckToDiscardEffect(ability) ||
-            abilityTakeFromDiscardEffect(ability)
+            abilityTakeFromDiscardEffect(ability) ||
+            abilityPlaceFromDiscardOnDeckEffect(ability)
     );
 }
 
@@ -864,6 +881,47 @@ export function applyAbilityEffect(
             continue;
         }
 
+        if (effect.type === 'PLACE_FROM_DISCARD_ON_DECK') {
+            const ownerId = abilityOwnerPlayerId(G, source);
+            if (!ownerId) return false;
+            const player = G.players[ownerId];
+            if (!player?.discard) return false;
+            const cardId = chosenIds[0];
+            if (!cardId) return false;
+            const idx = player.discard.findIndex(
+                (c) =>
+                    c &&
+                    (c.instanceId === cardId || c.id === cardId) &&
+                    cardMatchesTarget(c, effect.target)
+            );
+            if (idx < 0) return false;
+            const [taken] = player.discard.splice(idx, 1);
+            if (!taken) return false;
+            if (!player.deck) player.deck = [];
+            if (effect.position === 'TOP') {
+                player.deck.unshift(taken);
+            } else {
+                player.deck.push(taken);
+            }
+            continue;
+        }
+
+        if (effect.type === 'KILL') {
+            let targets = resolveCostTarget(G, source, effect.target);
+            if (chosenIds[0]) {
+                targets = targets.filter(
+                    (c) =>
+                        c.instanceId === chosenIds[0] || c.id === chosenIds[0]
+                );
+            }
+            if (targets.length === 0) return false;
+            for (const card of targets) {
+                // Anim de mort (pendingDeadCardIds) — pas de retrait immédiat.
+                if (!applyKillAndCheckDeath(G, card)) return false;
+            }
+            continue;
+        }
+
         if (effect.type === 'TRANSFER_NAMED_CARD') {
             if (
                 !applyTransferNamedCard(
@@ -1163,6 +1221,7 @@ export function applyAbilityEffect(
         }
 
         if (effect.type === 'REMOVE_THREATS') {
+            if (areThreatRemovalsForbiddenForFpCard(G, source)) return false;
             addThreats(G, -(effect.count || 0));
             continue;
         }

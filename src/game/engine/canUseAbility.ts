@@ -17,6 +17,7 @@ import {
     responseAbilityStillAvailable,
 } from './responseWindow';
 import { areBearerSpecialAbilitiesForbidden } from '../logic/specialAbilityRestrictions';
+import { mandatoryPromptBlocksActor } from '../logic/interactionCleanup';
 export interface ValidationContext {
     G: GameState;
     ctx: { phase?: string; currentPlayer?: string };
@@ -130,6 +131,11 @@ export function canUseAbility(
         };
     }
 
+    const mandatoryBlock = mandatoryPromptBlocksActor(G, pid);
+    if (mandatoryBlock) {
+        return { valid: false, reason: mandatoryBlock };
+    }
+
     if (isResponseWindowOpen(G)) {
         if (!canActInActionWindow(G, pid)) {
             return {
@@ -222,6 +228,11 @@ export function canUseAbility(
         ({ ability }) => abilityMatchesPhase(ability, rawPhase)
     );
 
+    // Dual-wait startOf* : les deux camps agissent — ignorer une AW qui traîne.
+    const isStartOfPhaseDualWait =
+        Boolean(rawPhase.startsWith('startOf')) ||
+        normalizedPhase.startsWith('START_OF_');
+
     // 3. Traitement des capacités avec phases explicites (actionPhases)
     //    — carte OU attachements (Anneau Unique en combat, etc.)
     const ownActionPhases = (card.actionPhases || []).map((p) =>
@@ -252,7 +263,7 @@ export function canUseAbility(
         }
 
         if (ownPhaseOk) {
-            if (!canActInActionWindow(G, pid)) {
+            if (!isStartOfPhaseDualWait && !canActInActionWindow(G, pid)) {
                 return {
                     valid: false,
                     reason: "Ce n'est pas à vous d'agir.",
@@ -304,7 +315,7 @@ export function canUseAbility(
             abilityHasLegalEffectTarget(G, card, ability, pid)
     );
     if (hasMatchingAbility || projectedForPhase) {
-        if (!canActInActionWindow(G, pid)) {
+        if (!isStartOfPhaseDualWait && !canActInActionWindow(G, pid)) {
             return {
                 valid: false,
                 reason: "Ce n'est pas à vous d'agir.",

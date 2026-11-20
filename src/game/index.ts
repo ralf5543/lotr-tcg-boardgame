@@ -69,6 +69,7 @@ import { shouldSkipPhase } from './logic/stats/mechanics/whileModifier';
 import { enterPhase, exitStartOf } from './logic/phaseEntry';
 import { checkSiteNineWin } from './logic/gameEnd';
 import { wrapMovesAgainstGameEnd } from './moves/guardGameEnd';
+import { dismissOwnOptionalPromptsAsPass } from './logic/interactionCleanup';
 
 /** Coût toPlay.exert à désigner → playCard, pas playShadowCard. */
 function shadowCardNeedsDesignatedExert(card: CardState): boolean {
@@ -752,6 +753,8 @@ export const LotrGame: Game<GameState> = {
                         return 'INVALID_MOVE';
                     }
 
+                    dismissOwnOptionalPromptsAsPass(G, String(playerID));
+
                     // 🟢 2. VÉRIFICATION DU COÛT
                     const fpId = G.fpPlayerId || '0';
                     const fpSiteIndex = G.players[fpId]?.currentSiteIndex || 0;
@@ -880,6 +883,8 @@ export const LotrGame: Game<GameState> = {
                 const shadowId = fpId === '0' ? '1' : '0';
 
                 G.maneuverStep = 'MANEUVER_START';
+                // Avant le scan dual-wait (sinon une AW qui traîne masque Cache…).
+                G.actionWindow = undefined;
 
                 // Site courant (Pelennor Flat…) : choix forcé avant le dual-wait début de phase.
                 applyStartOfManeuverSiteTriggers(G);
@@ -887,7 +892,6 @@ export const LotrGame: Game<GameState> = {
                     // Pas de startOfPhaseState tant que le choix n’est pas résolu
                     // (sinon les deux joueurs se bloquent en « en attente de l’adversaire »).
                     G.startOfPhaseState = undefined;
-                    G.actionWindow = undefined;
                     return;
                 }
 
@@ -916,7 +920,6 @@ export const LotrGame: Game<GameState> = {
                 if (fpDone && shadowDone) {
                     exitStartOf(events, 'maneuver');
                 } else {
-                    G.actionWindow = undefined;
                     G.statusMessage =
                         'Phase de Manœuvre : Capacités et effets de début de phase.';
                 }
@@ -1360,6 +1363,11 @@ export const LotrGame: Game<GameState> = {
 
                 clearExpiredTempKeywords(G, 'REGROUP');
 
+                // Dual-wait début de phase : les deux camps agissent — une
+                // fenêtre d’action d’escarmouche qui traîne bloquerait
+                // canUseAbility (Still Stands, etc.) et ferait sauter l’étape.
+                G.actionWindow = undefined;
+
                 // Site 9 + Porteur vivant → victoire FP, pas de regroupement.
                 if (checkSiteNineWin(G)) {
                     return;
@@ -1391,7 +1399,6 @@ export const LotrGame: Game<GameState> = {
                         },
                     };
                     G.regroupStep = 'MUSTER_STEP';
-                    G.actionWindow = undefined;
                 }
 
                 // 2. Détection des cartes & effets actionnables de "Début de Regroupement"

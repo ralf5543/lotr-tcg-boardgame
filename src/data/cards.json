@@ -53169,6 +53169,31 @@
     "keywords": [
       "SOUTHRON"
     ],
+    "abilities": [
+      {
+        "id": "4U220:0",
+        "phases": [],
+        "optional": true,
+        "trigger": {
+          "type": "START_OF_SKIRMISH",
+          "involving": "SELF"
+        },
+        "cost": [
+          {
+            "removeTwilight": 3
+          }
+        ],
+        "effects": [
+          {
+            "type": "WOUND",
+            "count": 1,
+            "target": "SKIRMISHING"
+          }
+        ],
+        "source": "SELF",
+        "text": "At the start of each skirmish involving this minion, you may remove twilight3 to wound a companion or ally he is skirmishing."
+      }
+    ],
     "culture": "RAIDER",
     "race": "MAN",
     "twilightCost": 4,
@@ -53214,6 +53239,31 @@
     "keywords": [
       "SOUTHRON"
     ],
+    "abilities": [
+      {
+        "id": "4C221:0",
+        "phases": [],
+        "optional": true,
+        "trigger": {
+          "type": "START_OF_SKIRMISH",
+          "involving": "SELF"
+        },
+        "cost": [
+          {
+            "removeTwilight": 3
+          }
+        ],
+        "effects": [
+          {
+            "type": "WOUND",
+            "count": 1,
+            "target": "SKIRMISHING"
+          }
+        ],
+        "source": "SELF",
+        "text": "At the start of each skirmish involving this minion, you may remove twilight3 to wound a companion or ally he is skirmishing."
+      }
+    ],
     "culture": "RAIDER",
     "race": "MAN",
     "twilightCost": 3,
@@ -53258,6 +53308,31 @@
     "type": "MINION",
     "keywords": [
       "SOUTHRON"
+    ],
+    "abilities": [
+      {
+        "id": "4C222:0",
+        "phases": [],
+        "optional": true,
+        "trigger": {
+          "type": "START_OF_SKIRMISH",
+          "involving": "SELF"
+        },
+        "cost": [
+          {
+            "removeTwilight": 3
+          }
+        ],
+        "effects": [
+          {
+            "type": "WOUND",
+            "count": 1,
+            "target": "SKIRMISHING"
+          }
+        ],
+        "source": "SELF",
+        "text": "At the start of each skirmish involving this minion, you may remove twilight3 to wound a companion or ally he is skirmishing."
+      }
     ],
     "culture": "RAIDER",
     "race": "MAN",
@@ -75867,6 +75942,64 @@
         ]
       }
     ],
+    "abilities": [
+      {
+        "id": "7R95:0",
+        "phases": [
+          "REGROUP"
+        ],
+        "cost": [
+          {
+            "discardFromPlay": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "PLACE_FROM_DISCARD_ON_DECK",
+            "position": "TOP",
+            "target": [
+              [
+                "GONDOR",
+                "FORTIFICATION"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "REGROUP: Discard this condition to place a gondor fortification from your discard pile on top of your draw deck."
+      },
+      {
+        "id": "7R95:1",
+        "phases": [
+          "START_OF_REGROUP"
+        ],
+        "requiresNoOpponentControlsSite": true,
+        "limitPerPhase": 1,
+        "cost": [],
+        "effects": [
+          {
+            "type": "WOUND",
+            "count": 1,
+            "target": [
+              [
+                "MINION"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "While no opponent controls a site, wound a minion at the start of each regroup phase."
+      }
+    ],
+    "actionPhases": [
+      "REGROUP",
+      "START_OF_REGROUP"
+    ],
     "culture": "GONDOR",
     "twilightCost": 3,
     "imageUrl": "/cards_visuals/o_07_095.jpg",
@@ -78025,6 +78158,31 @@
     "keywords": [
       "SOUTHRON"
     ],
+    "abilities": [
+      {
+        "id": "7U136:0",
+        "phases": [],
+        "optional": true,
+        "trigger": {
+          "type": "START_OF_SKIRMISH",
+          "involving": "SELF"
+        },
+        "cost": [
+          {
+            "removeTwilight": 3
+          }
+        ],
+        "effects": [
+          {
+            "type": "WOUND",
+            "count": 1,
+            "target": "SKIRMISHING"
+          }
+        ],
+        "source": "SELF",
+        "text": "At the start of each skirmish involving this minion, you may remove twilight3 to wound a companion or ally he is skirmishing."
+      }
+    ],
     "culture": "RAIDER",
     "race": "MAN",
     "twilightCost": 4,
@@ -78064,6 +78222,31 @@
     "type": "MINION",
     "keywords": [
       "SOUTHRON"
+    ],
+    "abilities": [
+      {
+        "id": "7C137:0",
+        "phases": [],
+        "optional": true,
+        "trigger": {
+          "type": "START_OF_SKIRMISH",
+          "involving": "SELF"
+        },
+        "cost": [
+          {
+            "removeTwilight": 3
+          }
+        ],
+        "effects": [
+          {
+            "type": "WOUND",
+            "count": 1,
+            "target": "SKIRMISHING"
+          }
+        ],
+        "source": "SELF",
+        "text": "At the start of each skirmish involving this minion, you may remove twilight3 to wound a companion or ally he is skirmishing."
+      }
     ],
     "culture": "RAIDER",
     "race": "MAN",
@@ -78874,6 +79057,29 @@
             ]
           }
         ]
+      }
+    ],
+    "abilities": [
+      {
+        "id": "7R152:0",
+        "phases": [
+          "RESPONSE"
+        ],
+        "optional": false,
+        "trigger": {
+          "type": "WINS_SKIRMISH",
+          "winner": "SELF",
+          "spotThreats": 6
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "KILL",
+            "target": "SKIRMISHING"
+          }
+        ],
+        "source": "SELF",
+        "text": "While you can spot 6 threats, each time this minion wins a skirmish, the companion he was skirmishing is killed."
       }
     ],
     "culture": "RAIDER",
@@ -98813,6 +99019,55 @@
           }
         ]
       }
+    ],
+    "abilities": [
+      {
+        "id": "10U47:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "FORBID_REMOVE_THREATS",
+            "by": "FREE_PEOPLE_CARDS"
+          }
+        ],
+        "source": "SELF",
+        "text": "Threats cannot be removed by Free Peoples cards."
+      },
+      {
+        "id": "10U47:1",
+        "phases": [
+          "SHADOW"
+        ],
+        "cost": [
+          {
+            "removeTwilight": 1
+          }
+        ],
+        "effects": [
+          {
+            "type": "PLAY_FROM_HAND",
+            "target": [
+              [
+                "SOUTHRON"
+              ]
+            ]
+          },
+          {
+            "type": "ADD_THREATS",
+            "count": 1
+          }
+        ],
+        "source": "SELF",
+        "text": "Shadow: Remove twilight1 and play a Southron to add a threat.",
+        "textFr": "**Ombre :** Retirez <symbol>twilight1</symbol> et jouez un Suderon pour ajouter une menace."
+      }
+    ],
+    "actionPhases": [
+      "SHADOW"
     ],
     "culture": "RAIDER",
     "twilightCost": 0,
@@ -146191,6 +146446,136 @@
     "keywords": [
       "FORTIFICATION"
     ],
+    "abilities": [
+      {
+        "id": "17S35:0",
+        "phases": [
+          "REGROUP"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "RANGER"
+                  ]
+                ],
+                "mode": "DESIGNATION"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "REINFORCE_CULTURE_TOKEN",
+            "culture": "GONDOR",
+            "count": 1
+          }
+        ],
+        "source": "SELF",
+        "text": "REGROUP: Exert a ranger to reinforce a gondor token."
+      },
+      {
+        "id": "17S35:1",
+        "phases": [
+          "START_OF_MANEUVER"
+        ],
+        "optional": true,
+        "cost": [
+          {
+            "spot": [
+              {
+                "count": 3,
+                "target": [
+                  [
+                    "RANGER"
+                  ]
+                ]
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "TRANSFER_SELF",
+            "from": [
+              "SUPPORT"
+            ],
+            "attachTo": "TARGET",
+            "attachTarget": [
+              [
+                "MINION"
+              ]
+            ]
+          },
+          {
+            "type": "WOUND",
+            "count": 1,
+            "target": [
+              [
+                "MINION"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "At the start of your maneuver phase, you may spot 3 rangers or exert a gondor Man to transfer this condition to a minion. Wound that minion."
+      },
+      {
+        "id": "17S35:2",
+        "phases": [
+          "START_OF_MANEUVER"
+        ],
+        "optional": true,
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "GONDOR",
+                    "MAN"
+                  ]
+                ],
+                "mode": "DESIGNATION"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "TRANSFER_SELF",
+            "from": [
+              "SUPPORT"
+            ],
+            "attachTo": "TARGET",
+            "attachTarget": [
+              [
+                "MINION"
+              ]
+            ]
+          },
+          {
+            "type": "WOUND",
+            "count": 1,
+            "target": [
+              [
+                "MINION"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "At the start of your maneuver phase, you may spot 3 rangers or exert a gondor Man to transfer this condition to a minion. Wound that minion."
+      }
+    ],
+    "actionPhases": [
+      "REGROUP",
+      "START_OF_MANEUVER"
+    ],
     "culture": "GONDOR",
     "twilightCost": 2,
     "imageUrl": "/cards_visuals/o_17_035.jpg",
@@ -154779,6 +155164,136 @@
     "subtype": "SUPPORT-AREA",
     "keywords": [
       "FORTIFICATION"
+    ],
+    "abilities": [
+      {
+        "id": "18U58:0",
+        "phases": [
+          "REGROUP"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "RANGER"
+                  ]
+                ],
+                "mode": "DESIGNATION"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "REINFORCE_CULTURE_TOKEN",
+            "culture": "GONDOR",
+            "count": 1
+          }
+        ],
+        "source": "SELF",
+        "text": "REGROUP: Exert a ranger to reinforce a gondor token."
+      },
+      {
+        "id": "18U58:1",
+        "phases": [
+          "START_OF_MANEUVER"
+        ],
+        "optional": true,
+        "cost": [
+          {
+            "spot": [
+              {
+                "count": 3,
+                "target": [
+                  [
+                    "RANGER"
+                  ]
+                ]
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "TRANSFER_SELF",
+            "from": [
+              "SUPPORT"
+            ],
+            "attachTo": "TARGET",
+            "attachTarget": [
+              [
+                "MINION"
+              ]
+            ]
+          },
+          {
+            "type": "WOUND",
+            "count": 1,
+            "target": [
+              [
+                "MINION"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "At the start of your maneuver phase, you may spot 3 rangers or exert a gondor Man to transfer this condition to a minion. Wound that minion."
+      },
+      {
+        "id": "18U58:2",
+        "phases": [
+          "START_OF_MANEUVER"
+        ],
+        "optional": true,
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "GONDOR",
+                    "MAN"
+                  ]
+                ],
+                "mode": "DESIGNATION"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "TRANSFER_SELF",
+            "from": [
+              "SUPPORT"
+            ],
+            "attachTo": "TARGET",
+            "attachTarget": [
+              [
+                "MINION"
+              ]
+            ]
+          },
+          {
+            "type": "WOUND",
+            "count": 1,
+            "target": [
+              [
+                "MINION"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "At the start of your maneuver phase, you may spot 3 rangers or exert a gondor Man to transfer this condition to a minion. Wound that minion."
+      }
+    ],
+    "actionPhases": [
+      "REGROUP",
+      "START_OF_MANEUVER"
     ],
     "culture": "GONDOR",
     "twilightCost": 2,

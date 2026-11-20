@@ -33,6 +33,7 @@ import {
     areCultureTokenChangesForbidden,
     placeCardIntoDiscardPile,
 } from '../../logic/sites';
+import { areThreatRemovalsForbiddenForFpCard } from '../../logic/threatRestrictions';
 import {
     announceInitiativeIfChanged,
     freePeoplesHasInitiative,
@@ -325,6 +326,7 @@ function canPayOption(
         if (!fpPlayer || (fpPlayer.threats || 0) < option.removeThreats) {
             return false;
         }
+        if (areThreatRemovalsForbiddenForFpCard(G, source)) return false;
     }
 
     if (option.removeBurdens && option.removeBurdens > 0) {
@@ -669,6 +671,7 @@ function payOption(
         addThreats(G, vitality);
     }
     if (option.removeThreats && option.removeThreats > 0) {
+        if (areThreatRemovalsForbiddenForFpCard(G, source)) return false;
         const fpId = G.fpPlayerId || '0';
         const fpPlayer = G.players[fpId];
         if (!fpPlayer || (fpPlayer.threats || 0) < option.removeThreats) {

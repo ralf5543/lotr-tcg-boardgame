@@ -13,6 +13,7 @@ import { enforceWhileSelfDiscards } from '../engine/abilities/enforceWhileDiscar
 import { appendCardPlayedJournal } from '../logic/journal';
 import { displayFullName } from '../../decks/cardMeta';
 import { playerDisplayName } from '../logic/playerName';
+import { dismissOwnOptionalPromptsAsPass } from '../logic/interactionCleanup';
 
 /** Après un déplacement réel : réponses « each time the fellowship moves ». */
 export function afterFellowshipArrived(
@@ -280,6 +281,9 @@ export const endFellowshipPhase = ({
         );
         return 'INVALID_MOVE';
     }
+
+    // Fin de phase = ignorer un toaster optionnel (herbe à pipe, site…).
+    dismissOwnOptionalPromptsAsPass(G, actingPlayerId, events);
     // Site quitté : fenêtre optionnelle (Guardroom / Osgiliath) avant le départ.
     if (beginOptionalSiteDepartureAbility(G, 'startOfShadow')) {
         G.pendingSiteDepartureContinuation = { kind: 'END_FELLOWSHIP_PHASE' };

@@ -145,6 +145,8 @@ export function openStartOfRegroupDualWait(
 ): void {
     const fpId = G.fpPlayerId || '0';
     const shadowId = shadowPlayerId(G);
+    // Même règle que startOfRegroup.onBegin : pas d’AW pendant le dual-wait.
+    G.actionWindow = undefined;
 
     const fpMuster = getMusterCount(G, fpId);
     const shadowMuster = getMusterCount(G, shadowId);

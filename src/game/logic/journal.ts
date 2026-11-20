@@ -17,6 +17,7 @@ import { formatAbilityLabelParts } from '../engine/abilities/collectAbilities';
 import { findBearer } from '../engine/abilities/resolveCostTarget';
 import { TRANSLATIONS } from '../translations';
 import { clearAbilityPhaseUses } from './abilityPhaseUses';
+import { clearStaleInteractionOnPhaseEntry } from './interactionCleanup';
 import { otherPlayerId, playerDisplayName } from './playerName';
 
 const JOURNAL_CAP = 200;
@@ -222,6 +223,8 @@ export function appendPhaseJournal(
     if (!meta) return;
     // Limites « (limit N) » : compteur remis à chaque nouvelle phase jouable.
     clearAbilityPhaseUses(G);
+    // Coupe AW / toasters orphelins de la phase précédente.
+    clearStaleInteractionOnPhaseEntry(G);
     pushEntry(G, {
         kind: 'phase',
         phaseKey: meta.phaseKey,

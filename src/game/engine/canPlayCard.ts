@@ -11,6 +11,7 @@ import {
     isResponseWindowOpen,
 } from './responseWindow';
 import { getMinimumTwilightCostWithToil } from '../logic/toil';
+import { mandatoryPromptBlocksActor } from '../logic/interactionCleanup';
 
 /* ==========================================================================
    TYPES & INTERFACES
@@ -357,6 +358,14 @@ export function canPlayCard(
             valid: false,
             reason: 'Assignez d’abord les blessures du site.',
         };
+    }
+
+    const mandatoryBlock = mandatoryPromptBlocksActor(
+        context.G,
+        context.playerID
+    );
+    if (mandatoryBlock) {
+        return { valid: false, reason: mandatoryBlock };
     }
 
     // 1. Phase et rôle des joueurs

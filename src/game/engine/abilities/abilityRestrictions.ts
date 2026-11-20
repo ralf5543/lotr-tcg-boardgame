@@ -1,5 +1,6 @@
 import type { Ability, CardState, GameState } from '../../types';
 import {
+    countSitesControlledBy,
     getCurrentSite,
     getCurrentSiteIndex,
     isCardStackedOnControlledSite,
@@ -60,6 +61,14 @@ export function abilityMeetsPlayRestrictions(
         if (!ownerId || !playerHasInitiative(G, ownerId)) {
             return false;
         }
+    }
+    if (ability.requiresNoOpponentControlsSite) {
+        const fpId = G.fpPlayerId || '0';
+        const shadowId = fpId === '0' ? '1' : '0';
+        const ownerId = abilityOwnerPlayerId(G, source);
+        if (!ownerId) return false;
+        const opponentId = ownerId === fpId ? shadowId : fpId;
+        if (countSitesControlledBy(G, opponentId) > 0) return false;
     }
     if (ability.requiresBearerTitles && ability.requiresBearerTitles.length > 0) {
         const bearer = findBearer(G, source) || source;

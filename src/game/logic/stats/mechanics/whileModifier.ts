@@ -390,6 +390,12 @@ export function whileConditionHolds(
         if (threats >= trigger.cannotSpotThreats) return false;
     }
 
+    if (typeof trigger.spotThreats === 'number' && trigger.spotThreats > 0) {
+        const fpId = G.fpPlayerId || '0';
+        const threats = G.players[fpId]?.threats || 0;
+        if (threats < trigger.spotThreats) return false;
+    }
+
     if (trigger.spotCultureTokens) {
         const ownerId = findInPlayCardOwnerId(G, source);
         if (!ownerId) return false;

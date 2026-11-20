@@ -39,6 +39,7 @@ import { afterSiteStartAbilityResolved } from '../logic/siteStartAbility';
 import { hasActionableStartOfPhaseCards } from '../logic/hasActionableStartOfPhaseCards';
 import { tryExitStartOfManeuver } from './maneuverMoves';
 import { exitStartOf } from '../logic/phaseEntry';
+import { dismissOwnOptionalPromptsAsPass } from '../logic/interactionCleanup';
 
 function normalizeChosenIds(chosen?: string | string[]): string[] {
     if (!chosen) return [];
@@ -113,6 +114,15 @@ export const activateAbility = (
     }
     if (!abilityMeetsPlayRestrictions(G, source, ability)) return 'INVALID_MOVE';
     const actorId = String(playerID);
+
+    // Activer le site du toaster courant : ne pas le passer sous soi.
+    const resolvingSiteStart =
+        G.pendingSiteStartAbility?.playerId === actorId &&
+        G.pendingSiteStartAbility.abilityId === abilityId &&
+        G.pendingSiteStartAbility.siteInstanceId === sourceInstanceId;
+    if (!resolvingSiteStart) {
+        dismissOwnOptionalPromptsAsPass(G, actorId, events);
+    }
     if (!canPayAbilityCost(G, source, ability.cost, actorId)) {
         return 'INVALID_MOVE';
     }

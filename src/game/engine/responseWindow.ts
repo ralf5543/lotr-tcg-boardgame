@@ -18,6 +18,7 @@ import {
     abilityNeedsCostDesignation,
     abilityNeedsEffectDesignation,
     findUniqueCardByTargetId,
+    getEffectDesignationCandidates,
 } from './abilities/designation';
 import { abilityMeetsPlayRestrictions } from './abilities/abilityRestrictions';
 import {
@@ -133,6 +134,14 @@ export function abilityMatchesTrigger(
             !event.byOverwhelm
         ) {
             return false;
+        }
+        if (
+            typeof ability.trigger.spotThreats === 'number' &&
+            ability.trigger.spotThreats > 0
+        ) {
+            const fpId = G.fpPlayerId || '0';
+            const threats = G.players[fpId]?.threats || 0;
+            if (threats < ability.trigger.spotThreats) return false;
         }
         if (resolveWinnerTargets(G, source, ability).length === 0) {
             return false;
@@ -990,10 +999,27 @@ function autoResolveMandatoryResponses(G: GameState): void {
             if (ability.optional) continue;
             if (!inPlayResponseIsLegal(G, card, ability)) continue;
             if (abilityNeedsCostDesignation(G, card, ability)) continue;
-            if (abilityNeedsEffectDesignation(G, card, ability)) continue;
             if (abilityNeedsHandDiscard(ability)) continue;
+            let effectTargetId: string | undefined;
+            if (abilityNeedsEffectDesignation(G, card, ability)) {
+                // Une seule cible légale → on la prend sans toaster.
+                const cands = getEffectDesignationCandidates(G, card, ability);
+                if (cands.length !== 1) continue;
+                effectTargetId =
+                    cands[0]!.instanceId || cands[0]!.id || undefined;
+                if (!effectTargetId) continue;
+            }
             if (!payAbilityCost(G, card, ability.cost)) continue;
-            if (!applyAbilityEffect(G, card, ability)) continue;
+            if (
+                !applyAbilityEffect(
+                    G,
+                    card,
+                    ability,
+                    effectTargetId
+                )
+            ) {
+                continue;
+            }
             markResponseUsed(G, card, ability);
             const title =
                 card.i18n?.fr?.title ||
@@ -1027,6 +1053,8 @@ export function tryOpenWinsSkirmish(G: GameState): 'APPLIED' | 'WAITING' {
         if (G.responseWindow && !G.responseWindow.isOpen) {
             G.responseWindow = undefined;
         }
+        // KILL pendant la victoire (Mûmak…) → réponses « meurt » puis anim.
+        if (tryOpenCharacterDies(G) === 'WAITING') return 'WAITING';
         return 'APPLIED';
     }
 

@@ -3483,6 +3483,259 @@ function parseEachTimeWinsAddThreatAbilities(
 }
 
 /**
+ * While you can spot N threats, each time this minion wins a skirmish,
+ * the companion he was skirmishing is killed. (Mûmak Commander…)
+ */
+function parseWhileSpotThreatsWinsKillSkirmishingAbilities(
+    text: string,
+    cardTitle?: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const re =
+        /While you can spot (\d+) threats?,\s*each time ([\s\S]+?) wins a skirmish,\s*the companion (?:he|she|it) was skirmishing is killed\.?/gi;
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(text)) !== null) {
+        const threats = parseInt(match[1], 10);
+        if (!Number.isFinite(threats) || threats <= 0) continue;
+        const winnerParsed = parseWinsSkirmishWinner(
+            match[2].trim(),
+            cardTitle
+        );
+        if (!winnerParsed) continue;
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:spot-threats-win-kill`,
+            phases: ['RESPONSE'],
+            // Obligatoire : auto-appliqué (pas de toaster Activer / Passer).
+            optional: false,
+            trigger: {
+                type: 'WINS_SKIRMISH',
+                winner: winnerParsed.winner,
+                spotThreats: threats,
+                ...(winnerParsed.yours ? { yours: true } : {}),
+            },
+            cost: [],
+            effects: [{ type: 'KILL', target: 'SKIRMISHING' }],
+            source: winnerParsed.winner === 'BEARER' ? 'ATTACHMENT' : 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+    return found;
+}
+
+/**
+ * At the start of each skirmish involving this minion, you may remove
+ * twilightN to wound a companion or ally he is skirmishing.
+ * (Desert Warrior…)
+ */
+function parseStartOfSkirmishRemoveTwilightWoundSkirmishingAbilities(
+    text: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const re =
+        /At the start of each skirmish involving this minion,\s*you may remove\s*<symbol>twilight(\d+)<\/symbol>\s+to wound (?:a|an) companion or ally (?:he|she|it) is skirmishing\.?/gi;
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(text)) !== null) {
+        const twilight = parseInt(match[1], 10);
+        if (!Number.isFinite(twilight) || twilight <= 0) continue;
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:start-skirmish-twilight-wound`,
+            phases: [],
+            optional: true,
+            trigger: {
+                type: 'START_OF_SKIRMISH',
+                involving: 'SELF',
+            },
+            cost: [{ removeTwilight: twilight }],
+            // Pas de désignation : 1 compagnon (ou allié) face au séide.
+            effects: [
+                {
+                    type: 'WOUND',
+                    count: 1,
+                    target: 'SKIRMISHING',
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+    return found;
+}
+
+/**
+ * Threats cannot be removed by Free Peoples cards. (Rallying Call…)
+ */
+function parseForbidRemoveThreatsByFpCardsAbilities(
+    text: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const re =
+        /Threats cannot be removed by Free Peoples cards\.?/gi;
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(text)) !== null) {
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:forbid-remove-threats-fp`,
+            phases: [],
+            trigger: { type: 'WHILE' },
+            cost: [],
+            effects: [
+                {
+                    type: 'FORBID_REMOVE_THREATS',
+                    by: 'FREE_PEOPLE_CARDS',
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+    return found;
+}
+
+/**
+ * Phase: Remove twilightN and play a Southron|CLASS to add a threat.
+ * (Rallying Call…)
+ */
+function parseRemoveTwilightPlayAddThreatAbilities(
+    text: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const phaseTok =
+        '(?:\\*\\*|<(?:keyword)>)(Fellowship|Shadow|Maneuver|Archery|Assignment|Skirmish|Regroup):?(?:\\s*</(?:keyword)>)?(?:\\*\\*)?';
+    const re = new RegExp(
+        `${phaseTok}\\s*Remove\\s+<symbol>twilight(\\d+)<\\/symbol>\\s+and play\\s+(?:a|an)\\s+(.+?)\\s+to add (a|an|one|\\d+) threats?\\.`,
+        'gi'
+    );
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(text)) !== null) {
+        const phase = match[1]?.toUpperCase();
+        const twilight = parseInt(match[2] || '', 10);
+        if (!phase || !Number.isFinite(twilight) || twilight <= 0) continue;
+        const filters = parseClassFilters(match[3].trim());
+        if (filters.length === 0) continue;
+        if (/\b(and|or|each|may)\b/i.test(stripAbilityMarkup(match[3]))) {
+            continue;
+        }
+        const threatCount = parseCultureTokenCount(match[4]);
+        if (!threatCount) continue;
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:twilight-play-add-threat`,
+            phases: [phase],
+            cost: [{ removeTwilight: twilight }],
+            effects: [
+                { type: 'PLAY_FROM_HAND', target: [filters] },
+                { type: 'ADD_THREATS', count: threatCount },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+    return found;
+}
+
+/**
+ * At the start of your|the maneuver phase, you may spot N rangers or exert
+ * a [culture] Man to transfer this condition to a minion. Wound that minion.
+ * (Soldier's Cache…) — deux bulles (spot OU exert).
+ */
+function parseStartOfManeuverSpotOrExertTransferWoundAbilities(
+    text: string,
+    cardTitle?: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const re =
+        /At the start of (?:your|the) maneuver phase,\s*you may spot (\d+) rangers? or exert ((?:a|an)\s+[\s\S]+?) to transfer this(?:\s+condition)? to a minion\.\s*Wound that minion\.?/gi;
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(text)) !== null) {
+        const spotCount = parseInt(match[1], 10);
+        if (!Number.isFinite(spotCount) || spotCount <= 0) continue;
+        const exertSubject = parseExertSubject(
+            match[2].trim(),
+            cardTitle,
+            text
+        );
+        if (!exertSubject) continue;
+        // WOUND sur le séide désigné (même chosenId que le transfert) —
+        // pas BEARER : en soutien il n’y a pas encore de porteur.
+        const transferAndWound = [
+            {
+                type: 'TRANSFER_SELF',
+                from: ['SUPPORT'],
+                attachTo: 'TARGET',
+                attachTarget: [['MINION']],
+            },
+            { type: 'WOUND', count: 1, target: [['MINION']] },
+        ];
+        const clause = stripAbilityMarkup(match[0]);
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:start-man-spot-transfer`,
+            phases: ['START_OF_MANEUVER'],
+            optional: true,
+            cost: [
+                {
+                    spot: [
+                        {
+                            count: spotCount,
+                            target: [['RANGER']],
+                        },
+                    ],
+                },
+            ],
+            effects: transferAndWound,
+            source: 'SELF',
+            text: clause,
+        });
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:start-man-exert-transfer`,
+            phases: ['START_OF_MANEUVER'],
+            optional: true,
+            cost: [
+                {
+                    exert: [exertSelectorFromSubject(exertSubject)],
+                },
+            ],
+            effects: transferAndWound,
+            source: 'SELF',
+            text: clause,
+        });
+    }
+    return found;
+}
+
+/**
+ * While no opponent controls a site, wound a minion at the start of each
+ * regroup phase. (Gondor Still Stands…)
+ */
+function parseWhileNoOppControlStartRegroupWoundAbilities(
+    text: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const re =
+        /While no opponent controls a site,\s*wound (?:a|an) minion at the start of each regroup phase\.?/gi;
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(text)) !== null) {
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:no-opp-regroup-wound`,
+            phases: ['START_OF_REGROUP'],
+            requiresNoOpponentControlsSite: true,
+            // Une fois par début de regroupement (texte « at the start of each »).
+            limitPerPhase: 1,
+            cost: [],
+            effects: [
+                { type: 'WOUND', count: 1, target: [['MINION']] },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+    return found;
+}
+
+/**
  * Each time [winner] wins a skirmish, you may add twilightN.
  * (Mûmak…)
  */
@@ -14665,6 +14918,24 @@ function parseDiscardToEffect(
         return { type: 'REMOVE_THREATS', count };
     }
 
+    // « place a [culture] fortification from your discard pile on top of your draw deck »
+    const placeDiscardTop = clause.match(
+        /^place\s+((?:a|an)\s+.+?)\s+from your discard pile on top of your draw deck$/i
+    );
+    if (placeDiscardTop) {
+        const target = parseNounTarget(
+            placeDiscardTop[1],
+            [['']],
+            cardTitle
+        );
+        if (!target || !Array.isArray(target)) return null;
+        return {
+            type: 'PLACE_FROM_DISCARD_ON_DECK',
+            position: 'TOP',
+            target,
+        };
+    }
+
     const discardMatch = clause.match(/^discard\s+((?:a|an)\s+.+)$/i);
     if (discardMatch) {
         const target = parseNounTarget(discardMatch[1], [['']], cardTitle);
@@ -16985,6 +17256,45 @@ export function parseAbilities(
                 source:
                     healSubject.target === 'BEARER' ? 'ATTACHMENT' : 'SELF',
                 text: healClause,
+            });
+            return;
+        }
+
+        // Exert X to reinforce a [culture] token. (Soldier's Cache…)
+        const exertReinforceMatch = body.match(
+            /^Exert\s+([\s\S]+?)\s+to reinforce (a|an|one|\d+)\s+((?:Free Peoples(?:\s+culture)?)|(?:<symbol>[^<]+<\/symbol>)|(?:culture))\s+tokens?\.?$/i
+        );
+        if (exertReinforceMatch) {
+            if (/\b(and|or)\b/i.test(exertReinforceMatch[1])) return;
+            const subject = parseExertSubject(
+                exertReinforceMatch[1].trim(),
+                cardTitle,
+                text
+            );
+            if (!subject) return;
+            const count = parseCultureTokenCount(exertReinforceMatch[2]);
+            const culture = parseCultureTokenSpec(exertReinforceMatch[3]);
+            if (!count || !culture) return;
+            abilities.push({
+                id: `${cardId || 'ability'}:${abilities.length}`,
+                phases,
+                cost: [
+                    {
+                        exert: [exertSelectorFromSubject(subject)],
+                    },
+                ],
+                effects: [
+                    {
+                        type: 'REINFORCE_CULTURE_TOKEN',
+                        culture,
+                        count,
+                    },
+                ],
+                source: subject.target === 'BEARER' ? 'ATTACHMENT' : 'SELF',
+                text: `${marker.phase}: Exert ${stripAbilityMarkup(exertReinforceMatch[1]).trim()} to reinforce ${exertReinforceMatch[2]} ${stripAbilityMarkup(exertReinforceMatch[3]).trim()} token${count > 1 ? 's' : ''}.`
+                    .replace(/<[^>]+>/g, '')
+                    .replace(/\s+/g, ' ')
+                    .trim(),
             });
             return;
         }
@@ -19657,6 +19967,55 @@ export function parseAbilities(
         }
     );
 
+    parseWhileSpotThreatsWinsKillSkirmishingAbilities(
+        text,
+        cardTitle,
+        cardId
+    ).forEach((ability) => {
+        abilities.push({
+            ...ability,
+            id: `${cardId || 'ability'}:${abilities.length}`,
+        });
+    });
+
+    parseForbidRemoveThreatsByFpCardsAbilities(text, cardId).forEach(
+        (ability) => {
+            abilities.push({
+                ...ability,
+                id: `${cardId || 'ability'}:${abilities.length}`,
+            });
+        }
+    );
+
+    parseRemoveTwilightPlayAddThreatAbilities(text, cardId).forEach(
+        (ability) => {
+            abilities.push({
+                ...ability,
+                id: `${cardId || 'ability'}:${abilities.length}`,
+            });
+        }
+    );
+
+    parseStartOfManeuverSpotOrExertTransferWoundAbilities(
+        text,
+        cardTitle,
+        cardId
+    ).forEach((ability) => {
+        abilities.push({
+            ...ability,
+            id: `${cardId || 'ability'}:${abilities.length}`,
+        });
+    });
+
+    parseWhileNoOppControlStartRegroupWoundAbilities(text, cardId).forEach(
+        (ability) => {
+            abilities.push({
+                ...ability,
+                id: `${cardId || 'ability'}:${abilities.length}`,
+            });
+        }
+    );
+
     parseEachTimeWinsAddTwilightAbilities(text, cardTitle, cardId).forEach(
         (ability) => {
             abilities.push({
@@ -19725,6 +20084,16 @@ export function parseAbilities(
     parseStartOfSkirmishExertOpponentsAbilities(
         text,
         cardTitle,
+        cardId
+    ).forEach((ability) => {
+        abilities.push({
+            ...ability,
+            id: `${cardId || 'ability'}:${abilities.length}`,
+        });
+    });
+
+    parseStartOfSkirmishRemoveTwilightWoundSkirmishingAbilities(
+        text,
         cardId
     ).forEach((ability) => {
         abilities.push({

@@ -18,6 +18,7 @@ function enqueueCharacterDeath(G: GameState, card: CardState): void {
 /**
  * Applique une mort directe par submersion (overwhelm).
  * Ne modifie PAS le compteur de blessures (card.wounds).
+ * La carte reste en jeu jusqu’à `cleanupPendingDeaths` (anim).
  */
 export const applyOverwhelmAndCheckDeath = (
     G: GameState,
@@ -42,6 +43,32 @@ export const applyOverwhelmAndCheckDeath = (
         G.pendingDeadCardIds.push(cardId);
     }
     enqueueCharacterDeath(G, card);
+};
+
+/**
+ * Tue un personnage (KILL) sans le retirer tout de suite du plateau —
+ * même pipeline visuel que blessure fatale / submersion.
+ */
+export const applyKillAndCheckDeath = (
+    G: GameState,
+    card: CardState
+): boolean => {
+    if (!card || card.isDead) return false;
+    const cardId = card.instanceId || card.id;
+    if (!cardId) return false;
+
+    if (!G.lastWoundedCardIds) G.lastWoundedCardIds = [];
+    if (!G.lastWoundedCardIds.includes(cardId)) {
+        G.lastWoundedCardIds.push(cardId);
+    }
+
+    card.isDead = true;
+    if (!G.pendingDeadCardIds) G.pendingDeadCardIds = [];
+    if (!G.pendingDeadCardIds.includes(cardId)) {
+        G.pendingDeadCardIds.push(cardId);
+    }
+    enqueueCharacterDeath(G, card);
+    return true;
 };
 
 export type ApplyWoundOptions = {

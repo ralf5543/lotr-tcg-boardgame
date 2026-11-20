@@ -645,6 +645,14 @@ export type AbilityEffect =
       }
     | {
           /**
+           * Rallying Call : les menaces ne peuvent pas être retirées
+           * par des cartes Peuples Libres.
+           */
+          type: 'FORBID_REMOVE_THREATS';
+          by: 'FREE_PEOPLE_CARDS';
+      }
+    | {
+          /**
            * Foot of Mount Doom : chaque carte sur le point d’être placée
            * dans une pile de défausse est retirée du jeu à la place.
            */
@@ -794,6 +802,23 @@ export type AbilityEffect =
            */
           type: 'TAKE_FROM_DISCARD';
           target: string[][];
+      }
+    | {
+          /**
+           * Place une carte de votre défausse sur le dessus de votre pioche
+           * (Gondor Still Stands…).
+           */
+          type: 'PLACE_FROM_DISCARD_ON_DECK';
+          position: 'TOP';
+          target: string[][];
+      }
+    | {
+          /**
+           * Tue un personnage (pile de mort) — Mûmak Commander…
+           * Pas une défausse.
+           */
+          type: 'KILL';
+          target: AbilityTargetRef;
       }
     | {
           /**
@@ -1418,6 +1443,8 @@ export type AbilityTrigger =
           yours?: boolean;
           /** « … overwhelms a character » — victoire par submersion seulement. */
           byOverwhelm?: boolean;
+          /** « While you can spot N threats… » (Mûmak Commander). */
+          spotThreats?: number;
       }
     | {
           type: 'LOSES_SKIRMISH';
@@ -1564,6 +1591,8 @@ export type AbilityTrigger =
           spotMinStrength?: { target: string[][]; min: number };
           /** « While you cannot spot N threats… » — menaces FP < N. */
           cannotSpotThreats?: number;
+          /** « While you can spot N threats… » — menaces FP ≥ N. */
+          spotThreats?: number;
           /**
            * « While [this / Name] is in region N… »
            * — vrai si la compagnie est en région N (sites 1–3 / 4–6 / 7–9).
@@ -1709,6 +1738,11 @@ export interface Ability {
      * (Marchand gondorien…).
      */
     requiresInitiative?: boolean;
+    /**
+     * « While no opponent controls a site… » en tête d’une capacité
+     * de phase (Gondor Still Stands : blessure début regroup).
+     */
+    requiresNoOpponentControlsSite?: boolean;
     /**
      * « (limit N) » — usages max de cette capacité par phase
      * (Sixth Level…).

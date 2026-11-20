@@ -695,7 +695,8 @@ export function getEffectDesignationCandidates(
         (ability.effects || []).some(
             (item) =>
                 item.type === 'PLAY_FROM_DECK_OR_DISCARD' ||
-                item.type === 'TAKE_FROM_DISCARD'
+                item.type === 'TAKE_FROM_DISCARD' ||
+                item.type === 'PLACE_FROM_DISCARD_ON_DECK'
         )
     ) {
         return [];
@@ -833,7 +834,16 @@ export function getEffectDesignationCandidates(
             item.type !== 'PLAY_FROM_DECK_OR_DISCARD' &&
             item.type !== 'PLAY_FROM_HAND' &&
             item.type !== 'TAKE_FROM_DISCARD' &&
+            item.type !== 'PLACE_FROM_DISCARD_ON_DECK' &&
             item.type !== 'REVEAL_OPPONENT_TOP' &&
+            // KILL / WOUND|EXERT|EXHAUST SKIRMISHING : combat fixe la cible.
+            item.type !== 'KILL' &&
+            !(
+                (item.type === 'WOUND' ||
+                    item.type === 'EXERT' ||
+                    item.type === 'EXHAUST') &&
+                item.target === 'SKIRMISHING'
+            ) &&
             !(item.type === 'EXERT' && item.all) &&
             !(item.type === 'HEAL' && item.all && !item.onePerCulture) &&
             !(item.type === 'WOUND' && item.all) &&
@@ -967,6 +977,17 @@ export function abilityNeedsEffectDesignation(
     source: CardState,
     ability: Ability
 ): boolean {
+    // SKIRMISHING (KILL / WOUND…) : le combat fixe la cible — pas de halo.
+    // (Mûmak Commander, Guerrier du désert… : un compagnon face au séide.)
+    const targetedEffects = (ability.effects || []).filter(
+        (item) => 'target' in item && item.target != null
+    );
+    if (
+        targetedEffects.length > 0 &&
+        targetedEffects.every((item) => item.target === 'SKIRMISHING')
+    ) {
+        return false;
+    }
     const candidates = getEffectDesignationCandidates(G, source, ability);
     if (candidates.length < 1) return false;
     // « Blesser Aragorn » : une seule cible → résolution directe.
@@ -1478,6 +1499,16 @@ export function abilityHasLegalEffectTarget(
             continue;
         }
         if (effect.type === 'TAKE_FROM_DISCARD') {
+            const ownerId = abilityOwnerPlayerId(G, source);
+            if (!ownerId) return false;
+            const discard = G.players[ownerId]?.discard || [];
+            const hits = discard.filter(
+                (card) => card && cardMatchesTarget(card, effect.target)
+            );
+            if (hits.length < 1) return false;
+            continue;
+        }
+        if (effect.type === 'PLACE_FROM_DISCARD_ON_DECK') {
             const ownerId = abilityOwnerPlayerId(G, source);
             if (!ownerId) return false;
             const discard = G.players[ownerId]?.discard || [];

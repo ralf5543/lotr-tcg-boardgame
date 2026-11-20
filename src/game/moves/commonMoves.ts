@@ -95,6 +95,7 @@ import {
     beginThreatWoundAssignment,
     livingCompanionsForThreatWounds,
 } from '../logic/threats';
+import { dismissOwnOptionalPromptsAsPass } from '../logic/interactionCleanup';
 
 export interface ReorderPayload {
     fromIndex?: number;
@@ -189,6 +190,11 @@ export const passActionWindow = ({
         return;
     }
 
+    // Passer la priorité = ignorer un toaster optionnel encore ouvert.
+    if (playerID) {
+        dismissOwnOptionalPromptsAsPass(G, String(playerID), events);
+    }
+
     const otherPlayer = playerID === '0' ? '1' : '0';
     const currentPasses = (G.actionWindow.passesCount || 0) + 1;
 
@@ -252,6 +258,8 @@ export const attachCard = (
         console.warn(`❌ [attachCard] Rejet : ${validation.reason}`);
         return 'INVALID_MOVE';
     }
+
+    dismissOwnOptionalPromptsAsPass(G, actingPlayerId);
 
     applyAutomaticToPlayCosts(G, card, actingPlayerId, ctx.phase);
 
@@ -341,6 +349,9 @@ export const beginPendingPlay = (
     const validation = canPlayCard(card, { G, ctx, playerID: actingPlayerId });
     if (!validation.valid) return 'INVALID_MOVE';
 
+    // Début de jeu d’événement / site = autre action → Passer le toaster optionnel.
+    dismissOwnOptionalPromptsAsPass(G, actingPlayerId);
+
     G.pendingPlay = {
         playerId: actingPlayerId,
         card: { ...card },
@@ -417,6 +428,9 @@ export const playCard = (
         console.warn(`❌ [playCard] Rejet : ${validation.reason}`);
         return 'INVALID_MOVE';
     }
+
+    // Toaster optionnel encore ouvert (herbe à pipe…) → traité comme Passer.
+    dismissOwnOptionalPromptsAsPass(G, actingPlayerId);
 
     // toPlay automatiques (add burden / threats…) + exert à désigner plus bas.
     applyAutomaticToPlayCosts(G, card, actingPlayerId, ctx.phase);
@@ -623,6 +637,8 @@ export const playCardFromDiscard = (
         console.warn(`❌ [playCardFromDiscard] Rejet : ${discardCheck.reason}`);
         return 'INVALID_MOVE';
     }
+
+    dismissOwnOptionalPromptsAsPass(G, actingPlayerId);
 
     const isAttachment = card.type !== 'EVENT' && requiresAttachmentTarget(card);
     let hostCard: CardState | SiteCardState | null = null;
