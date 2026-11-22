@@ -111,8 +111,11 @@ export function getAbilityToastClause(
     source: CardState | undefined | null,
     lang: SupportedLanguage = 'fr'
 ): string | undefined {
-    const textFr = ability?.textFr?.trim();
-    if (textFr) return textFr;
+    // textFr = collage FR parseur : uniquement si on affiche en français.
+    if (lang === 'fr') {
+        const textFr = ability?.textFr?.trim();
+        if (textFr) return textFr;
+    }
 
     const textEn = ability?.text?.trim();
     if (textEn && source) {

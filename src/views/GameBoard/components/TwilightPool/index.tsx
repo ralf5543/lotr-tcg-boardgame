@@ -1,6 +1,7 @@
 import React from 'react';
 import * as S from './styles';
 import { usePulseOnChange } from '../../hooks/usePulseOnChange';
+import { useUiMessages } from '../../../../i18n/ui/useUiMessages';
 
 interface TwilightPoolProps {
     value: number;
@@ -21,6 +22,7 @@ const generateToken = (): PhysicalToken => ({
 });
 
 export const TwilightPool: React.FC<TwilightPoolProps> = ({ value }) => {
+    const ui = useUiMessages();
     const [{ tokens, prevValue }, setTokensState] = React.useState<{
         tokens: PhysicalToken[];
         prevValue: number;
@@ -49,7 +51,7 @@ export const TwilightPool: React.FC<TwilightPoolProps> = ({ value }) => {
 
     return (
         <S.PoolContainer>
-            <S.CompactLabel>Crépuscule</S.CompactLabel>
+            <S.CompactLabel>{ui.chrome.common.twilightPool}</S.CompactLabel>
             <S.CounterBadge $pulseGen={counterPulse}>{value}</S.CounterBadge>
             <S.BowlArea>
                 {tokens.map((token) => (

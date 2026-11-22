@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { formatPointsFardeau } from '../../../../game/logic/journal';
+import { useUiMessages } from '../../../../i18n/ui/useUiMessages';
 
 interface BiddingWidgetProps {
     currentBid: number | null;
@@ -16,13 +16,16 @@ export const BiddingWidget: React.FC<BiddingWidgetProps> = ({
     opponentName,
 }) => {
     const [selectedBid, setSelectedBid] = useState<number>(0);
+    const ui = useUiMessages();
+    const points = (n: number) => ui.chrome.pointsFardeau(n);
 
     if (isWaitingForOpponent) {
         return (
             <WaitingState>
-                Mise enregistrée :{' '}
-                <strong>{formatPointsFardeau(currentBid ?? 0)}</strong>
-                {opponentName ? `. En attente de ${opponentName}…` : '.'}
+                {ui.chrome.bidding.bidRecorded(points(currentBid ?? 0))}
+                {opponentName
+                    ? ui.chrome.bidding.waitingSuffix(opponentName)
+                    : '.'}
             </WaitingState>
         );
     }
@@ -32,21 +35,25 @@ export const BiddingWidget: React.FC<BiddingWidgetProps> = ({
             <ControlsGroup>
                 <StepButton
                     disabled={selectedBid <= 0}
-                    onClick={() => setSelectedBid((prev) => Math.max(0, prev - 1))}
+                    onClick={() =>
+                        setSelectedBid((prev) => Math.max(0, prev - 1))
+                    }
                 >
                     -
                 </StepButton>
                 <BidDisplay>{selectedBid}</BidDisplay>
                 <StepButton
                     disabled={selectedBid >= 10}
-                    onClick={() => setSelectedBid((prev) => Math.min(10, prev + 1))}
+                    onClick={() =>
+                        setSelectedBid((prev) => Math.min(10, prev + 1))
+                    }
                 >
                     +
                 </StepButton>
             </ControlsGroup>
 
             <SubmitButton onClick={() => onSubmitBid(selectedBid)}>
-                Miser {formatPointsFardeau(selectedBid)}
+                {ui.chrome.bidding.placeBid(points(selectedBid))}
             </SubmitButton>
         </WidgetBox>
     );

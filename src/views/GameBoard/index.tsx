@@ -21,6 +21,7 @@ import { Dock } from './components/Dock';
 import { OptionsModal } from './components/OptionsModal';
 import { SitesPicker } from './components/SitePicker';
 import { GameControls } from './components/GameControls';
+import { useUiMessages } from '../../i18n/ui/useUiMessages';
 import {
     canAttachToCharacter,
     attachesToSite,
@@ -310,6 +311,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
     useAssignmentAudio(G);
     useSkirmishAudio(G, ctx.phase);
     useSiteControlAudio(G);
+    const ui = useUiMessages();
     const myId = playerID || ctx.currentPlayer;
     const oppId = myId === '0' ? '1' : '0';
     const {
@@ -2612,38 +2614,39 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         switch (openOutOfPlayZone) {
             case 'my-discard':
                 return {
-                    title: 'Ma défausse',
+                    title: ui.chrome.overlay.myDiscard,
                     cards: me.discard || [],
                 };
             case 'my-cemetery':
                 return {
-                    title: 'Mon cimetière',
+                    title: ui.chrome.overlay.myCemetery,
                     cards: me.deadPile || [],
                 };
             case 'opponent-discard':
                 return {
-                    title: 'Défausse adverse',
+                    title: ui.chrome.overlay.opponentDiscard,
                     cards: opponent.discard || [],
                 };
             case 'opponent-cemetery':
                 return {
-                    title: 'Cimetière adverse',
+                    title: ui.chrome.overlay.opponentCemetery,
                     cards: opponent.deadPile || [],
                 };
             case 'my-removed':
                 return {
-                    title: 'Mes cartes retirées du jeu',
+                    title: ui.chrome.overlay.myRemoved,
                     cards: me.removedFromGame || [],
                 };
             case 'opponent-removed':
                 return {
-                    title: 'Cartes adverses retirées du jeu',
+                    title: ui.chrome.overlay.opponentRemoved,
                     cards: opponent.removedFromGame || [],
                 };
             default:
                 return null;
         }
     }, [
+        ui,
         openOutOfPlayZone,
         deckDiscardPick,
         stackOverlay,

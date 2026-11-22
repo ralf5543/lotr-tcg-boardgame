@@ -14,6 +14,7 @@ import { FactionProvider } from './contexts/FactionProvider';
 import { TargetingProvider } from './contexts/TargetingContext';
 import { audioService } from './services/audioService';
 import { initFullscreenEscapeLock } from './utils/fullscreen';
+import { PreferencesProvider } from './contexts/PreferencesProvider';
 
 initFullscreenEscapeLock();
 
@@ -104,17 +105,19 @@ function App() {
 
     if (view === 'decks') {
         return (
-            <ScreenViewport>
-                <FactionProvider myPlayerId={myPlayerId}>
-                    <HoverCardProvider>
-                        <DragProvider>
-                            <ScaledView ref={containerRef} $scale={scale}>
-                                <DeckBuilder />
-                            </ScaledView>
-                        </DragProvider>
-                    </HoverCardProvider>
-                </FactionProvider>
-            </ScreenViewport>
+            <PreferencesProvider>
+                <ScreenViewport>
+                    <FactionProvider myPlayerId={myPlayerId}>
+                        <HoverCardProvider>
+                            <DragProvider>
+                                <ScaledView ref={containerRef} $scale={scale}>
+                                    <DeckBuilder />
+                                </ScaledView>
+                            </DragProvider>
+                        </HoverCardProvider>
+                    </FactionProvider>
+                </ScreenViewport>
+            </PreferencesProvider>
         );
     }
 
@@ -123,27 +126,31 @@ function App() {
     }
 
     return (
-        <ScreenViewport>
-            <FactionProvider myPlayerId={myPlayerId}>
-                <HoverCardProvider>
-                    <DragProvider>
-                        <TargetingProvider>
-                            <ScaledView ref={containerRef} $scale={scale}>
-                                {isBotMatch ? (
-                                    <SoloBotMatch matchID={currentMatchId} />
-                                ) : (
-                                    <LotrClient
-                                        matchID={currentMatchId}
-                                        playerID={myPlayerId}
-                                    />
-                                )}
-                            </ScaledView>
-                        </TargetingProvider>
-                        <CustomAssetCursor />
-                    </DragProvider>
-                </HoverCardProvider>
-            </FactionProvider>
-        </ScreenViewport>
+        <PreferencesProvider>
+            <ScreenViewport>
+                <FactionProvider myPlayerId={myPlayerId}>
+                    <HoverCardProvider>
+                        <DragProvider>
+                            <TargetingProvider>
+                                <ScaledView ref={containerRef} $scale={scale}>
+                                    {isBotMatch ? (
+                                        <SoloBotMatch
+                                            matchID={currentMatchId}
+                                        />
+                                    ) : (
+                                        <LotrClient
+                                            matchID={currentMatchId}
+                                            playerID={myPlayerId}
+                                        />
+                                    )}
+                                </ScaledView>
+                            </TargetingProvider>
+                            <CustomAssetCursor />
+                        </DragProvider>
+                    </HoverCardProvider>
+                </FactionProvider>
+            </ScreenViewport>
+        </PreferencesProvider>
     );
 }
 

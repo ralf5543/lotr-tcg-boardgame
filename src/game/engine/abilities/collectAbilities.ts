@@ -6,6 +6,8 @@ import {
     resolveCostTarget,
 } from './resolveCostTarget';
 import { getCurrentSiteIndex } from '../../logic/sites';
+import type { SupportedLanguage } from '../../../i18n/languages';
+import { localizeTwilightWords } from '../../../i18n/terms';
 
 export function abilityMatchesPhase(ability: Ability, rawPhase: string): boolean {
     const currentPhase = (rawPhase || '').toUpperCase();
@@ -1416,8 +1418,15 @@ export function formatAbilityLabelParts(
     ability: Ability,
     source: CardState,
     /** Carte sur laquelle la bulle est ouverte (porteur, site…). */
-    host?: CardState
+    host?: CardState,
+    /** Langue d’interface (crépuscule → twilight…). */
+    uiLang: SupportedLanguage = 'fr'
 ): { cost: string; effect: string } {
+    const finish = (costLabel: string, effectLabel: string) => ({
+        cost: localizeTwilightWords(costLabel, uiLang),
+        effect: localizeTwilightWords(effectLabel, uiLang),
+    });
+
     // Préférer la clause FR papier (`textFr`) ; sinon génération depuis le modèle.
     // Voir `.cursor/rules/dual-cost-ability-label.mdc` : si le papier joint
     // plusieurs coûts (« Affaiblissez X ou désignez Y »), chaque bulle AST
@@ -1454,10 +1463,7 @@ export function formatAbilityLabelParts(
     if (host && abilityComesFromAttachment(ability, source, host)) {
         const name = source.i18n?.fr?.title || source.title;
         if (name) {
-            return {
-                cost: cost ? `${name} — ${cost}` : name,
-                effect,
-            };
+            return finish(cost ? `${name} — ${cost}` : name, effect);
         }
     }
 
@@ -1508,7 +1514,7 @@ export function formatAbilityLabelParts(
         }
     }
 
-    return { cost, effect };
+    return finish(cost, effect);
 }
 
 /** True si `source` est une carte attachée au `host` (ou marquée ATTACHMENT). */

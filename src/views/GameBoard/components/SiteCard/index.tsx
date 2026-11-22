@@ -10,6 +10,7 @@ import { getEffectiveSiteKeywords } from '../../../../game/logic/sites';
 import { usePulseOnChange } from '../../hooks/usePulseOnChange';
 import { useImageSrcFallback } from '../../../../utils/useImageSrcFallback';
 import { getCollectorNumber } from '../../../../utils/cardUtils';
+import { usePreferencesOptional } from '../../../../contexts/PreferencesContext';
 
 export interface SiteCardProps {
     site: SiteCardState;
@@ -32,9 +33,11 @@ export const SiteCard: React.FC<SiteCardProps> = ({
     playersHere,
     className,
     style,
-    currentLang = 'fr',
+    currentLang: currentLangProp,
     G,
 }) => {
+    const prefs = usePreferencesOptional();
+    const currentLang = currentLangProp ?? prefs?.cardLanguage ?? 'fr';
 
     const { title, gameText } = getCardText(
         site,

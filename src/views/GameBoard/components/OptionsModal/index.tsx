@@ -4,6 +4,14 @@ import {
     exitFullscreen,
     isFullscreen,
 } from '../../../../utils/fullscreen';
+import { usePreferences } from '../../../../contexts/PreferencesContext';
+import {
+    LANGUAGE_NATIVE_LABELS,
+    SUPPORTED_LANGUAGES,
+    type SupportedLanguage,
+    isSupportedLanguage,
+} from '../../../../i18n/languages';
+import { getUiMessages } from '../../../../i18n/ui';
 import * as S from './styles';
 
 export type OptionsTabId = 'display' | 'audio' | 'language' | 'account';
@@ -12,35 +20,28 @@ export interface OptionsModalProps {
     onClose: () => void;
 }
 
-const TABS: { id: OptionsTabId; label: string }[] = [
-    { id: 'display', label: 'Affichage' },
-    { id: 'audio', label: 'Son' },
-    { id: 'language', label: 'Langue' },
-    { id: 'account', label: 'Compte' },
-];
-
-const UI_LANGUAGES = [
-    { value: 'fr', label: 'Français' },
-    { value: 'en', label: 'English' },
-];
-
-const CARD_LANGUAGES = [
-    { value: 'fr', label: 'Français' },
-    { value: 'en', label: 'English' },
-    { value: 'de', label: 'Deutsch' },
-    { value: 'it', label: 'Italiano' },
-    { value: 'es', label: 'Español' },
+const TAB_IDS: OptionsTabId[] = [
+    'display',
+    'audio',
+    'language',
+    'account',
 ];
 
 export const OptionsModal: React.FC<OptionsModalProps> = ({ onClose }) => {
+    const {
+        uiLanguage,
+        cardLanguage,
+        setUiLanguage,
+        setCardLanguage,
+    } = usePreferences();
+    const t = getUiMessages(uiLanguage);
+
     const [tab, setTab] = useState<OptionsTabId>('display');
     const [fullscreen, setFullscreen] = useState(() => isFullscreen());
     const [musicEnabled, setMusicEnabled] = useState(true);
     const [masterVolume, setMasterVolume] = useState(70);
     const [musicVolume, setMusicVolume] = useState(50);
     const [sfxVolume, setSfxVolume] = useState(80);
-    const [uiLanguage, setUiLanguage] = useState('fr');
-    const [cardLanguage, setCardLanguage] = useState('fr');
     const [quitConfirm, setQuitConfirm] = useState(false);
 
     useEffect(() => {
@@ -50,7 +51,6 @@ export const OptionsModal: React.FC<OptionsModalProps> = ({ onClose }) => {
             event.stopPropagation();
             onClose();
         };
-        // Capture : ferme les options avant les annulations de ciblage.
         window.addEventListener('keydown', onKeyDown, true);
         return () => window.removeEventListener('keydown', onKeyDown, true);
     }, [onClose]);
@@ -79,19 +79,28 @@ export const OptionsModal: React.FC<OptionsModalProps> = ({ onClose }) => {
         }
     };
 
+    const onSelectLanguage = (
+        which: 'ui' | 'cards',
+        value: string
+    ) => {
+        if (!isSupportedLanguage(value)) return;
+        if (which === 'ui') setUiLanguage(value);
+        else setCardLanguage(value);
+    };
+
     return (
         <S.Backdrop
             role="dialog"
             aria-modal="true"
-            aria-label="Options"
+            aria-label={t.options.title}
             onClick={onClose}
         >
             <S.Panel onClick={(event) => event.stopPropagation()}>
                 <S.Header>
-                    <S.Title>Options</S.Title>
+                    <S.Title>{t.options.title}</S.Title>
                     <S.CloseButton
                         type="button"
-                        aria-label="Fermer"
+                        aria-label={t.options.closeAria}
                         onClick={onClose}
                     >
                         ×
@@ -99,18 +108,18 @@ export const OptionsModal: React.FC<OptionsModalProps> = ({ onClose }) => {
                 </S.Header>
 
                 <S.Body>
-                    <S.TabList aria-label="Catégories">
-                        {TABS.map((entry) => (
+                    <S.TabList aria-label={t.options.categoriesAria}>
+                        {TAB_IDS.map((id) => (
                             <S.TabButton
-                                key={entry.id}
+                                key={id}
                                 type="button"
-                                $active={tab === entry.id}
+                                $active={tab === id}
                                 onClick={() => {
-                                    setTab(entry.id);
+                                    setTab(id);
                                     setQuitConfirm(false);
                                 }}
                             >
-                                {entry.label}
+                                {t.options.tabs[id]}
                             </S.TabButton>
                         ))}
                     </S.TabList>
@@ -118,21 +127,24 @@ export const OptionsModal: React.FC<OptionsModalProps> = ({ onClose }) => {
                     <S.Content>
                         {tab === 'display' && (
                             <>
-                                <S.SectionTitle>Affichage</S.SectionTitle>
+                                <S.SectionTitle>
+                                    {t.options.display.title}
+                                </S.SectionTitle>
                                 <S.SectionHint>
-                                    Le plateau est déjà proportionnel : pas de
-                                    choix de résolution pour l’instant.
+                                    {t.options.display.hint}
                                 </S.SectionHint>
                                 <S.FieldGroup>
                                     <S.ToggleRow>
                                         <div>
                                             <S.Label htmlFor="options-fullscreen">
-                                                Plein écran
+                                                {t.options.display.fullscreen}
                                             </S.Label>
                                             <div>
                                                 <S.Hint>
-                                                    Échap n’en sort plus —
-                                                    décochez ici
+                                                    {
+                                                        t.options.display
+                                                            .fullscreenHint
+                                                    }
                                                 </S.Hint>
                                             </div>
                                         </div>
@@ -144,29 +156,28 @@ export const OptionsModal: React.FC<OptionsModalProps> = ({ onClose }) => {
                                     </S.ToggleRow>
                                 </S.FieldGroup>
                                 <S.PlaceholderNote>
-                                    Plus tard : cadre décoratif autour du
-                                    plateau (effet type Hearthstone sur grands
-                                    écrans), sans toucher à l’échelle du jeu.
+                                    {t.options.display.laterNote}
                                 </S.PlaceholderNote>
                             </>
                         )}
 
                         {tab === 'audio' && (
                             <>
-                                <S.SectionTitle>Son</S.SectionTitle>
+                                <S.SectionTitle>
+                                    {t.options.audio.title}
+                                </S.SectionTitle>
                                 <S.SectionHint>
-                                    Réglages locaux — pas encore reliés au
-                                    moteur audio.
+                                    {t.options.audio.hint}
                                 </S.SectionHint>
                                 <S.FieldGroup>
                                     <S.ToggleRow>
                                         <div>
                                             <S.Label htmlFor="options-music">
-                                                Musique
+                                                {t.options.audio.music}
                                             </S.Label>
                                             <div>
                                                 <S.Hint>
-                                                    Pas de piste pour l’instant
+                                                    {t.options.audio.musicHint}
                                                 </S.Hint>
                                             </div>
                                         </div>
@@ -184,7 +195,7 @@ export const OptionsModal: React.FC<OptionsModalProps> = ({ onClose }) => {
                                     <S.Field>
                                         <S.SliderRow>
                                             <S.Label htmlFor="options-master">
-                                                Volume global
+                                                {t.options.audio.master}
                                             </S.Label>
                                             <S.Slider
                                                 id="options-master"
@@ -206,7 +217,7 @@ export const OptionsModal: React.FC<OptionsModalProps> = ({ onClose }) => {
                                     <S.Field>
                                         <S.SliderRow>
                                             <S.Label htmlFor="options-music-vol">
-                                                Musique
+                                                {t.options.audio.musicVolume}
                                             </S.Label>
                                             <S.Slider
                                                 id="options-music-vol"
@@ -229,7 +240,7 @@ export const OptionsModal: React.FC<OptionsModalProps> = ({ onClose }) => {
                                     <S.Field>
                                         <S.SliderRow>
                                             <S.Label htmlFor="options-sfx">
-                                                Effets sonores
+                                                {t.options.audio.sfx}
                                             </S.Label>
                                             <S.Slider
                                                 id="options-sfx"
@@ -253,57 +264,74 @@ export const OptionsModal: React.FC<OptionsModalProps> = ({ onClose }) => {
 
                         {tab === 'language' && (
                             <>
-                                <S.SectionTitle>Langue</S.SectionTitle>
+                                <S.SectionTitle>
+                                    {t.options.language.title}
+                                </S.SectionTitle>
                                 <S.SectionHint>
-                                    Interface et textes de cartes sont
-                                    indépendants.
+                                    {t.options.language.hint}
                                 </S.SectionHint>
                                 <S.FieldGroup>
                                     <S.Field>
                                         <S.Label htmlFor="options-ui-lang">
-                                            Langue de l’interface
+                                            {t.options.language.ui}
                                         </S.Label>
                                         <S.Select
                                             id="options-ui-lang"
                                             value={uiLanguage}
                                             onChange={(event) =>
-                                                setUiLanguage(event.target.value)
+                                                onSelectLanguage(
+                                                    'ui',
+                                                    event.target.value
+                                                )
                                             }
                                         >
-                                            {UI_LANGUAGES.map((lang) => (
-                                                <option
-                                                    key={lang.value}
-                                                    value={lang.value}
-                                                >
-                                                    {lang.label}
-                                                </option>
-                                            ))}
+                                            {SUPPORTED_LANGUAGES.map(
+                                                (lang: SupportedLanguage) => (
+                                                    <option
+                                                        key={lang}
+                                                        value={lang}
+                                                    >
+                                                        {
+                                                            LANGUAGE_NATIVE_LABELS[
+                                                                lang
+                                                            ]
+                                                        }
+                                                    </option>
+                                                )
+                                            )}
                                         </S.Select>
                                     </S.Field>
                                     <S.Field>
                                         <S.Label htmlFor="options-card-lang">
-                                            Langue des cartes
+                                            {t.options.language.cards}
                                         </S.Label>
                                         <S.Hint>
-                                            Titres, lore et gametext affichés
+                                            {t.options.language.cardsHint}
                                         </S.Hint>
                                         <S.Select
                                             id="options-card-lang"
                                             value={cardLanguage}
                                             onChange={(event) =>
-                                                setCardLanguage(
+                                                onSelectLanguage(
+                                                    'cards',
                                                     event.target.value
                                                 )
                                             }
                                         >
-                                            {CARD_LANGUAGES.map((lang) => (
-                                                <option
-                                                    key={lang.value}
-                                                    value={lang.value}
-                                                >
-                                                    {lang.label}
-                                                </option>
-                                            ))}
+                                            {SUPPORTED_LANGUAGES.map(
+                                                (lang: SupportedLanguage) => (
+                                                    <option
+                                                        key={lang}
+                                                        value={lang}
+                                                    >
+                                                        {
+                                                            LANGUAGE_NATIVE_LABELS[
+                                                                lang
+                                                            ]
+                                                        }
+                                                    </option>
+                                                )
+                                            )}
                                         </S.Select>
                                     </S.Field>
                                 </S.FieldGroup>
@@ -312,34 +340,35 @@ export const OptionsModal: React.FC<OptionsModalProps> = ({ onClose }) => {
 
                         {tab === 'account' && (
                             <>
-                                <S.SectionTitle>Compte</S.SectionTitle>
+                                <S.SectionTitle>
+                                    {t.options.account.title}
+                                </S.SectionTitle>
                                 <S.SectionHint>
-                                    Données personnelles et listes — maquette
-                                    pour l’instant.
+                                    {t.options.account.hint}
                                 </S.SectionHint>
                                 <S.AccountList>
                                     <S.AccountItem type="button" disabled>
                                         <S.AccountItemTitle>
-                                            Données personnelles
+                                            {t.options.account.personal}
                                         </S.AccountItemTitle>
                                         <S.AccountItemHint>
-                                            Pseudo, e-mail… — bientôt
+                                            {t.options.account.personalHint}
                                         </S.AccountItemHint>
                                     </S.AccountItem>
                                     <S.AccountItem type="button" disabled>
                                         <S.AccountItemTitle>
-                                            Avatar
+                                            {t.options.account.avatar}
                                         </S.AccountItemTitle>
                                         <S.AccountItemHint>
-                                            Choisir ou changer — bientôt
+                                            {t.options.account.avatarHint}
                                         </S.AccountItemHint>
                                     </S.AccountItem>
                                     <S.AccountItem type="button" disabled>
                                         <S.AccountItemTitle>
-                                            Contacts
+                                            {t.options.account.contacts}
                                         </S.AccountItemTitle>
                                         <S.AccountItemHint>
-                                            Liste d’amis — bientôt
+                                            {t.options.account.contactsHint}
                                         </S.AccountItemHint>
                                     </S.AccountItem>
                                     <S.AccountItem
@@ -357,10 +386,10 @@ export const OptionsModal: React.FC<OptionsModalProps> = ({ onClose }) => {
                                         }}
                                     >
                                         <S.AccountItemTitle>
-                                            Mes decks
+                                            {t.options.account.decks}
                                         </S.AccountItemTitle>
                                         <S.AccountItemHint>
-                                            Gérer la liste de decks
+                                            {t.options.account.decksHint}
                                         </S.AccountItemHint>
                                     </S.AccountItem>
                                 </S.AccountList>
@@ -373,28 +402,28 @@ export const OptionsModal: React.FC<OptionsModalProps> = ({ onClose }) => {
                     {!quitConfirm ? (
                         <>
                             <S.GhostButton type="button" onClick={onClose}>
-                                Fermer
+                                {t.options.close}
                             </S.GhostButton>
                             <S.DangerButton
                                 type="button"
                                 onClick={() => setQuitConfirm(true)}
                             >
-                                Quitter le jeu
+                                {t.options.quit}
                             </S.DangerButton>
                         </>
                     ) : (
                         <S.QuitConfirm>
                             <S.QuitPrompt>
-                                Quitter ? (pas d’écran d’accueil pour l’instant)
+                                {t.options.quitPrompt}
                             </S.QuitPrompt>
                             <S.GhostButton
                                 type="button"
                                 onClick={() => setQuitConfirm(false)}
                             >
-                                Annuler
+                                {t.options.cancel}
                             </S.GhostButton>
                             <S.DangerButton type="button" disabled>
-                                Confirmer
+                                {t.options.confirm}
                             </S.DangerButton>
                         </S.QuitConfirm>
                     )}

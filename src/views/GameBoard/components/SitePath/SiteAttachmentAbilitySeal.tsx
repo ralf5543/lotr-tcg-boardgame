@@ -22,6 +22,7 @@ import {
 import { FormattedText } from '../../../../utils/FormattedText';
 import { getCardText } from '../../../../utils/i18n';
 import { useHoverCard } from '../../../../contexts/HoverCardContext';
+import { usePreferencesOptional } from '../../../../contexts/PreferencesContext';
 import * as CardS from '../Card/styles';
 import * as S from './styles';
 
@@ -76,6 +77,9 @@ export const SiteAttachmentAbilitySeal: React.FC<
     onActivateAbility,
 }) => {
     const { setHoveredCard } = useHoverCard();
+    const prefs = usePreferencesOptional();
+    const cardLang = prefs?.cardLanguage ?? 'fr';
+    const uiLang = prefs?.uiLanguage ?? 'fr';
     const [isAbilityMenuOpen, setIsAbilityMenuOpen] = useState(false);
     const [abilityBubbleCoords, setAbilityBubbleCoords] = useState({
         top: 0,
@@ -85,7 +89,7 @@ export const SiteAttachmentAbilitySeal: React.FC<
     const bubbleRef = useRef<HTMLDivElement>(null);
 
     const weather = isWeatherAttachment(card);
-    const { title } = getCardText(card, 'fr');
+    const { title } = getCardText(card, cardLang);
     const label = title || card.id;
     const fpId = G?.fpPlayerId || '0';
     const owns = viewerOwnsAttachment(card, localPlayerId, fpId);
@@ -243,7 +247,8 @@ export const SiteAttachmentAbilitySeal: React.FC<
                                     formatAbilityLabelParts(
                                         ability,
                                         source,
-                                        card
+                                        card,
+                                        uiLang
                                     );
                                 return (
                                     <li

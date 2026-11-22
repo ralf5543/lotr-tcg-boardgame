@@ -2,6 +2,7 @@ import React, { useEffect, useMemo } from 'react';
 import type { CardState } from '../../../../game/types';
 import { Card } from '../Card';
 import { groupCardsForDisplay } from '../../../../utils/groupCardsForDisplay';
+import { useUiMessages } from '../../../../i18n/ui/useUiMessages';
 import * as S from './styles';
 
 export interface CardZoneSection {
@@ -49,12 +50,14 @@ export const CardZoneOverlay: React.FC<CardZoneOverlayProps> = ({
     cards = [],
     sections,
     currentSiteIndex = 0,
-    emptyMessage = 'Cette pile est vide.',
+    emptyMessage,
     onClose,
     selectableCardIds,
     onSelectCard,
     viewportFixed = false,
 }) => {
+    const ui = useUiMessages();
+    const resolvedEmpty = emptyMessage ?? ui.chrome.overlay.emptyPile;
     const selectable = useMemo(() => {
         if (!selectableCardIds?.length) return null;
         return new Set(selectableCardIds.filter(Boolean));
@@ -83,16 +86,14 @@ export const CardZoneOverlay: React.FC<CardZoneOverlayProps> = ({
     const resolvedSubtitle =
         subtitle ??
         (totalCards === 0
-            ? 'Aucune carte'
+            ? ui.chrome.overlay.noCards
             : isPickMode
-              ? `${totalCards} carte${totalCards > 1 ? 's' : ''} · choisissez une carte jouable`
-              : totalCards === 1
-                ? '1 carte · ordre : dernière en haut de pile en premier'
-                : `${totalCards} cartes · ordre : dernière en haut de pile en premier`);
+              ? ui.chrome.overlay.cardsPick(totalCards)
+              : ui.chrome.overlay.cardsOrder(totalCards));
 
     const renderSectionCards = (sectionCards: CardState[]) => {
         if (sectionCards.length === 0) {
-            return <S.EmptyState>{emptyMessage}</S.EmptyState>;
+            return <S.EmptyState>{resolvedEmpty}</S.EmptyState>;
         }
 
         const grouped = groupCardsForDisplay(sectionCards);
@@ -129,7 +130,9 @@ export const CardZoneOverlay: React.FC<CardZoneOverlayProps> = ({
                         >
                             {count > 1 && (
                                 <S.CountBadge
-                                    aria-label={`${count} exemplaires`}
+                                    aria-label={ui.chrome.overlay.copies(
+                                        count
+                                    )}
                                 >
                                     ×{count}
                                 </S.CountBadge>
@@ -162,7 +165,7 @@ export const CardZoneOverlay: React.FC<CardZoneOverlayProps> = ({
                 </S.TitleBlock>
                 <S.CloseButton
                     type="button"
-                    aria-label="Fermer"
+                    aria-label={ui.chrome.common.close}
                     onClick={onClose}
                 >
                     ×
@@ -171,7 +174,7 @@ export const CardZoneOverlay: React.FC<CardZoneOverlayProps> = ({
 
             <S.GridScroll onClick={(event) => event.stopPropagation()}>
                 {totalCards === 0 ? (
-                    <S.EmptyState>{emptyMessage}</S.EmptyState>
+                    <S.EmptyState>{resolvedEmpty}</S.EmptyState>
                 ) : (
                     resolvedSections.map((section) => (
                         <S.Section key={section.title || 'main'}>

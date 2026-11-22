@@ -11,6 +11,7 @@ import { useHoverCard } from '../../../../contexts/HoverCardContext';
 import { useImageSrcFallback } from '../../../../utils/useImageSrcFallback';
 import { usePulseOnChange } from '../../hooks/usePulseOnChange';
 import { TwilightPool } from '../TwilightPool';
+import { useUiMessages } from '../../../../i18n/ui/useUiMessages';
 import * as S from './styles';
 
 export type OutOfPlayZoneKey =
@@ -74,9 +75,6 @@ interface OutOfPlayRailProps {
     sendChatMessage?: (payload: unknown) => void;
 }
 
-const threatLabel = (count: number): string =>
-    count <= 0 ? '' : count === 1 ? '1 menace' : `${count} menaces`;
-
 const pileCountLabel = (count: number): string =>
     count > 0 ? `\n${count}` : '';
 
@@ -85,23 +83,24 @@ const DeckBlock: React.FC<{
     owner: 'adverse' | 'toi';
     count: number;
 }> = ({ owner, count }) => {
+    const ui = useUiMessages();
     const pulseGen = usePulseOnChange(count);
-    const ownerPrefix = owner === 'adverse' ? 'Adv. ' : '';
+    const ownerPrefix = owner === 'adverse' ? ui.chrome.rail.advPrefix : '';
     const empty = count <= 0;
 
     return (
         <S.DeckBlock
             $empty={empty}
             $pulseGen={pulseGen}
-            aria-label={`${ownerPrefix}Pioche${empty ? ', vide' : `, ${count} cartes`} (non consultable)`}
-            title="Pioche — face cachée, non consultable"
+            aria-label={`${ownerPrefix}${ui.chrome.rail.drawDeck}${empty ? `, ${ui.chrome.rail.empty}` : `, ${ui.chrome.rail.cardsCount(count)}`}`}
+            title={ui.chrome.rail.drawDeckTitle}
         >
             {!empty && (
                 <S.DeckBack src="interface/lotr_cardback.webp" alt="" />
             )}
             <S.PileLabel>
                 {ownerPrefix}
-                Pioche
+                {ui.chrome.rail.drawDeck}
                 {`\n${count}`}
             </S.PileLabel>
         </S.DeckBlock>
@@ -123,28 +122,37 @@ const PileBlock: React.FC<{
     threatLimit = 0,
     onOpen,
 }) => {
+    const ui = useUiMessages();
     const showThreats = variant === 'cemetery' && threats > 0;
-    const caption = threatLabel(threats);
-    const ownerPrefix = owner === 'adverse' ? 'Adv. ' : '';
-    const zoneName = variant === 'cemetery' ? 'Cimetière' : 'Défausse';
+    const caption =
+        threats <= 0
+            ? ''
+            : threats === 1
+              ? ui.chrome.rail.threatOne
+              : ui.chrome.rail.threats(threats);
+    const ownerPrefix = owner === 'adverse' ? ui.chrome.rail.advPrefix : '';
+    const zoneName =
+        variant === 'cemetery'
+            ? ui.chrome.rail.cemetery
+            : ui.chrome.rail.discard;
 
     return (
         <S.PileBlock
             type="button"
             $variant={variant}
             onClick={onOpen}
-            aria-label={`${ownerPrefix}${zoneName}${count > 0 ? `, ${count} cartes` : ', vide'}`}
+            aria-label={`${ownerPrefix}${zoneName}${count > 0 ? `, ${ui.chrome.rail.cardsCount(count)}` : `, ${ui.chrome.rail.empty}`}`}
         >
             {showThreats && (
                 <S.ThreatDots
                     aria-label={
                         threatLimit > 0
-                            ? `${caption} (limite ${threatLimit})`
+                            ? `${caption} (${ui.chrome.rail.threatLimit(threatLimit)})`
                             : caption
                     }
                     title={
                         threatLimit > 0
-                            ? `${caption} · limite ${threatLimit} compagnons`
+                            ? `${caption} · ${ui.chrome.rail.threatLimit(threatLimit)}`
                             : caption
                     }
                 >
@@ -173,18 +181,19 @@ const RemovedBlock: React.FC<{
     count: number;
     onOpen: () => void;
 }> = ({ owner, count, onOpen }) => {
+    const ui = useUiMessages();
     if (count <= 0) return null;
-    const ownerPrefix = owner === 'adverse' ? 'Adv. ' : '';
+    const ownerPrefix = owner === 'adverse' ? ui.chrome.rail.advPrefix : '';
     return (
         <S.PileRow>
             <S.RemovedBlock
                 type="button"
                 onClick={onOpen}
-                aria-label={`${ownerPrefix}Cartes retirées du jeu, ${count} cartes`}
+                aria-label={`${ownerPrefix}${ui.chrome.rail.removed(count)}`}
             >
                 <S.PileLabel>
                     {ownerPrefix}
-                    Retirées du jeu · {count}
+                    {ui.chrome.rail.removed(count)}
                 </S.PileLabel>
             </S.RemovedBlock>
         </S.PileRow>
@@ -318,8 +327,11 @@ export const OutOfPlayRail: React.FC<OutOfPlayRailProps> = ({
     chatMessages,
     sendChatMessage,
 }) => {
+    const ui = useUiMessages();
     const holderLabel =
-        initiativeHolder === 'FREE_PEOPLE' ? 'Peuples Libres' : 'Ombre';
+        initiativeHolder === 'FREE_PEOPLE'
+            ? ui.chrome.common.freePeoples
+            : ui.chrome.common.shadow;
     const prevHolderRef = useRef(initiativeHolder);
     const [pulseKey, setPulseKey] = useState(0);
     const [feed, setFeed] = useState<FeedEntry[]>([]);
@@ -443,10 +455,10 @@ export const OutOfPlayRail: React.FC<OutOfPlayRailProps> = ({
                     key={pulseKey}
                     $mine={localHasInitiative}
                     $pulse={pulseKey > 0}
-                    title="Le joueur Peuples Libres a l’initiative s’il a au moins 4 cartes en main ; sinon l’Ombre l’a."
+                    title={ui.chrome.rail.initiativeTitle}
                 >
                     <S.InitiativeChipLabel $mine={localHasInitiative}>
-                        Initiative
+                        {ui.chrome.rail.initiative}
                     </S.InitiativeChipLabel>
                     <S.InitiativeChipHolder $mine={localHasInitiative}>
                         {holderLabel}
@@ -476,7 +488,10 @@ export const OutOfPlayRail: React.FC<OutOfPlayRailProps> = ({
                 onOpen={() => onOpenZone('my-removed')}
             />
             <S.ChatSlot>
-                <S.ChatTabs role="tablist" aria-label="Filtrer le journal">
+                <S.ChatTabs
+                    role="tablist"
+                    aria-label={ui.chrome.rail.filterFeed}
+                >
                     <S.ChatTab
                         type="button"
                         role="tab"
@@ -484,7 +499,7 @@ export const OutOfPlayRail: React.FC<OutOfPlayRailProps> = ({
                         $active={feedTab === 'journal'}
                         onClick={() => setFeedTab('journal')}
                     >
-                        Journal
+                        {ui.chrome.rail.journal}
                     </S.ChatTab>
                     <S.ChatTab
                         type="button"
@@ -493,22 +508,22 @@ export const OutOfPlayRail: React.FC<OutOfPlayRailProps> = ({
                         $active={feedTab === 'chat'}
                         onClick={() => setFeedTab('chat')}
                     >
-                        Chat
+                        {ui.chrome.rail.chat}
                     </S.ChatTab>
                 </S.ChatTabs>
                 <S.ChatFeed
                     aria-live="polite"
                     aria-label={
                         feedTab === 'chat'
-                            ? 'Messages de chat'
-                            : 'Journal de la partie'
+                            ? ui.chrome.rail.chatMessages
+                            : ui.chrome.rail.gameJournal
                     }
                 >
                     {visibleFeed.length === 0 ? (
                         <S.ChatEmpty>
                             {feedTab === 'chat'
-                                ? 'Aucun message de chat'
-                                : 'Journal de la partie'}
+                                ? ui.chrome.rail.noChat
+                                : ui.chrome.rail.gameJournal}
                         </S.ChatEmpty>
                     ) : (
                         visibleFeed.map((entry) =>
@@ -548,7 +563,9 @@ export const OutOfPlayRail: React.FC<OutOfPlayRailProps> = ({
                             ) : (
                                 <S.ChatEntry key={entry.key} $kind="chat">
                                     <S.ChatSender $mine={entry.mine}>
-                                        {entry.mine ? 'Vous' : entry.senderName}
+                                        {entry.mine
+                                            ? ui.chrome.common.you
+                                            : entry.senderName}
                                     </S.ChatSender>
                                     {entry.text}
                                 </S.ChatEntry>
@@ -563,17 +580,19 @@ export const OutOfPlayRail: React.FC<OutOfPlayRailProps> = ({
                         value={draft}
                         onChange={(event) => setDraft(event.target.value)}
                         placeholder={
-                            canSend ? 'Écrire…' : 'Chat indisponible'
+                            canSend
+                                ? ui.chrome.rail.writePlaceholder
+                                : ui.chrome.rail.chatUnavailable
                         }
                         disabled={!canSend}
                         maxLength={400}
-                        aria-label="Message de chat"
+                        aria-label={ui.chrome.rail.chatMessageAria}
                     />
                     <S.ChatSend
                         type="submit"
                         disabled={!canSend || !draft.trim()}
                     >
-                        Envoyer
+                        {ui.chrome.rail.send}
                     </S.ChatSend>
                 </S.ChatForm>
             </S.ChatSlot>

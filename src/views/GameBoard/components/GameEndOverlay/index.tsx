@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 import type { GameResult } from '../../../../game/types';
-import { gameEndTitleForViewer } from '../../../../game/logic/gameEnd';
+import { useUiMessages } from '../../../../i18n/ui/useUiMessages';
 import * as S from './styles';
 
 const MATCH_SYNC_CHANNEL = 'lotr_match_sync';
@@ -16,6 +16,8 @@ export const GameEndOverlay: React.FC<Props> = ({
     viewerPlayerId,
     onDismiss,
 }) => {
+    const ui = useUiMessages();
+
     const handleNewGame = useCallback(() => {
         const newMatchId = 'match_' + Date.now();
         const syncChannel = new BroadcastChannel(MATCH_SYNC_CHANNEL);
@@ -28,19 +30,38 @@ export const GameEndOverlay: React.FC<Props> = ({
 
     if (result.overlayDismissed) return null;
 
-    const title = gameEndTitleForViewer(result, viewerPlayerId);
+    const title =
+        viewerPlayerId != null &&
+        viewerPlayerId === result.winnerPlayerId
+            ? ui.chrome.gameEnd.youWin
+            : ui.chrome.gameEnd.namedWins(result.winnerName);
+
+    const name = result.ringBearerName || '';
+    const female = Boolean(result.ringBearerIsFemale);
+    const detail =
+        result.reason === 'SITE_NINE'
+            ? ui.chrome.gameEnd.siteNine(name, female)
+            : result.reason === 'CORRUPTION'
+              ? ui.chrome.gameEnd.corruption(name, female)
+              : result.reason === 'RING_BEARER_KILLED'
+                ? ui.chrome.gameEnd.ringBearerKilled(name)
+                : result.detail;
 
     return (
-        <S.Veil role="dialog" aria-modal="true" aria-labelledby="game-end-title">
+        <S.Veil
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="game-end-title"
+        >
             <S.Panel>
                 <S.Title id="game-end-title">{title}</S.Title>
-                <S.Reason>{result.detail}</S.Reason>
+                <S.Reason>{detail}</S.Reason>
                 <S.Actions>
                     <S.PrimaryButton type="button" onClick={handleNewGame}>
-                        Nouvelle partie
+                        {ui.chrome.gameEnd.newGame}
                     </S.PrimaryButton>
                     <S.SecondaryButton type="button" onClick={onDismiss}>
-                        Regarder le plateau
+                        {ui.chrome.gameEnd.watchBoard}
                     </S.SecondaryButton>
                 </S.Actions>
             </S.Panel>

@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { usePreferencesOptional } from '../../../../contexts/PreferencesContext';
+import { getUiMessages } from '../../../../i18n/ui';
 import * as S from './styles';
 
 export type ActiveTab = 'hand' | 'sites' | 'none';
@@ -34,6 +36,9 @@ export const Dock: React.FC<DockProps> = React.memo(
         onOpenOptions,
     }) => {
         const [activeTab, setActiveTab] = useState<ActiveTab>('hand');
+        const uiLanguage =
+            usePreferencesOptional()?.uiLanguage ?? 'fr';
+        const t = getUiMessages(uiLanguage);
 
         useEffect(() => {
             if (requestedTab) {
@@ -59,22 +64,22 @@ export const Dock: React.FC<DockProps> = React.memo(
                         $isActive={activeTab === 'hand'}
                         onClick={() => toggleTab('hand')}
                     >
-                        🃏 Main ({handCount})
+                        🃏 {t.dock.hand} ({handCount})
                     </S.DockButton>
                     <S.DockButton
                         $isActive={activeTab === 'sites'}
                         onClick={() => toggleTab('sites')}
                     >
-                        🏰 Sites ({sitesCount})
+                        🏰 {t.dock.sites} ({sitesCount})
                     </S.DockButton>
                     {onOpenOptions && (
                         <S.DockButton
                             type="button"
-                            aria-label="Options"
+                            aria-label={t.dock.options}
                             onClick={onOpenOptions}
                         >
                             <GearIcon />
-                            Options
+                            {t.dock.options}
                         </S.DockButton>
                     )}
                 </S.DockBar>

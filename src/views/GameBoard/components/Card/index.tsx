@@ -7,8 +7,9 @@ import type {
     GameState,
 } from '../../../../game/types';
 import * as S from './styles';
-import { TRANSLATIONS } from '../../../../game/translations';
 import { useHoverCard } from '../../../../contexts/HoverCardContext';
+import { usePreferencesOptional } from '../../../../contexts/PreferencesContext';
+import { getCardChrome } from '../../../../i18n/cardChrome';
 import type { CardSignet } from '../../../../game/types';
 import { FormattedText } from '../../../../utils/FormattedText';
 import { KeywordBadge } from '../KeywordBadge';
@@ -277,7 +278,7 @@ export const Card: React.FC<CardProps> = ({
     isActionable,
     burdens = 0,
     isFaceDown: isFaceDownProp,
-    currentLang = 'fr',
+    currentLang: currentLangProp,
     phase,
     playerID,
     isStackedOnSite = false,
@@ -290,6 +291,9 @@ export const Card: React.FC<CardProps> = ({
     const targeting = useOptionalTargeting();
     const { myPlayerId } = useFaction();
     const localFaction = useLocalFaction();
+    const prefs = usePreferencesOptional();
+    const currentLang = currentLangProp ?? prefs?.cardLanguage ?? 'fr';
+    const chrome = getCardChrome(currentLang);
     const recoilDown = isWoundRecoilDown(card?.kind, localFaction, isOpponent);
     const cardPickId = card?.instanceId || card?.id;
     const isDesignationPick =
@@ -652,30 +656,17 @@ export const Card: React.FC<CardProps> = ({
         setHoveredCard(null);
     };
 
-    const translatedType = card.type
-        ? TRANSLATIONS.type[card.type] || card.type
-        : null;
-
-    const translatedSubtype = card.subtype
-        ? TRANSLATIONS.subtype[card.subtype] || card.subtype
-        : undefined;
-
+    const translatedType = chrome.type(card.type);
+    const translatedSubtype =
+        chrome.subtype(card.subtype) || undefined;
     const translatedPhases = (card.phases || [])
-        .map(
-            (phase) =>
-                TRANSLATIONS.phase[
-                    phase as keyof typeof TRANSLATIONS.phase
-                ] || phase
-        )
+        .map((phase) => chrome.phase(phase) || phase)
         .filter(Boolean);
     const phaseLabel =
         translatedPhases.length > 0
-            ? translatedPhases.join(' ou ')
+            ? translatedPhases.join(` ${chrome.or} `)
             : undefined;
-
-    const translatedRace = card.race
-        ? TRANSLATIONS.race[card.race] || card.race
-        : null;
+    const translatedRace = chrome.race(card.race);
 
     const handlePointerDown = (e: React.PointerEvent) => {
         if (!isDraggable || isPlayable === false || index === undefined) return;
@@ -970,7 +961,7 @@ export const Card: React.FC<CardProps> = ({
                     {card.home && card.home.length > 0 && (
                         <S.CardType>
                             <S.Separator>•</S.Separator>
-                            {currentLang === 'fr' ? 'Demeure' : 'Home'}{' '}
+                            {chrome.home}{' '}
                             {renderAllyHomeValue(card.home)}
                         </S.CardType>
                     )}
@@ -1175,7 +1166,8 @@ export const Card: React.FC<CardProps> = ({
                                     formatAbilityLabelParts(
                                         ability,
                                         source,
-                                        card
+                                        card,
+                                        prefs?.uiLanguage ?? 'fr'
                                     );
                                 return (
                                     <li

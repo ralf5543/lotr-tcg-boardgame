@@ -2,10 +2,12 @@ import React from 'react';
 import * as S from './styles';
 import type { Ctx } from 'boardgame.io';
 import type { CardState, GameState } from '../../../../game/types';
-import { TRANSLATIONS } from '../../../../game/translations';
 import { canonicalPhaseName } from '../../canonicalPhaseName';
 import { BiddingWidget } from '../BiddingWidget';
 import { useTargeting } from '../../../../contexts/TargetingContext';
+import { usePreferencesOptional } from '../../../../contexts/PreferencesContext';
+import { useUiMessages } from '../../../../i18n/ui/useUiMessages';
+import { shortPhaseLabel } from '../../../../i18n/ui';
 import { findTargetCard } from '../../../../utils/cardUtils';
 import { getAbilityToastClause } from '../../../../utils/i18n';
 import { FormattedText } from '../../../../utils/FormattedText';
@@ -124,6 +126,11 @@ export const GameControls: React.FC<GameControlsProps> = ({
         requestConfirm,
         stopTargeting,
     } = useTargeting();
+    const prefs = usePreferencesOptional();
+    const cardLanguage = prefs?.cardLanguage ?? 'fr';
+    const uiLanguage = prefs?.uiLanguage ?? 'fr';
+    const ui = useUiMessages();
+    const c = ui.chrome;
 
     if (!G || !ctx) return null;
 
@@ -354,7 +361,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
             | 'STANDARD';
     } = {
         show: false,
-        title: 'ACTION REQUISE',
+        title: c.toast.actionRequired,
         body: '',
         showPassButton: false,
         type: 'STANDARD',
@@ -363,17 +370,17 @@ export const GameControls: React.FC<GameControlsProps> = ({
     if (isBiddingStep) {
         toastConfig = {
             show: true,
-            title: 'ENCHÈRE DE FARDEAUX',
-            body: 'Misez des points-fardeau pour déterminer qui choisira le premier joueur.',
+            title: c.toast.burdenBid,
+            body: c.toast.burdenBidBody,
             showPassButton: false,
             type: 'BIDDING',
         };
     } else if (isChoosingFirstStep) {
         toastConfig = {
             show: true,
-            title: 'CHOIX DU PREMIER JOUEUR',
+            title: c.toast.chooseFirst,
             body: isAuctionWinner
-                ? "Vous avez gagné l'enchère ! Choisissez votre camp."
+                ? c.toast.chooseFirstWin
                 : `${opponentName} choisit qui prend les Peuples Libres…`,
             showPassButton: false,
             type: 'CHOOSING_FIRST',
@@ -381,19 +388,19 @@ export const GameControls: React.FC<GameControlsProps> = ({
     } else if (isMulliganStep) {
         toastConfig = {
             show: true,
-            title: 'PHASE DE MULLIGAN',
+            title: c.toast.mulligan,
             body: hasMadeMulliganChoice
                 ? `En attente du choix de ${opponentName}…`
-                : 'Examinez votre main de 8 cartes. Voulez-vous la garder ou faire un Mulligan ?',
+                : c.toast.mulliganBody,
             showPassButton: false,
             type: 'MULLIGAN',
         };
     } else if (isMusterStep && myMusterState) {
         toastConfig = {
             show: true,
-            title: 'PHASE DE RALLIEMENT (MUSTER)',
+            title: c.toast.muster,
             body: myMusterState.isDone
-                ? `En attente de ${opponentName}…`
+                ? c.common.waitingFor(opponentName)
                 : `Vous avez ${myMusterState.allowedCount} carte(s) avec Rassembleur. Vous pouvez défausser jusqu'à ${myMusterState.allowedCount} carte(s) pour en piocher autant.`,
             showPassButton: false,
             type: 'MUSTER',
@@ -401,8 +408,8 @@ export const GameControls: React.FC<GameControlsProps> = ({
     } else if (isForcedChoiceActive && !isMyTurnToAct) {
         toastConfig = {
             show: true,
-            title: G.pendingForcedChoice?.title || 'CHOIX FORCÉ',
-            body: `En attente de ${opponentName}…`,
+            title: G.pendingForcedChoice?.title || c.toast.forcedChoice,
+            body: c.common.waitingFor(opponentName),
             showPassButton: false,
             type: 'STANDARD',
         };
@@ -435,11 +442,11 @@ export const GameControls: React.FC<GameControlsProps> = ({
             show: true,
             title:
                 G.pendingForcedChoice?.title ||
-                'CHOIX FORCÉ',
+                c.toast.forcedChoice,
             body:
                 G.pendingForcedChoice?.message ||
                 G.statusMessage ||
-                'Choisissez une option.',
+                c.toast.chooseOption,
             showPassButton: false,
             type: 'FORCED_CHOICE',
             forcedOptionLabels: optionLabels,
@@ -456,7 +463,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
             title:
                 G.pendingForcedChoice?.title ||
                 (G.pendingForcedChoice?.needsExertTargets
-                    ? 'AFFAIBLIR'
+                    ? c.toast.exert
                     : 'DÉFAUSSE'),
             body:
                 G.statusMessage ||
@@ -476,16 +483,16 @@ export const GameControls: React.FC<GameControlsProps> = ({
         const siteAbility = siteSource?.abilities?.find(
             (ab) => ab.id === G.pendingSiteStartAbility?.abilityId
         );
-        const siteClause = getAbilityToastClause(siteAbility, siteSource);
+        const siteClause = getAbilityToastClause(siteAbility, siteSource, cardLanguage);
         // Flux en cours (désignation / pioche) : info seule, plus Activer / Passer.
         toastConfig = {
             show: true,
-            title: 'EFFET DU SITE',
+            title: c.toast.siteEffect,
             body: siteClause ? (
                 <FormattedText text={siteClause} />
             ) : (
                 G.statusMessage ||
-                'Vous pouvez utiliser l’effet optionnel de ce site.'
+                c.toast.siteEffectOptional
             ),
             showPassButton: false,
             type: siteStartChoiceLocked
@@ -495,7 +502,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
     } else if (isSiteStartAbilityActive && !isMyTurnToAct) {
         toastConfig = {
             show: true,
-            title: 'EFFET DU SITE',
+            title: c.toast.siteEffect,
             body: `${opponentName} décide d’utiliser l’effet du site…`,
             showPassButton: false,
             type: 'STANDARD',
@@ -510,17 +517,17 @@ export const GameControls: React.FC<GameControlsProps> = ({
         const siteAbility = siteSource?.abilities?.find(
             (ab) => ab.id === G.pendingSiteMoveAbility?.abilityId
         );
-        const siteClause = getAbilityToastClause(siteAbility, siteSource);
+        const siteClause = getAbilityToastClause(siteAbility, siteSource, cardLanguage);
         toastConfig = {
             show: true,
             title: G.pendingSiteMoveAbility?.fromDeparture
-                ? 'EFFET DU SITE QUITTÉ'
-                : 'EFFET DU SITE',
+                ? c.toast.siteEffectLeft
+                : c.toast.siteEffect,
             body: siteClause ? (
                 <FormattedText text={siteClause} />
             ) : (
                 G.statusMessage ||
-                'Vous pouvez utiliser l’effet optionnel de ce site.'
+                c.toast.siteEffectOptional
             ),
             showPassButton: false,
             type: 'SITE_MOVE_ABILITY',
@@ -528,7 +535,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
     } else if (isSiteMoveAbilityActive && !isMyTurnToAct) {
         toastConfig = {
             show: true,
-            title: 'EFFET DU SITE',
+            title: c.toast.siteEffect,
             body: `${opponentName} décide d’utiliser l’effet du site…`,
             showPassButton: false,
             type: 'STANDARD',
@@ -543,15 +550,15 @@ export const GameControls: React.FC<GameControlsProps> = ({
         const siteAbility = siteSource?.abilities?.find(
             (ab) => ab.id === G.pendingSitePhaseAbility?.abilityId
         );
-        const siteClause = getAbilityToastClause(siteAbility, siteSource);
+        const siteClause = getAbilityToastClause(siteAbility, siteSource, cardLanguage);
         toastConfig = {
             show: true,
-            title: 'EFFET DU SITE',
+            title: c.toast.siteEffect,
             body: siteClause ? (
                 <FormattedText text={siteClause} />
             ) : (
                 G.statusMessage ||
-                'Vous pouvez utiliser l’effet optionnel de ce site.'
+                c.toast.siteEffectOptional
             ),
             showPassButton: false,
             type: 'SITE_PHASE_ABILITY',
@@ -559,7 +566,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
     } else if (isSitePhaseAbilityActive && !isMyTurnToAct) {
         toastConfig = {
             show: true,
-            title: 'EFFET DU SITE',
+            title: c.toast.siteEffect,
             body: `${opponentName} décide d’utiliser l’effet du site…`,
             showPassButton: false,
             type: 'STANDARD',
@@ -574,15 +581,15 @@ export const GameControls: React.FC<GameControlsProps> = ({
         const siteAbility = siteSource?.abilities?.find(
             (ab) => ab.id === G.pendingSiteFollowerTransfer?.abilityId
         );
-        const siteClause = getAbilityToastClause(siteAbility, siteSource);
+        const siteClause = getAbilityToastClause(siteAbility, siteSource, cardLanguage);
         toastConfig = {
             show: true,
-            title: 'EFFET DU SITE',
+            title: c.toast.siteEffect,
             body: siteClause ? (
                 <FormattedText text={siteClause} />
             ) : (
                 G.statusMessage ||
-                'Vous pouvez affaiblir un compagnon après le transfert.'
+                c.toast.siteFollowerExert
             ),
             showPassButton: false,
             type: 'SITE_FOLLOWER_TRANSFER',
@@ -590,7 +597,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
     } else if (isSiteFollowerTransferActive && !isMyTurnToAct) {
         toastConfig = {
             show: true,
-            title: 'EFFET DU SITE',
+            title: c.toast.siteEffect,
             body: `${opponentName} décide d’utiliser l’effet du site…`,
             showPassButton: false,
             type: 'STANDARD',
@@ -598,42 +605,42 @@ export const GameControls: React.FC<GameControlsProps> = ({
     } else if (isFpDiscardActive && isMyTurnToAct) {
         toastConfig = {
             show: true,
-            title: 'DÉFAUSSE',
+            title: c.toast.discard,
             body:
                 G.statusMessage ||
-                'Défaussez une possession ou une situation.',
+                c.toast.discardPossessionOrCondition,
             showPassButton: false,
             type: 'FP_DISCARD',
         };
     } else if (isFpDiscardActive && !isMyTurnToAct) {
         toastConfig = {
             show: true,
-            title: 'DÉFAUSSE',
-            body: 'Les Peuples Libres choisissent une possession ou une situation à défausser…',
+            title: c.toast.discard,
+            body: c.toast.fpChooseDiscard,
             showPassButton: false,
             type: 'STANDARD',
         };
     } else if (isSitePhaseDesignationActive && isMyTurnToAct) {
         toastConfig = {
             show: true,
-            title: 'EFFET DU SITE',
+            title: c.toast.siteEffect,
             body:
-                G.statusMessage || 'Défaussez une situation en jeu.',
+                G.statusMessage || c.toast.discardConditionInPlay,
             showPassButton: false,
             type: 'SITE_PHASE_DESIGNATION',
         };
     } else if (isSitePhaseDesignationActive && !isMyTurnToAct) {
         toastConfig = {
             show: true,
-            title: 'EFFET DU SITE',
-            body: 'L’Ombre choisit une situation à défausser…',
+            title: c.toast.siteEffect,
+            body: c.toast.shadowChooseCondition,
             showPassButton: false,
             type: 'STANDARD',
         };
     } else if (isDeadPileRemovalActive && isMyTurnToAct) {
         toastConfig = {
             show: true,
-            title: 'EFFET DU SITE',
+            title: c.toast.siteEffect,
             body:
                 G.statusMessage ||
                 'Placez une carte de votre pile de mort hors jeu.',
@@ -643,7 +650,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
     } else if (isDeadPileRemovalActive && !isMyTurnToAct) {
         toastConfig = {
             show: true,
-            title: 'EFFET DU SITE',
+            title: c.toast.siteEffect,
             body: 'Les Peuples Libres placent une carte de leur pile de mort hors jeu…',
             showPassButton: false,
             type: 'STANDARD',
@@ -651,9 +658,9 @@ export const GameControls: React.FC<GameControlsProps> = ({
     } else if (isStartOfPhaseStep && myStartOfPhaseState) {
         toastConfig = {
             show: true,
-            title: 'DÉBUT DE PHASE',
+            title: c.toast.startOfPhase,
             body: myStartOfPhaseState.isDone
-                ? `En attente de ${opponentName}…`
+                ? c.common.waitingFor(opponentName)
                 : startOfPhaseHasActions
                   ? 'Activez vos effets de début de phase sur vos cartes, ou validez.'
                   : 'Plus d’action disponible. Validez pour continuer.',
@@ -669,11 +676,16 @@ export const GameControls: React.FC<GameControlsProps> = ({
         const { source, ability } = optionalResponseCandidate;
         const isSiteSource =
             source.kind === 'SITE' || source.type === 'SITE';
-        const parts = formatAbilityLabelParts(ability, source);
+        const parts = formatAbilityLabelParts(
+            ability,
+            source,
+            undefined,
+            uiLanguage
+        );
         const shortClause = [parts.cost, parts.effect]
             .filter(Boolean)
             .join(' : ');
-        const siteClause = getAbilityToastClause(ability, source);
+        const siteClause = getAbilityToastClause(ability, source, cardLanguage);
         const bodyText =
             shortClause ||
             siteClause ||
@@ -692,7 +704,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
             title: G.responseWindow?.title || 'RÉPONSE',
             body:
                 G.responseWindow?.message ||
-                'À votre tour de répondre ou de passer.',
+                c.toast.respondOrPass,
             showPassButton: G.responseWindow?.canPass ?? true,
             type: 'RESPONSE',
         };
@@ -710,7 +722,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
                       : `En attente de la réponse de ${opponentName}…`;
         toastConfig = {
             show: true,
-            title: 'RÉPONSE',
+            title: c.toast.response,
             body: waitingBody,
             showPassButton: false,
             type: 'RESPONSE',
@@ -732,20 +744,16 @@ export const GameControls: React.FC<GameControlsProps> = ({
             /\beach time\b/i.test(whenPlayedAbility?.text || '');
         const isStartOfSkirmish = triggerType === 'START_OF_SKIRMISH';
         // Clause de l’ability seule (pas tout le gametext) — textFr ou alignement EN→FR.
-        const clause = getAbilityToastClause(
-            whenPlayedAbility,
-            whenPlayedSource,
-            'fr'
-        );
+        const clause = getAbilityToastClause(whenPlayedAbility, whenPlayedSource, cardLanguage);
         toastConfig = {
             show: true,
             title: fromSite
                 ? 'EFFET DU SITE'
                 : isStartOfSkirmish
-                  ? 'DÉBUT DU COMBAT'
+                  ? c.toast.startOfSkirmish
                   : isEachTime
-                    ? 'CHAQUE FOIS'
-                    : 'QUAND VOUS JOUEZ',
+                    ? c.toast.eachTime
+                    : c.toast.whenYouPlay,
             body: clause ? (
                 <FormattedText text={clause} />
             ) : (
@@ -769,8 +777,8 @@ export const GameControls: React.FC<GameControlsProps> = ({
             whenPlayedAbility?.trigger?.type === 'START_OF_SKIRMISH';
         toastConfig = {
             show: true,
-            title: isStartOfSkirmish ? 'DÉBUT DU COMBAT' : 'EFFET OPTIONNEL',
-            body: `En attente de ${opponentName}…`,
+            title: isStartOfSkirmish ? c.toast.startOfSkirmish : 'EFFET OPTIONNEL',
+            body: c.common.waitingFor(opponentName),
             showPassButton: false,
             type: 'STANDARD',
         };
@@ -784,7 +792,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
             );
             toastConfig = {
                 show: true,
-                title: 'RÉVÉLATION',
+                title: c.toast.reveal,
                 body:
                     revealZone === 'HAND'
                         ? mayDiscard
@@ -798,7 +806,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
         } else {
             toastConfig = {
                 show: true,
-                title: 'RÉVÉLATION',
+                title: c.toast.reveal,
                 body:
                     revealZone === 'HAND'
                         ? `${opponentName} consulte votre main…`
@@ -811,7 +819,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
         const remaining = G.threatWoundsToAssign ?? 0;
         toastConfig = {
             show: true,
-            title: 'MENACES',
+            title: c.toast.threats,
             body:
                 currentPlayerId === fpPlayerId
                     ? `Un compagnon ou un allié est mort. Assignez ${remaining} blessure(s) à vos compagnons.`
@@ -824,7 +832,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
         const isAssigner = String(currentPlayerId) === String(pending.playerId);
         toastConfig = {
             show: true,
-            title: 'BLESSURES DU SITE',
+            title: c.toast.siteWounds,
             body: isAssigner
                 ? `Assignez ${pending.remaining} blessure(s) à vos personnages.`
                 : `${opponentName} assigne les blessures du site…`,
@@ -837,7 +845,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
             title: G.actionWindow?.title || 'À VOTRE TOUR DE RÉAGIR',
             // Message moteur = « Au tour de {nom}… » (vue partagée) ;
             // côté local on parle à la 2ᵉ personne.
-            body: 'À votre tour d’agir ou de passer.',
+            body: c.toast.actOrPass,
             showPassButton: G.actionWindow?.canPass ?? true,
             type: 'STANDARD',
         };
@@ -845,7 +853,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
         toastConfig = {
             show: true,
             title: G.actionWindow?.title || 'TOUR D’ACTION',
-            body: `En attente de ${opponentName}…`,
+            body: c.common.waitingFor(opponentName),
             showPassButton: false,
             type: 'STANDARD',
         };
@@ -856,7 +864,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
         const siteNumber = targetSiteIdx + 1;
         toastConfig = {
             show: true,
-            title: `CHOIX DU SITE ${siteNumber}`,
+            title: c.toast.siteChoiceN(siteNumber),
             body:
                 targetSiteIdx === 0
                     ? 'Choisissez et posez votre premier site depuis votre deck de sites.'
@@ -867,15 +875,15 @@ export const GameControls: React.FC<GameControlsProps> = ({
     } else if (isAwaitingSiteActive) {
         toastConfig = {
             show: true,
-            title: 'CHOIX DU SITE',
-            body: `En attente de ${opponentName}…`,
+            title: c.toast.siteChoice,
+            body: c.common.waitingFor(opponentName),
             showPassButton: false,
             type: 'STANDARD',
         };
     } else if (isShadowRefill) {
         toastConfig = {
             show: true,
-            title: 'RECONSTITUTION DE L’OMBRE',
+            title: c.toast.shadowRefill,
             body: 'Cliquez sur les cartes de votre main pour les défausser si nécessaire, puis validez.',
             showPassButton: false,
             type: 'STANDARD',
@@ -883,7 +891,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
     } else if (isFpRefill) {
         toastConfig = {
             show: true,
-            title: 'RECONSTITUTION DES PEUPLES LIBRES',
+            title: c.toast.fpRefill,
             body: 'Cliquez sur les cartes de votre main pour ajuster à 8 cartes maximum et terminer le tour.',
             showPassButton: false,
             type: 'STANDARD',
@@ -896,7 +904,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
     ) {
         toastConfig = {
             show: true,
-            title: 'AFFECTATION',
+            title: c.toast.assignment,
             body: 'Laissez l’Ombre affecter tous les autres séides non-affectés ?',
             showPassButton: false,
             type: 'ASSIGNMENT_YIELD',
@@ -910,14 +918,14 @@ export const GameControls: React.FC<GameControlsProps> = ({
             currentPlayerId === shadowPlayerId
                 ? {
                       show: true,
-                      title: 'AFFECTATION',
+                      title: c.toast.assignment,
                       body: 'Affectez vos séides restants, ou passez directement aux combats.',
                       showPassButton: false,
                       type: 'ASSIGNMENT_PASS',
                   }
                 : {
                       show: true,
-                      title: 'AFFECTATION',
+                      title: c.toast.assignment,
                       body: 'L’Ombre affecte les séides restants…',
                       showPassButton: false,
                       type: 'STANDARD',
@@ -934,7 +942,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
     ) {
         toastConfig = {
             show: true,
-            title: 'EFFET DU SITE',
+            title: c.toast.siteEffect,
             body: (
                 <FormattedText
                     text={targetingMessage || 'Choisissez une cible.'}
@@ -951,7 +959,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
     ) {
         toastConfig = {
             show: true,
-            title: 'EFFET DU SITE',
+            title: c.toast.siteEffect,
             body: (
                 <FormattedText
                     text={
@@ -1018,7 +1026,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
     } else if (G.pendingPlay && G.pendingPlay.playerId !== currentPlayerId) {
         toastConfig = {
             show: true,
-            title: 'CARTE EN COURS',
+            title: c.toast.pendingCard,
             body: `${opponentName} désigne une cible.`,
             showPassButton: false,
             type: 'STANDARD',
@@ -1064,7 +1072,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
 
         if (isStartOfPhaseStep && myStartOfPhaseState) {
             if (myStartOfPhaseState.isDone) {
-                return `En attente de ${opponentName}…`;
+                return c.common.waitingFor(opponentName);
             }
             return startOfPhaseHasActions
                 ? 'Activez vos effets de début de phase sur vos cartes, ou validez.'
@@ -1135,8 +1143,8 @@ export const GameControls: React.FC<GameControlsProps> = ({
 
         if (isSitePhaseDesignationActive) {
             return isMyTurnToAct
-                ? 'Défaussez une situation en jeu.'
-                : 'L’Ombre choisit une situation à défausser…';
+                ? c.toast.discardConditionInPlay
+                : c.toast.shadowChooseCondition;
         }
 
         if (isWhenPlayedChoiceActive) {
@@ -1147,7 +1155,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
 
         if (isResponseWindowActive) {
             if (isMyTurnToAct) {
-                return 'À votre tour de répondre ou de passer.';
+                return c.toast.respondOrPass;
             }
             if (G.pendingEvent?.type === 'ABOUT_TO_FORCE_ASSIGN') {
                 return `${opponentName} décide s’il empêche l’affectation…`;
@@ -1157,7 +1165,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
 
         if (isActionWindowActive) {
             return isMyTurnToAct
-                ? 'À votre tour d’agir ou de passer.'
+                ? c.toast.actOrPass
                 : `En attente de la réaction de ${opponentName}…`;
         }
 
@@ -1236,7 +1244,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
     };
 
     const currentNarrativeLog =
-        G.statusMessage || statusMessage || 'Partie en cours';
+        G.statusMessage || statusMessage || c.toast.gameInProgress;
     const instructionText = getInstructionText();
 
     // Toaster ouvert = source live. Sinon : une seule ligne dans le bandeau.
@@ -1247,11 +1255,11 @@ export const GameControls: React.FC<GameControlsProps> = ({
         ? instructionText || currentNarrativeLog
         : null;
 
-    const phaseLabelKey = canonicalPhaseName(ctx.phase).toUpperCase();
+    const phaseLabelKey = canonicalPhaseName(ctx.phase);
     const phaseLabel =
-        TRANSLATIONS.phase[
-            phaseLabelKey as keyof typeof TRANSLATIONS.phase
-        ] || phaseLabelKey || 'SETUP';
+        shortPhaseLabel(c, phaseLabelKey) ||
+        phaseLabelKey.toUpperCase() ||
+        c.phases.short.setup;
 
     return (
         <>
@@ -1259,7 +1267,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
             <S.ControlsContainer>
                 <S.PhaseBanner>
                     <S.InfoGroup>
-                        <S.PhaseBadge>Phase : {phaseLabel}</S.PhaseBadge>
+                        <S.PhaseBadge>{c.banner.phase} {phaseLabel}</S.PhaseBadge>
 
                         {actingPlayer?.profile?.avatar && (
                             <img
@@ -1277,7 +1285,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
                         )}
 
                         <S.PlayerBadge $isCurrentPlayer={isMyTurnToAct}>
-                            Joueur actif :{' '}
+                            {c.banner.activePlayer}{' '}
                             <strong>
                                 {playerDisplayName(G, actingPlayerId)}
                             </strong>
@@ -1304,7 +1312,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
                             <S.ActionButton
                                 onClick={() => moves.endFellowshipPhase?.()}
                             >
-                                Fin de Compagnie ➔
+                                {c.banner.endFellowship}
                             </S.ActionButton>
                         )}
 
@@ -1313,7 +1321,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
                             <S.ActionButton
                                 onClick={() => moves.endShadowPhase?.()}
                             >
-                                Fin de l'Ombre ➔
+                                {c.banner.endShadow}
                             </S.ActionButton>
                         )}
 
@@ -1322,7 +1330,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
                             <S.ActionButton
                                 onClick={() => moves.confirmHandRefill?.()}
                             >
-                                Valider la main (Ombre) 🃏
+                                {c.banner.validateShadowHand}
                             </S.ActionButton>
                         )}
 
@@ -1338,7 +1346,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
                                         }
                                         onClick={() => moves.moveNextSite?.()}
                                     >
-                                        Avancer au site 🏕️
+                                        {c.banner.moveToSite}
                                     </S.ActionButton>
                                 )}
                                 {!G.forceChooseMoveAgain && (
@@ -1346,7 +1354,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
                                         $variant="choice"
                                         onClick={() => moves.endTurnChoice?.()}
                                     >
-                                        Terminer le tour 🏁
+                                        {c.banner.endTurn}
                                     </S.ActionButton>
                                 )}
                             </>
@@ -1357,7 +1365,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
                             <S.ActionButton
                                 onClick={() => moves.confirmHandRefill?.()}
                             >
-                                Valider la main & Fin de tour 🏁
+                                {c.banner.validateHandEndTurn}
                             </S.ActionButton>
                         )}
                     </S.ActionGroup>
@@ -1401,7 +1409,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
                                             moves.chooseFirstPlayer?.(true)
                                         }
                                     >
-                                        Jouer Premier (Peuples Libres)
+                                        {c.toast.playFirstFp}
                                     </S.ActionButton>
                                     <S.ActionButton
                                         $variant="choice"
@@ -1409,7 +1417,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
                                             moves.chooseFirstPlayer?.(false)
                                         }
                                     >
-                                        Jouer Second (Ombre)
+                                        {c.toast.playSecondShadow}
                                     </S.ActionButton>
                                 </div>
                             )}
@@ -1430,7 +1438,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
                                             moves.submitMulliganChoice?.(false)
                                         }
                                     >
-                                        Garder ma main
+                                        {c.toast.keepHand}
                                     </S.ActionButton>
                                     <S.ActionButton
                                         $variant="choice"
@@ -1438,7 +1446,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
                                             moves.submitMulliganChoice?.(true)
                                         }
                                     >
-                                        Mulligan (8 nouvelles)
+                                        {c.toast.mulliganDraw}
                                     </S.ActionButton>
                                 </div>
                             )}
@@ -1454,8 +1462,10 @@ export const GameControls: React.FC<GameControlsProps> = ({
                                     }}
                                 >
                                     {myMusterState.discardedCount > 0
-                                        ? `Valider (${myMusterState.discardedCount} piochée(s))`
-                                        : 'Ignorer "Rassembleur"'}
+                                        ? c.toast.validateDrawn(
+                                              myMusterState.discardedCount
+                                          )
+                                        : c.toast.ignoreMuster}
                                 </S.ActionButton>
                             )}
 
@@ -1469,7 +1479,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
                                         moves.confirmStartOfPhase?.();
                                     }}
                                 >
-                                    Terminer le début de phase ➔
+                                    {c.toast.endStartOfPhase}
                                 </S.ActionButton>
                             )}
 
@@ -1493,7 +1503,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
                                     moves.passShadowAssignment?.();
                                 }}
                             >
-                                Passer aux combats
+                                {c.toast.proceedToSkirmishes}
                             </S.ActionButton>
                         )}
 
@@ -1505,7 +1515,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
                                         moves.resolveWhenPlayedChoice?.(true);
                                     }}
                                 >
-                                    Activer l’effet
+                                    {c.common.activateEffect}
                                 </S.ActionButton>
                                 <S.ActionButton
                                     $variant="secondary"
@@ -1514,7 +1524,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
                                         moves.resolveWhenPlayedChoice?.(false);
                                     }}
                                 >
-                                    Passer
+                                    {c.common.pass}
                                 </S.ActionButton>
                             </>
                         )}
@@ -1529,7 +1539,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
                                         );
                                     }}
                                 >
-                                    Activer l’effet
+                                    {c.common.activateEffect}
                                 </S.ActionButton>
                                 <S.ActionButton
                                     $variant="secondary"
@@ -1540,7 +1550,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
                                         );
                                     }}
                                 >
-                                    Passer
+                                    {c.common.pass}
                                 </S.ActionButton>
                             </>
                         )}
@@ -1555,7 +1565,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
                                         );
                                     }}
                                 >
-                                    Activer l’effet
+                                    {c.common.activateEffect}
                                 </S.ActionButton>
                                 <S.ActionButton
                                     $variant="secondary"
@@ -1566,7 +1576,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
                                         );
                                     }}
                                 >
-                                    Passer
+                                    {c.common.pass}
                                 </S.ActionButton>
                             </>
                         )}
@@ -1580,7 +1590,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
                                     moves.resolveSiteMoveAbilityChoice?.(false);
                                 }}
                             >
-                                Passer
+                                {c.common.pass}
                             </S.ActionButton>
                         )}
 
@@ -1619,7 +1629,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
                                             );
                                         }}
                                     >
-                                        Activer l’effet
+                                        {c.common.activateEffect}
                                     </S.ActionButton>
                                 )}
                                 <S.ActionButton
@@ -1631,7 +1641,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
                                         );
                                     }}
                                 >
-                                    Passer
+                                    {c.common.pass}
                                 </S.ActionButton>
                             </>
                         )}
@@ -1646,7 +1656,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
                                         );
                                     }}
                                 >
-                                    Activer l’effet
+                                    {c.common.activateEffect}
                                 </S.ActionButton>
                                 <S.ActionButton
                                     $variant="secondary"
@@ -1657,7 +1667,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
                                         );
                                     }}
                                 >
-                                    Passer
+                                    {c.common.pass}
                                 </S.ActionButton>
                             </>
                         )}
@@ -1674,7 +1684,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
                                     );
                                 }}
                             >
-                                Passer
+                                {c.common.pass}
                             </S.ActionButton>
                         )}
 
@@ -1688,7 +1698,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
                                         );
                                     }}
                                 >
-                                    Activer l’effet
+                                    {c.common.activateEffect}
                                 </S.ActionButton>
                                 <S.ActionButton
                                     $variant="secondary"
@@ -1699,7 +1709,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
                                         );
                                     }}
                                 >
-                                    Passer
+                                    {c.common.pass}
                                 </S.ActionButton>
                             </>
                         )}
@@ -1734,7 +1744,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
                                         moves.cancelForcedChoiceMove?.();
                                     }}
                                 >
-                                    Annuler
+                                    {c.common.cancel}
                                 </S.ActionButton>
                             )}
 
@@ -1750,8 +1760,8 @@ export const GameControls: React.FC<GameControlsProps> = ({
                                     }}
                                 >
                                     {G.pendingReveal.aftermath?.mayDiscardOne
-                                        ? 'Valider sans défausser'
-                                        : 'Valider la révélation'}
+                                        ? c.toast.validateWithoutDiscard
+                                        : c.toast.validateReveal}
                                 </S.ActionButton>
                             )}
 
@@ -1767,12 +1777,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
                                         moves.preventPendingEffect?.();
                                     }}
                                 >
-                                    Empêcher (−
-                                    {G.pendingEvent.removeTwilight} crépuscule
-                                    {G.pendingEvent.removeTwilight > 1
-                                        ? 's'
-                                        : ''}
-                                    )
+                                    {c.toast.preventTwilight(G.pendingEvent.removeTwilight)}
                                 </S.ActionButton>
                             )}
 
@@ -1785,10 +1790,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
                                         moves.preventPendingEffect?.();
                                     }}
                                 >
-                                    Empêcher (+
-                                    {G.pendingEvent.addBurdens} fardeau
-                                    {G.pendingEvent.addBurdens > 1 ? 'x' : ''}
-                                    )
+                                    {c.toast.preventBurdens(G.pendingEvent.addBurdens)}
                                 </S.ActionButton>
                             )}
 
@@ -1803,8 +1805,8 @@ export const GameControls: React.FC<GameControlsProps> = ({
                                     }}
                                 >
                                     {G.pendingEvent.preventDiscardUnbound
-                                        ? 'Empêcher (défausser un compagnon dissocié)'
-                                        : 'Empêcher (affaiblir ce compagnon)'}
+                                        ? c.toast.preventDiscardUnbound
+                                        : c.toast.preventExertCompanion}
                                 </S.ActionButton>
                             )}
 
@@ -1818,7 +1820,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
                                         moves.preventPendingEffect?.();
                                     }}
                                 >
-                                    Empêcher (blesser le Porteur)
+                                    {c.toast.preventWoundBearer}
                                 </S.ActionButton>
                             )}
 
@@ -1833,12 +1835,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
                                         moves.preventPendingEffect?.();
                                     }}
                                 >
-                                    Empêcher (+
-                                    {G.pendingEvent.addTwilight} crépuscule
-                                    {G.pendingEvent.addTwilight > 1
-                                        ? 's'
-                                        : ''}
-                                    )
+                                    {c.toast.preventTwilight(G.pendingEvent.addTwilight)}
                                 </S.ActionButton>
                             )}
 
@@ -1853,10 +1850,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
                                         moves.preventPendingEffect?.();
                                     }}
                                 >
-                                    Empêcher (+
-                                    {G.pendingEvent.addBurdens} fardeau
-                                    {G.pendingEvent.addBurdens > 1 ? 'x' : ''}
-                                    )
+                                    {c.toast.preventBurdens(G.pendingEvent.addBurdens)}
                                 </S.ActionButton>
                             )}
 
@@ -1871,7 +1865,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
                                     targetingOnConfirm();
                                 }}
                             >
-                                {targetingConfirmLabel || 'Valider'}
+                                {targetingConfirmLabel || c.toast.validate}
                             </S.ActionButton>
                         )}
 
@@ -1885,7 +1879,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
                                         moves.cancelPendingPlay?.();
                                     }}
                                 >
-                                    Annuler
+                                    {c.common.cancel}
                                 </S.ActionButton>
                             )}
 
@@ -1902,7 +1896,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
                                     }
                                 }}
                             >
-                                PASSER (Ne rien jouer)
+                                {c.toast.passPlayNothing}
                             </S.ActionButton>
                         )}
                     </S.ToastBody>
