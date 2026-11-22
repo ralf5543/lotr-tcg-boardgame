@@ -1,5 +1,5 @@
 import type { LotrMoveContext, CardState, GameState } from '../types';
-import { setRawStatus } from '../../i18n/status';
+import { setStatus } from '../../i18n/status';
 import { getEffectiveVitality } from '../../utils/cardStats';
 import { requestWounds } from '../engine/responseWindow';
 import { enterPhase } from '../logic/phaseEntry';
@@ -47,7 +47,7 @@ function beginShadowArcheryAssign(G: GameState): void {
         G.archeryState.shadowRemainingWounds = shadowWoundsToAssign;
         G.archeryState.fpRemainingWounds = 0;
     }
-    setRawStatus(G, 'Passage à l’assignation des blessures d’Ombre.');
+    setStatus(G, 'ARCHERY_TO_SHADOW_ASSIGN');
 }
 
 function endArcheryPhase(G: GameState, noMinionsLeft: boolean): void {
@@ -57,9 +57,7 @@ function endArcheryPhase(G: GameState, noMinionsLeft: boolean): void {
     G.nextPhase = noMinionsLeft
         ? enterPhase('regroup')
         : enterPhase('assignment');
-    setRawStatus(G, noMinionsLeft
-        ? 'Plus aucun séide sur le plateau ! Passage au Regroupement.'
-        : 'Phase d’Archerie terminée. Passage à l’Assignation.');
+    setStatus(G, noMinionsLeft ? 'ARCHERY_NO_MINIONS' : 'ARCHERY_DONE');
 }
 
 export const assignArcheryWound = (
@@ -120,7 +118,7 @@ export const assignArcheryWound = (
                 endArcheryPhase(G, livingMinions(G).length === 0);
             }
         } else {
-            setRawStatus(G, `Assignation d'archerie FP : ${remainingWounds} restante(s).`);
+            setStatus(G, 'ARCHERY_FP_REMAINING', { count: remainingWounds });
         }
         return;
     }
@@ -160,11 +158,13 @@ export const assignArcheryWound = (
             } else {
                 endArcheryPhase(G, remaining.length === 0);
                 if (remaining.length === 0) {
-                    setRawStatus(G, 'Tous les séides ont été éliminés ! Passage au Regroupement.');
+                    setStatus(G, 'ARCHERY_ALL_MINIONS_DEAD');
                 }
             }
         } else {
-            setRawStatus(G, `Ombre : Assignez encore ${remainingWounds} blessure(s).`);
+            setStatus(G, 'ARCHERY_SHADOW_REMAINING', {
+                count: remainingWounds,
+            });
         }
     }
 };

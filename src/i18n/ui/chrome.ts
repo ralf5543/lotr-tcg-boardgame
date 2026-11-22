@@ -147,6 +147,17 @@ export type ChromeMessages = {
         siteDecideWait: (name: string) => string;
         optionalEffectHint: string;
         escapeCancelHint: string;
+        sitePhaseMode: {
+            designateCompanions: (n: number) => string;
+            designateTarget: (n: number, target: string) => string;
+            discardFromHand: (n: number) => string;
+            removeBurdens: (n: number) => string;
+            playNazgul: string;
+            playMinion: string;
+            playTarget: (target: string) => string;
+            draw: (n: number) => string;
+            discardCondition: string;
+        };
     };
     bidding: {
         bidRecorded: (pointsLabel: string) => string;
@@ -378,6 +389,17 @@ const fr: ChromeMessages = {
         optionalEffectHint:
             'Vous pouvez activer l’effet optionnel de cette carte.',
         escapeCancelHint: ' Échap pour annuler.',
+        sitePhaseMode: {
+            designateCompanions: (n) => `Désignez ${n} compagnon(s)`,
+            designateTarget: (n, target) => `Désignez ${n} ${target}`,
+            discardFromHand: (n) => `défausser ${n} carte(s)`,
+            removeBurdens: (n) => `retirer ${n} fardeau(x)`,
+            playNazgul: 'jouer un Nazgûl',
+            playMinion: 'jouer un séide',
+            playTarget: (target) => `jouer ${target}`,
+            draw: (n) => `piocher ${n} carte(s)`,
+            discardCondition: 'défausser une situation',
+        },
     },
     bidding: {
         bidRecorded: (points) => `Mise enregistrée : ${points}`,
@@ -614,6 +636,17 @@ const en: ChromeMessages = {
         siteDecideWait: (name) => `${name} is deciding whether to use the site…`,
         optionalEffectHint: 'You may activate this card’s optional effect.',
         escapeCancelHint: ' Escape to cancel.',
+        sitePhaseMode: {
+            designateCompanions: (n) => `Spot ${n} companion(s)`,
+            designateTarget: (n, target) => `Spot ${n} ${target}`,
+            discardFromHand: (n) => `discard ${n} card(s)`,
+            removeBurdens: (n) => `remove ${n} burden(s)`,
+            playNazgul: 'play a Nazgûl',
+            playMinion: 'play a minion',
+            playTarget: (target) => `play ${target}`,
+            draw: (n) => `draw ${n} card(s)`,
+            discardCondition: 'discard a condition',
+        },
     },
     bidding: {
         bidRecorded: (points) => `Bid recorded: ${points}`,
@@ -850,6 +883,17 @@ const de: ChromeMessages = {
         siteDecideWait: (name) => `${name} entscheidet über den Ortseffekt…`,
         optionalEffectHint: 'Du darfst den optionalen Effekt dieser Karte aktivieren.',
         escapeCancelHint: ' Escape zum Abbrechen.',
+        sitePhaseMode: {
+            designateCompanions: (n) => `Benenne ${n} Gefährte(n)`,
+            designateTarget: (n, target) => `Benenne ${n} ${target}`,
+            discardFromHand: (n) => `${n} Karte(n) ablegen`,
+            removeBurdens: (n) => `${n} Lastmarke(n) entfernen`,
+            playNazgul: 'einen Nazgûl spielen',
+            playMinion: 'einen Diener spielen',
+            playTarget: (target) => `${target} spielen`,
+            draw: (n) => `${n} Karte(n) ziehen`,
+            discardCondition: 'einen Zustand ablegen',
+        },
     },
     bidding: {
         bidRecorded: (points) => `Gebot gespeichert: ${points}`,
@@ -1090,6 +1134,17 @@ const it: ChromeMessages = {
         optionalEffectHint:
             'Puoi attivare l’effetto opzionale di questa carta.',
         escapeCancelHint: ' Esc per annullare.',
+        sitePhaseMode: {
+            designateCompanions: (n) => `Designa ${n} compagni`,
+            designateTarget: (n, target) => `Designa ${n} ${target}`,
+            discardFromHand: (n) => `scarta ${n} carta/e`,
+            removeBurdens: (n) => `rimuovi ${n} fardello/i`,
+            playNazgul: 'gioca un Nazgûl',
+            playMinion: 'gioca un servitore',
+            playTarget: (target) => `gioca ${target}`,
+            draw: (n) => `pesca ${n} carta/e`,
+            discardCondition: 'scarta una condizione',
+        },
     },
     bidding: {
         bidRecorded: (points) => `Punta registrata: ${points}`,
@@ -1331,6 +1386,17 @@ const es: ChromeMessages = {
         optionalEffectHint:
             'Puedes activar el efecto opcional de esta carta.',
         escapeCancelHint: ' Esc para cancelar.',
+        sitePhaseMode: {
+            designateCompanions: (n) => `Designa ${n} compañero(s)`,
+            designateTarget: (n, target) => `Designa ${n} ${target}`,
+            discardFromHand: (n) => `descarta ${n} carta(s)`,
+            removeBurdens: (n) => `quita ${n} carga(s)`,
+            playNazgul: 'juega un Nazgûl',
+            playMinion: 'juega un esbirro',
+            playTarget: (target) => `juega ${target}`,
+            draw: (n) => `roba ${n} carta(s)`,
+            discardCondition: 'descarta una condición',
+        },
     },
     bidding: {
         bidRecorded: (points) => `Puja registrada: ${points}`,

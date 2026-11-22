@@ -1,5 +1,5 @@
 import type { Ability, CardState, GameState, SiteCardState } from '../types';
-import { setRawStatus } from '../../i18n/status';
+import { setStatus } from '../../i18n/status';
 import { getEffectiveVitality } from '../../utils/cardStats';
 import { requestWounds } from '../engine/responseWindow';
 import { tryOpenFellowshipMoves } from '../engine/responseWindow';
@@ -133,9 +133,11 @@ export function beginSiteMoveCharacterWoundsIfNeeded(
             pendingPhaseAfter: nextPhase,
             companionsOnly: found.companionsOnly || undefined,
         };
-        setRawStatus(G, found.companionsOnly
-            ? `Site : Peuples Libres, assignez ${fpNeed} blessure(s) à vos compagnons (une par allié).`
-            : `Site : Peuples Libres, assignez ${fpNeed} blessure(s) à vos personnages.`);
+        setStatus(
+            G,
+            found.companionsOnly ? 'SITE_WOUNDS_FP_ALLIES' : 'SITE_WOUNDS_FP',
+            { count: fpNeed }
+        );
         return true;
     }
 
@@ -145,7 +147,7 @@ export function beginSiteMoveCharacterWoundsIfNeeded(
         queue: [],
         pendingPhaseAfter: nextPhase,
     };
-    setRawStatus(G, `Site : Ombre, assignez ${shNeed} blessure(s) à vos séides.`);
+    setStatus(G, 'SITE_WOUNDS_SHADOW', { count: shNeed });
     return true;
 }
 
@@ -192,7 +194,9 @@ export function assignSiteCharacterWound(
         if (still.length === 0) {
             pending.remaining = 0;
         } else {
-            setRawStatus(G, `Site : encore ${pending.remaining} blessure(s) à assigner.`);
+            setStatus(G, 'SITE_WOUNDS_REMAINING', {
+                count: pending.remaining,
+            });
             return true;
         }
     }
@@ -207,9 +211,11 @@ export function assignSiteCharacterWound(
         if (need > 0) {
             pending.playerId = nextId;
             pending.remaining = need;
-            setRawStatus(G, nextId === (G.fpPlayerId || '0')
-                    ? `Site : Peuples Libres, assignez ${need} blessure(s).`
-                    : `Site : Ombre, assignez ${need} blessure(s) à vos séides.`);
+            if (nextId === (G.fpPlayerId || '0')) {
+                setStatus(G, 'SITE_WOUNDS_FP_NEXT', { count: need });
+            } else {
+                setStatus(G, 'SITE_WOUNDS_SHADOW', { count: need });
+            }
             return true;
         }
     }

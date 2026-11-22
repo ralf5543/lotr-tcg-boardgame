@@ -1,7 +1,7 @@
 // src/game/engine/moves/regroupMoves.ts
 
 import type { LotrMoveContext } from '../types';
-import { setRawStatus } from '../../i18n/status';
+import { setRawStatus, setStatus } from '../../i18n/status';
 import { drawCardsForPlayer } from '../../utils/drawCards';
 import type { GameState } from '../types';
 import { exitStartOf } from '../logic/phaseEntry';
@@ -86,7 +86,7 @@ export const endTurnChoice = ({ G }: LotrMoveContext) => {
     appendActorJournalNotice(G, fpId, 'DECIDED_STOP', { player: name });
 
     G.regroupStep = 'FP_REFILL';
-    setRawStatus(G, 'Peuples Libres : Ajustez votre main à 8 cartes et validez pour terminer le tour.');
+    setStatus(G, 'REGROUP_FP_REFILL');
 };
 
 export const discardCardFromHand = (
@@ -120,7 +120,7 @@ export const discardCardFromHand = (
         console.warn(
             `⚠️ [moves.discardCardFromHand] Le Joueur ${actingPlayerId} a déjà défaussé sa carte optionnelle.`
         );
-        setRawStatus(G, 'Vous avez déjà défaussé votre carte optionnelle pour ce tour.');
+        setStatus(G, 'REGROUP_ALREADY_DISCARDED');
         return 'INVALID_MOVE';
     }
 
@@ -141,7 +141,7 @@ export const discardCardFromHand = (
         player: name,
         card: cardName,
     });
-    setRawStatus(G, `${name} a défaussé ${cardName}.`);
+    setStatus(G, 'DISCARDED_CARD', { player: name, card: cardName });
     if (watchInitiative) {
         announceInitiativeIfChanged(G, hadInitiative);
     }
@@ -182,12 +182,14 @@ export const confirmHandRefill = ({ G, events, playerID }: LotrMoveContext) => {
         const moveLimit = getMoveLimit(G);
         if ((G.movesThisTurn || 0) >= moveLimit || G.preventMoveAgain) {
             G.regroupStep = 'FP_REFILL';
-            setRawStatus(G, G.preventMoveAgain
-                ? 'Déplacement supplémentaire empêché (site). Reconstitution de la main des Peuples Libres.'
-                : `Limite de déplacement atteinte (${moveLimit}/${moveLimit}). Reconstitution de la main des Peuples Libres.`);
+            if (G.preventMoveAgain) {
+                setStatus(G, 'REGROUP_MOVE_BLOCKED');
+            } else {
+                setStatus(G, 'REGROUP_MOVE_LIMIT', { limit: moveLimit });
+            }
         } else {
             G.regroupStep = 'FP_DECISION';
-            setRawStatus(G, "Peuples Libres : Choisissez d'avancer au site suivant ou de terminer le tour.");
+            setStatus(G, 'REGROUP_FP_DECISION');
         }
         return;
     }
@@ -287,10 +289,12 @@ export const discardForMuster = (
             discarded: musterState.discardedCount,
             allowed: musterState.allowedCount,
         });
-        setRawStatus(
-            G,
-            `${name} a défaussé ${cardName} (ralliement ${musterState.discardedCount}/${musterState.allowedCount}).`
-        );
+        setStatus(G, 'MUSTER_DISCARDED', {
+            player: name,
+            card: cardName,
+            discarded: musterState.discardedCount,
+            allowed: musterState.allowedCount,
+        });
         if (watchInitiative) {
             announceInitiativeIfChanged(G, hadInitiative);
         }
@@ -338,10 +342,10 @@ export const confirmMuster = ({
         appendActorJournalNotice(G, pId, 'MUSTER_VALIDATED', {
             player: name,
         });
-        setRawStatus(
-            G,
-            `${name} a validé son ralliement. En attente de ${playerDisplayName(G, otherPlayerId(pId))}…`
-        );
+        setStatus(G, 'MUSTER_WAITING', {
+            player: name,
+            other: playerDisplayName(G, otherPlayerId(pId)),
+        });
         return;
     }
 

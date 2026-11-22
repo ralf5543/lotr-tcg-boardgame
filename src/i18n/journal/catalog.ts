@@ -725,29 +725,73 @@ function catalogFor(lang: SupportedLanguage): Record<JournalKey, Template> {
                 it: { named: `Combattimento annullato (${p.card}).` },
                 es: { named: `Combate cancelado (${p.card}).` },
             })[lang],
-        GAME_WON: (p) =>
-            ({
+        GAME_WON: (p) => {
+            const name = String(p.ringBearer || 'Le Porteur');
+            const female = Boolean(p.female);
+            const details = {
+                fr:
+                    p.reason === 'SITE_NINE'
+                        ? female
+                            ? `${name}, aidée de ses compagnons, a détruit l’Anneau de Sauron.`
+                            : `${name}, aidé de ses compagnons, a détruit l’Anneau de Sauron.`
+                        : p.reason === 'CORRUPTION'
+                          ? female
+                              ? `${name} a été corrompue par la volonté de l’Anneau.`
+                              : `${name} a été corrompu par la volonté de l’Anneau.`
+                          : `${name} a succombé à ses blessures.`,
+                en:
+                    p.reason === 'SITE_NINE'
+                        ? `${name}, aided by companions, destroyed Sauron’s Ring.`
+                        : p.reason === 'CORRUPTION'
+                          ? `${name} was corrupted by the will of the Ring.`
+                          : `${name} succumbed to wounds.`,
+                de:
+                    p.reason === 'SITE_NINE'
+                        ? `${name} hat mit den Gefährten den Ring Saurons zerstört.`
+                        : p.reason === 'CORRUPTION'
+                          ? `${name} wurde durch den Willen des Rings verdorben.`
+                          : `${name} erlag den Wunden.`,
+                it:
+                    p.reason === 'SITE_NINE'
+                        ? `${name}, con i compagni, ha distrutto l’Anello di Sauron.`
+                        : p.reason === 'CORRUPTION'
+                          ? female
+                              ? `${name} è stata corrotta dalla volontà dell’Anello.`
+                              : `${name} è stato corrotto dalla volontà dell’Anello.`
+                          : `${name} è soccombuto alle ferite.`,
+                es:
+                    p.reason === 'SITE_NINE'
+                        ? `${name}, con sus compañeros, destruyó el Anillo de Sauron.`
+                        : p.reason === 'CORRUPTION'
+                          ? female
+                              ? `${name} fue corrompida por la voluntad del Anillo.`
+                              : `${name} fue corrompido por la voluntad del Anillo.`
+                          : `${name} sucumbió a sus heridas.`,
+            };
+            const detail = details[lang];
+            return {
                 fr: {
-                    vous: `Vous remportez la partie. ${p.detail}`,
-                    named: `${p.player} remporte la partie. ${p.detail}`,
+                    vous: `Vous remportez la partie. ${detail}`,
+                    named: `${p.player} remporte la partie. ${detail}`,
                 },
                 en: {
-                    vous: `You win the game. ${p.detail}`,
-                    named: `${p.player} wins the game. ${p.detail}`,
+                    vous: `You win the game. ${detail}`,
+                    named: `${p.player} wins the game. ${detail}`,
                 },
                 de: {
-                    vous: `Du gewinnst die Partie. ${p.detail}`,
-                    named: `${p.player} gewinnt die Partie. ${p.detail}`,
+                    vous: `Du gewinnst die Partie. ${detail}`,
+                    named: `${p.player} gewinnt die Partie. ${detail}`,
                 },
                 it: {
-                    vous: `Vinci la partita. ${p.detail}`,
-                    named: `${p.player} vince la partita. ${p.detail}`,
+                    vous: `Vinci la partita. ${detail}`,
+                    named: `${p.player} vince la partita. ${detail}`,
                 },
                 es: {
-                    vous: `Ganas la partida. ${p.detail}`,
-                    named: `${p.player} gana la partida. ${p.detail}`,
+                    vous: `Ganas la partida. ${detail}`,
+                    named: `${p.player} gana la partida. ${detail}`,
                 },
-            })[lang],
+            }[lang];
+        },
     };
 }
 

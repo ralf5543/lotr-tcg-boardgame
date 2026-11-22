@@ -1,4 +1,4 @@
-import { setRawStatus } from '../../../i18n/status';
+import { setStatus } from '../../../i18n/status';
 import type {
     AbilityEffect,
     AbilityTargetRef,
@@ -217,6 +217,6 @@ export function cancelSkirmish(G: GameState, skirmishId: string): boolean {
     }
     clearSkirmishTemps(G);
     appendJournalNotice(G, 'SKIRMISH_CANCELLED', { card: name });
-    setRawStatus(G, `Combat annulé (${name}).`);
+    setStatus(G, 'SKIRMISH_CANCELLED', { card: name });
     return true;
 }

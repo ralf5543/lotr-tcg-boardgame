@@ -1,5 +1,5 @@
 import type { Ability, CardState, GameState } from '../../types';
-import { setRawStatus } from '../../../i18n/status';
+import { setRawStatus, setStatus } from '../../../i18n/status';
 import { applyAbilityEffect } from './applyAbilityEffect';
 import {
     abilityOwnerPlayerId,
@@ -113,7 +113,7 @@ export function applyStartOfSkirmishTriggers(
                     abilityId: ability.id,
                     phase: 'skirmish',
                 };
-                setRawStatus(G, 'Vous pouvez activer l’effet optionnel de cette carte.');
+                setStatus(G, 'OPTIONAL_EFFECT_AVAILABLE');
                 pauseActionYieldForResponses(G, ownerId);
                 continue;
             }

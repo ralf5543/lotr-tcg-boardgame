@@ -8,6 +8,7 @@ import { useTargeting } from '../../../../contexts/TargetingContext';
 import { usePreferencesOptional } from '../../../../contexts/PreferencesContext';
 import { useUiMessages } from '../../../../i18n/ui/useUiMessages';
 import { shortPhaseLabel } from '../../../../i18n/ui';
+import type { ChromeMessages } from '../../../../i18n/ui/chrome';
 import { getInstructions } from '../../../../i18n/instructions';
 import { formatStoredStatus } from '../../../../i18n/status';
 import { findTargetCard } from '../../../../utils/cardUtils';
@@ -25,38 +26,38 @@ import {
 import { formatPointsFardeau } from '../../../../game/logic/journal';
 
 /** Libellé court d'un mode de capacité de site « play… » (boutons du toaster). */
-function sitePhaseModeLabel(ability: any): string {
+function sitePhaseModeLabel(ability: any, labels: ChromeMessages): string {
+    const m = labels.toast.sitePhaseMode;
     const bits: string[] = [];
     const cost = ability?.cost?.[0] || {};
     (cost.spot || []).forEach((s: any) => {
         const target = (s.target?.[0] || []).join(' ').toLowerCase();
         bits.push(
-            `Désignez ${s.count} ${target === 'companion' ? 'compagnon(s)' : target}`
+            target === 'companion'
+                ? m.designateCompanions(s.count)
+                : m.designateTarget(s.count, target)
         );
     });
     if (cost.discardFromHand)
-        bits.push(`défausser ${cost.discardFromHand} carte(s)`);
-    if (cost.removeBurdens)
-        bits.push(
-            `retirer ${cost.removeBurdens} fardeau(x)`
-        );
+        bits.push(m.discardFromHand(cost.discardFromHand));
+    if (cost.removeBurdens) bits.push(m.removeBurdens(cost.removeBurdens));
     (ability?.effects || []).forEach((e: any) => {
         if (e.type === 'PLAY_FROM_HAND' || e.type === 'PLAY_FROM_DECK_OR_DISCARD') {
             const target = (e.target?.[0] || []).join(' ').toLowerCase();
             bits.push(
                 target === 'nazgul'
-                    ? 'jouer un Nazgûl'
+                    ? m.playNazgul
                     : target === 'minion'
-                      ? 'jouer un séide'
-                      : `jouer ${target}`
+                      ? m.playMinion
+                      : m.playTarget(target)
             );
         } else if (e.type === 'DRAW') {
-            bits.push(`piocher ${e.count} carte(s)`);
+            bits.push(m.draw(e.count));
         } else if (e.type === 'DISCARD') {
-            bits.push('défausser une situation');
+            bits.push(m.discardCondition);
         }
     });
-    if (bits.length === 0) return 'Activer l’effet';
+    if (bits.length === 0) return labels.common.activateEffect;
     return bits.join(' · ').replace(/^./, (c: string) => c.toUpperCase());
 }
 
@@ -1663,7 +1664,10 @@ export const GameControls: React.FC<GameControlsProps> = ({
                                                 );
                                             }}
                                         >
-                                            {sitePhaseModeLabel(mode.ability)}
+                                            {sitePhaseModeLabel(
+                                                mode.ability,
+                                                c
+                                            )}
                                         </S.ActionButton>
                                     ))
                                 ) : (

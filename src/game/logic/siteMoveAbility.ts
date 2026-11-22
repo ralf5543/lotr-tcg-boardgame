@@ -1,5 +1,5 @@
 import type { Ability, CardState, GameState, SiteCardState } from '../types';
-import { setRawStatus } from '../../i18n/status';
+import { setRawStatus, setStatus } from '../../i18n/status';
 import { applyAbilityEffect } from '../engine/abilities/applyAbilityEffect';
 import {
     canPayAbilityCost,
@@ -309,7 +309,7 @@ export function resolvePendingSiteMoveAbility(
         ) {
             return false;
         }
-        setRawStatus(G, `${site.name || 'Le site'} : effet appliqué.`);
+        setStatus(G, 'SITE_EFFECT_APPLIED', { site: site.name || undefined });
     }
 
     const nextPhase = pending.pendingPhaseAfterSiteMove;

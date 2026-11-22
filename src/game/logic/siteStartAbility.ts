@@ -1,5 +1,5 @@
 import type { Ability, CardState, GameState, SiteCardState } from '../types';
-import { setRawStatus } from '../../i18n/status';
+import { setRawStatus, setStatus } from '../../i18n/status';
 import { canUseAbility } from '../engine/canUseAbility';
 import { abilityMatchesPhase } from '../engine/abilities/collectAbilities';
 import { canPayAbilityCost } from '../engine/abilities/payAbilityCost';
@@ -131,7 +131,10 @@ export function openStartOfFellowshipDualWait(
         G.startOfPhaseState = undefined;
         exitStartOf(events, 'fellowship');
     } else {
-        setRawStatus(G, 'Début de la phase de compagnie : Capacités spéciales.');
+        setRawStatus(
+            G,
+            'Début de la phase de compagnie : Capacités spéciales.'
+        );
     }
 }
 
@@ -195,7 +198,7 @@ export function openStartOfRegroupDualWait(
         G.startOfPhaseState = undefined;
         exitStartOf(events, 'regroup');
     } else if (!hasMusterToProcess) {
-        setRawStatus(G, 'Phase de Regroupement : Étape initiale (Capacités).');
+        setStatus(G, 'REGROUP_START');
     }
 }
 

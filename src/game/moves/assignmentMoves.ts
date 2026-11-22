@@ -1,5 +1,5 @@
 import type { CardState, LotrMoveContext } from '../types';
-import { setRawStatus } from '../../i18n/status';
+import { setStatus } from '../../i18n/status';
 import {
     applyAmbushTwilight,
     beginShadowAssignment,
@@ -165,14 +165,24 @@ export const assignMinion = (
             companion: compName,
         });
     }
-    setRawStatus(
-        G,
-        ambushAdded > 0
-            ? `${minionName} est assigné à ${compName}. Embuscade : +${ambushAdded} Crépuscule.`
-            : assignBoost != null
-              ? `${minionName} est assigné à ${compName} (force +${assignBoost} jusqu’au regroupement).`
-              : `${minionName} est assigné à ${compName}.`
-    );
+    if (ambushAdded > 0) {
+        setStatus(G, 'ASSIGNED_AMBUSH', {
+            minion: minionName,
+            companion: compName,
+            twilight: ambushAdded,
+        });
+    } else if (assignBoost != null) {
+        setStatus(G, 'ASSIGNED_STRENGTH_BONUS', {
+            minion: minionName,
+            companion: compName,
+            bonus: assignBoost,
+        });
+    } else {
+        setStatus(G, 'ASSIGNED', {
+            minion: minionName,
+            companion: compName,
+        });
+    }
 
     checkAssignmentProgress(G, ctx, events);
 };
@@ -191,11 +201,7 @@ export const yieldAssignmentToShadow = ({
     }
 
     appendJournalNotice(G, 'YIELD_ASSIGNMENT_TO_SHADOW');
-    beginShadowAssignment(
-        G,
-        events,
-        'Les Peuples Libres laissent l’Ombre affecter les séides restants.'
-    );
+    beginShadowAssignment(G, events, 'ASSIGNMENT_YIELD_TO_SHADOW');
 };
 
 /** Ombre : laisse des séides hors combat et passe à la phase de combat. */
@@ -215,12 +221,11 @@ export const passShadowAssignment = ({
     } else {
         appendJournalNotice(G, 'ASSIGNMENT_DONE');
     }
-    setRawStatus(
-        G,
-        leftover > 0
-            ? `L’Ombre laisse ${leftover} séide${leftover > 1 ? 's' : ''} hors combat. Début des combats !`
-            : 'Affectation terminée. Début des combats !'
-    );
+    if (leftover > 0) {
+        setStatus(G, 'ASSIGNMENT_SHADOW_LEFT', { count: leftover });
+    } else {
+        setStatus(G, 'ASSIGNMENT_DONE_START_SKIRMISH');
+    }
     events?.endPhase?.();
 };
 

@@ -37,7 +37,7 @@ import {
 } from '../logic/initiative';
 import { applyAutomaticToPlayCosts } from '../logic/applyToPlayCosts';
 import { checkRingBearerKilledLoss } from '../logic/gameEnd';
-import { setStatus, setRawStatus } from '../../i18n/status';
+import { setStatus } from '../../i18n/status';
 import { getEffectiveTwilightCost } from '../../utils/roamingDetection';
 import {
     otherPlayerId,
@@ -207,7 +207,7 @@ export const passActionWindow = ({
         G.actionWindow = { ...G.actionWindow, isOpen: false, passesCount: 0 };
 
         if (ctx.phase === 'maneuver') {
-            setRawStatus(G, 'Manœuvre terminée. Passage à la phase d’Archerie.');
+            setStatus(G, 'MANEUVER_DONE');
             events?.endPhase?.();
         } else if (ctx.phase === 'archery') {
             advanceArcheryAssignmentStep(G, events);
@@ -221,7 +221,7 @@ export const passActionWindow = ({
             }
 
             G.regroupStep = 'SHADOW_REFILL';
-            setRawStatus(G, 'Ombre : Vous pouvez défausser 1 carte, puis validez votre main à 8 cartes.');
+            setStatus(G, 'SHADOW_REFILL_HAND');
         }
     } else {
         G.actionWindow = {
@@ -737,10 +737,12 @@ export const playCardFromDiscard = (
         if (playedCard.playFromDiscard?.underDeckInsteadOfDiscard) {
             if (!player.deck) player.deck = [];
             player.deck.push(playedCard);
-            setRawStatus(G, `${playedCard.title} est joué depuis la défausse, puis placé sous la pioche.`);
+            setStatus(G, 'PLAYED_FROM_DISCARD_UNDER', {
+                card: playedCard.title,
+            });
         } else {
             placeCardIntoDiscardPile(G, actingPlayerId, playedCard);
-            setRawStatus(G, `${playedCard.title} est joué depuis la défausse.`);
+            setStatus(G, 'PLAYED_FROM_DISCARD', { card: playedCard.title });
         }
     } else if (isAttachment && hostCard) {
         if (!(hostCard as CardState).attachments) {
@@ -751,11 +753,16 @@ export const playCardFromDiscard = (
             (hostCard as CardState).title ||
             (hostCard as CardState).i18n?.fr?.title ||
             'sa cible';
-        setRawStatus(G, `${playedCard.title} est joué depuis la défausse et attaché à ${hostName}.`);
+        setStatus(G, 'PLAYED_FROM_DISCARD_ATTACHED', {
+            card: playedCard.title,
+            host: hostName,
+        });
     } else if (playedCard.type === 'MINION' && !isFP) {
         if (!G.battlefield) G.battlefield = [];
         G.battlefield.push(playedCard);
-        setRawStatus(G, `${playedCard.title} entre sur le champ de bataille depuis la défausse.`);
+        setStatus(G, 'PLAYED_FROM_DISCARD_BATTLEFIELD', {
+            card: playedCard.title,
+        });
         if ((ctx.phase || '').toLowerCase() === 'shadow') {
             beginOptionalSitePhaseAbility(G);
         }
@@ -1109,7 +1116,7 @@ export const resolveForcedChoiceMove = (
                 [shadowId]: { isDone: shadowDone },
             },
         };
-        setRawStatus(G, 'Phase de Manœuvre : Capacités et effets de début de phase.');
+        setStatus(G, 'MANEUVER_START');
         return;
     }
     // Ouvre la fenêtre d’actions même si une réponse (blessure) s’ouvre ensuite :
@@ -1312,13 +1319,11 @@ export const assignThreatWound = (
 
     if (left <= 0 || stillLiving.length === 0) {
         G.threatWoundsToAssign = undefined;
-        setRawStatus(G, left > 0
-                ? 'Plus de compagnon à blesser. Blessures de menaces restantes perdues.'
-                : 'Blessures de menaces assignées.');
+        setStatus(G, left > 0 ? 'THREAT_WOUNDS_LOST' : 'THREAT_WOUNDS_DONE');
         return;
     }
 
-    setRawStatus(G, `Menaces : encore ${left} blessure(s) à assigner.`);
+    setStatus(G, 'THREAT_WOUNDS_REMAINING', { count: left });
 };
 
 export const assignSanctuaryHeal = (
@@ -1336,7 +1341,7 @@ export const assignSanctuaryHeal = (
     }
 
     const left = G.sanctuaryHeal?.remaining ?? 0;
-    setRawStatus(G, `Sanctuaire : encore ${left} soin(s) possible(s).`);
+    setStatus(G, 'SANCTUARY_HEAL_REMAINING', { count: left });
 };
 
 export const confirmSanctuaryHeals = ({

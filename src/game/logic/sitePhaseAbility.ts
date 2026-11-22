@@ -1,5 +1,5 @@
 import type { Ability, CardState, GameState, SiteCardState } from '../types';
-import { setRawStatus } from '../../i18n/status';
+import { setRawStatus, setStatus } from '../../i18n/status';
 import { applyAbilityEffect } from '../engine/abilities/applyAbilityEffect';
 import {
     canPayAbilityCost,
@@ -261,7 +261,7 @@ export function resolvePendingSitePhaseAbility(
     }
 
     G.pendingSitePhaseAbility = undefined;
-    setRawStatus(G, `${site.name || 'Le site'} : effet appliqué.`);
+    setStatus(G, 'SITE_EFFECT_APPLIED', { site: site.name || undefined });
 
     if (isSitePhasePlayFamilyAbility(ability)) {
         // Action répétable : ré-offrir si elle reste légale (sauf si une
@@ -340,7 +340,7 @@ export function resolvePendingSitePhaseDesignation(
     }
 
     G.pendingSitePhaseDesignation = undefined;
-    setRawStatus(G, `${site.name || 'Le site'} : effet appliqué.`);
+    setStatus(G, 'SITE_EFFECT_APPLIED', { site: site.name || undefined });
     // Action répétable : ré-offrir si encore légale.
     beginOptionalSitePhaseAbility(G);
     return true;

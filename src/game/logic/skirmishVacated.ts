@@ -1,5 +1,5 @@
 import type { CardState, GameState, SkirmishState } from '../types';
-import { setRawStatus } from '../../i18n/status';
+import { setStatus } from '../../i18n/status';
 import { getEffectiveVitality } from '../../utils/cardStats';
 import { cancelSkirmish } from '../engine/abilities/cancelSkirmish';
 import {
@@ -68,7 +68,7 @@ export function reconcileActiveSkirmishAfterLeave(
 
     if (reason === 'DISCARD') {
         cancelSkirmish(G, skirmish.id);
-        setRawStatus(G, 'Escarmouche terminée : un combattant a quitté le combat (défausse). Pas de vainqueur.');
+        setStatus(G, 'SKIRMISH_ENDED_DISCARD');
         return;
     }
 
@@ -90,7 +90,7 @@ export function reconcileActiveSkirmishAfterLeave(
             skirmishId: skirmish.id,
         };
         G.actionWindow = undefined;
-        setRawStatus(G, 'Escarmouche terminée : plus de séide en face — victoire des Peuples Libres.');
+        setStatus(G, 'SKIRMISH_ENDED_FP_WIN');
         if (tryOpenCharacterDies(G) === 'WAITING') return;
         if (tryOpenWinsSkirmish(G) === 'WAITING') return;
         tryOpenLosesSkirmish(G);
@@ -108,7 +108,7 @@ export function reconcileActiveSkirmishAfterLeave(
             skirmishId: skirmish.id,
         };
         G.actionWindow = undefined;
-        setRawStatus(G, 'Escarmouche terminée : le compagnon est mort — victoire de l’Ombre.');
+        setStatus(G, 'SKIRMISH_ENDED_SHADOW_WIN');
         if (tryOpenCharacterDies(G) === 'WAITING') return;
         if (tryOpenWinsSkirmish(G) === 'WAITING') return;
         tryOpenLosesSkirmish(G);
@@ -120,5 +120,5 @@ export function reconcileActiveSkirmishAfterLeave(
     G.activeSkirmishId = undefined;
     G.actionWindow = undefined;
     clearExpiredTempKeywords(G, 'SKIRMISH');
-    setRawStatus(G, 'Escarmouche terminée : plus de combattants.');
+    setStatus(G, 'SKIRMISH_ENDED_EMPTY');
 }
