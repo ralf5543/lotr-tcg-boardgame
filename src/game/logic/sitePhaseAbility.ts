@@ -1,5 +1,5 @@
 import type { Ability, CardState, GameState, SiteCardState } from '../types';
-import { setRawStatus, setStatus } from '../../i18n/status';
+import { setStatus } from '../../i18n/status';
 import { applyAbilityEffect } from '../engine/abilities/applyAbilityEffect';
 import {
     canPayAbilityCost,
@@ -192,7 +192,7 @@ export function beginOptionalSitePhaseAbility(G: GameState): boolean {
         siteInstanceId: siteInstanceKey(found.site),
         abilityId: found.ability.id,
     };
-    setRawStatus(G, 'Ombre : vous pouvez utiliser l’effet du site (Spot requis).');
+    setStatus(G, 'SITE_PHASE_OPTIONAL_SPOT');
     return true;
 }
 
@@ -210,7 +210,7 @@ export function resolvePendingSitePhaseAbility(
     if (!accept) {
         G.sitePhaseAbilityOfferedThisPhase = true;
         G.pendingSitePhaseAbility = undefined;
-        setRawStatus(G, 'Ombre : effet du site décliné.');
+        setStatus(G, 'SITE_PHASE_DECLINED');
         return true;
     }
 

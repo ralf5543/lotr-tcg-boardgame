@@ -45,7 +45,7 @@ Statuts : `en cours` · `à faire` · `plus tard` · `fait` · `pause`
 | **Affronter un BOT** | **fait** | Playtest solo Local + BOT siège 1 + heuristiques A–C. Plan figé : [`bot-plan.mdc`](bot-plan.mdc). |
 | **Chat** | **en cours** | Fil partagé journal + chat joueur (boardgame.io). Plan : [`chat-plan.mdc`](chat-plan.mdc). |
 | **Gagner / Perdre** | **fait** | Site 9 / corruption / mort Porteur + overlay. Plan : [`win-lose-plan.mdc`](win-lose-plan.mdc) (embellisement plus tard). |
-| **Options** | **fait** | Langues 5× ; chrome + consignes ; statusNotice + journalNotice structurés (combat / affectation / archerie / sanctuaire / regroupement / fin). Bulles AST capacités encore FR (+ crépuscule localisé). |
+| **Options** | **fait** | Langues 5× ; chrome + consignes ; statusNotice + journalNotice structurés (combat, réponses, sites, révélation, regroupement, fin…). Restent : messages DEV, quelques bords moteurs, bulles AST capacités (FR + crépuscule localisé). |
 | **Écran de bienvenue** | à faire | Avant le plateau boardgame.io (lobby / menu). |
 | **Exceptions de cartes** | à faire | Cartes trop spécifiques — handlers par id, en dernier. Liste : [`card-exceptions.mdc`](card-exceptions.mdc). |
 | **Visuel artefacts** | **en cours** | Calque `{CULTURE}_artifact.webp` sur fond culture (md/lg) ; preset `ARTIFACT_OVERLAYS`. |

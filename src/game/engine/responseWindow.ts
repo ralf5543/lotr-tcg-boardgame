@@ -1,4 +1,4 @@
-import { setRawStatus } from '../../i18n/status';
+import { setStatus } from '../../i18n/status';
 import type {
     Ability,
     CardState,
@@ -441,7 +441,7 @@ function applyWoundOrRingReplacement(
         addFpBurdens(G, total);
         const name =
             card.i18n?.fr?.title || card.title || 'Le Porteur de l’Anneau';
-        setRawStatus(G, `${name} porte l’Anneau Unique : ${total} fardeau${total > 1 ? 's' : ''} à la place.`);
+        setStatus(G, 'RING_PUT_ON_BURDENS', { name, count: total });
         return;
     }
     applyWoundAndCheckDeath(G, card, count);
@@ -814,7 +814,7 @@ function openResponseWindow(G: GameState): void {
         passesCount: 0,
         usedResponseKeys: priorUsed,
     };
-    setRawStatus(G, 'Réponse : jouez une réponse ou passez.');
+    setStatus(G, 'RESPONSE_PLAY_OR_PASS');
     clearActionableFlags(G);
 }
 
@@ -1027,7 +1027,7 @@ function autoResolveMandatoryResponses(G: GameState): void {
                 card.title ||
                 (card as { name?: string }).name ||
                 card.id;
-            setRawStatus(G, `${title} : effet automatique.`);
+            setStatus(G, 'RESPONSE_AUTO_EFFECT', { title });
         }
     });
 }
@@ -1112,7 +1112,7 @@ export function tryOpenLosesSkirmish(G: GameState): 'APPLIED' | 'WAITING' {
                   }
                 : {}),
         };
-        setRawStatus(G, 'Contrainte : choisissez d’affaiblir le Porteur ou d’ajouter un fardeau.');
+        setStatus(G, 'CONSTRAINT_EXERT_OR_BURDEN');
         return 'WAITING';
     }
 
@@ -1391,7 +1391,9 @@ export function passResponseWindow(
         passesCount: currentPasses,
         message: `Au tour de ${playerDisplayName(G, other)} de répondre ou de passer.`,
     };
-    setRawStatus(G, `Au tour de ${playerDisplayName(G, other)} de répondre ou de passer.`);
+    setStatus(G, 'TURN_TO_RESPOND', {
+        name: playerDisplayName(G, other),
+    });
     clearActionableFlags(G);
     return 'WAITING';
 }
@@ -1418,6 +1420,7 @@ export function yieldResponsePriorityAfterAction(
     }
 
     const other = otherPlayerId(pid);
+    const fpId = G.fpPlayerId || '0';
 
     if (playerHasEligibleResponse(G, other)) {
         G.responseWindow = {
@@ -1426,7 +1429,9 @@ export function yieldResponsePriorityAfterAction(
             passesCount: 0,
             message: `Au tour de ${playerDisplayName(G, other)} de répondre ou de passer.`,
         };
-        setRawStatus(G, `Au tour de ${playerDisplayName(G, other)} de répondre ou de passer.`);
+        setStatus(G, 'TURN_TO_RESPOND', {
+            name: playerDisplayName(G, other),
+        });
         clearActionableFlags(G);
         return;
     }
@@ -1438,9 +1443,10 @@ export function yieldResponsePriorityAfterAction(
             passesCount: 1,
             message: responseWindowMessage(G),
         };
-        setRawStatus(G, pid === fpId
-                ? 'Réponse : vous pouvez enchaîner ou passer.'
-                : 'Réponse : jouez une réponse ou passez.');
+        setStatus(
+            G,
+            pid === fpId ? 'RESPONSE_CHAIN_OR_PASS' : 'RESPONSE_PLAY_OR_PASS'
+        );
         clearActionableFlags(G);
         return;
     }
@@ -1489,13 +1495,15 @@ export function afterResponseResolved(
     );
     if (cancelledAbility && !G.pendingEvent) {
         closeResponseWindow(G);
-        setRawStatus(G, (ability.effects || []).some((e) => e.type === 'PREVENT_DISCARD')
-                ? 'Défausse empêchée.'
-                : (ability.effects || []).some(
-                        (e) => e.type === 'PREVENT_BURDEN'
-                    )
-                  ? 'Point-fardeau empêché.'
-                  : 'Capacité annulée.');
+        const effects = ability.effects || [];
+        setStatus(
+            G,
+            effects.some((e) => e.type === 'PREVENT_DISCARD')
+                ? 'DISCARD_PREVENTED'
+                : effects.some((e) => e.type === 'PREVENT_BURDEN')
+                  ? 'BURDEN_PREVENTED'
+                  : 'ABILITY_CANCELLED'
+        );
         if (resumeSuspendedResponse(G) === 'WAITING') return;
         flushPendingActionYield(G);
         return;
@@ -1558,7 +1566,7 @@ export function requestCancelSkirmish(
             removeTwilight: cost,
         };
         openResponseWindow(G);
-        setRawStatus(G, 'Réponse Ombre : empêcher l’annulation ou passer.');
+        setStatus(G, 'RESPONSE_PREVENT_CANCEL_SKIRMISH');
         return true;
     }
 
@@ -1599,7 +1607,7 @@ export function requestAboutToUseAbility(
         return false;
     }
     openResponseWindow(G);
-    setRawStatus(G, 'Une capacité spéciale va se résoudre. Jouez une réponse ou passez.');
+    setStatus(G, 'RESPONSE_ABOUT_TO_USE_ABILITY');
     return true;
 }
 
@@ -1623,7 +1631,7 @@ export function requestExhaust(
             addBurdens: burdens,
         };
         openResponseWindow(G);
-        setRawStatus(G, 'Réponse Peuples Libres : empêcher l’épuisement ou passer.');
+        setStatus(G, 'RESPONSE_PREVENT_EXHAUST');
         return true;
     }
 
@@ -1658,7 +1666,7 @@ export function requestForceAssign(
             preventDiscardUnbound: true,
         };
         openResponseWindow(G);
-        setRawStatus(G, 'Réponse Peuples Libres : défaussez un compagnon dissocié pour empêcher l’affectation, ou passez.');
+        setStatus(G, 'RESPONSE_PREVENT_ASSIGN_DISCARD_UNBOUND');
         return true;
     }
 
@@ -1674,7 +1682,7 @@ export function requestForceAssign(
             companionId,
         };
         openResponseWindow(G);
-        setRawStatus(G, 'Réponse Peuples Libres : affaiblir ce compagnon pour empêcher l’affectation, ou passer.');
+        setStatus(G, 'RESPONSE_PREVENT_ASSIGN_EXERT');
         return true;
     }
 
@@ -1719,7 +1727,10 @@ function applyForceAssign(
         });
     }
     G.skirmishes = G.skirmishes.filter((s) => s.minionIds.length > 0);
-    setRawStatus(G, `${minion.i18n?.fr?.title || minion.title || 'Séide'} est affecté à ${companion.i18n?.fr?.title || companion.title || 'compagnon'}.`);
+    setStatus(G, 'ASSIGNED', {
+        minion: minion.i18n?.fr?.title || minion.title || 'Séide',
+        companion: companion.i18n?.fr?.title || companion.title || 'compagnon',
+    });
     return true;
 }
 
@@ -1748,7 +1759,7 @@ export function preventPendingEffect(
         G.twilightPool = (G.twilightPool || 0) - cost;
         G.pendingEvent = undefined;
         closeResponseWindow(G);
-        setRawStatus(G, `L’Ombre empêche l’annulation (−${cost} crépuscule${cost > 1 ? 's' : ''}).`);
+        setStatus(G, 'PREVENT_CANCEL_PAID', { count: cost });
         flushPendingActionYield(G);
         return 'APPLIED';
     }
@@ -1762,7 +1773,7 @@ export function preventPendingEffect(
         addFpBurdens(G, n);
         G.pendingEvent = undefined;
         closeResponseWindow(G);
-        setRawStatus(G, `Les Peuples Libres empêchent (+${n} fardeau${n > 1 ? 'x' : ''}).`);
+        setStatus(G, 'PREVENT_EXHAUST_PAID', { count: n });
         flushPendingActionYield(G);
         return 'APPLIED';
     }
@@ -1777,7 +1788,9 @@ export function preventPendingEffect(
                 discardCardFromPlay(G, victim);
                 G.pendingEvent = undefined;
                 closeResponseWindow(G);
-                setRawStatus(G, `Les Peuples Libres empêchent l’affectation (${victim.i18n?.fr?.title || victim.title || 'compagnon'} défaussé).`);
+                setStatus(G, 'FORCE_ASSIGN_PREVENTED', {
+                    victim: victim.i18n?.fr?.title || victim.title || 'compagnon',
+                });
                 flushPendingActionYield(G);
                 return 'APPLIED';
             }
@@ -1788,7 +1801,7 @@ export function preventPendingEffect(
             };
             G.pendingEvent = undefined;
             closeResponseWindow(G);
-            setRawStatus(G, 'Choisissez un compagnon dissocié à défausser pour empêcher l’affectation.');
+            setStatus(G, 'CHOOSE_UNBOUND_DISCARD_PREVENT');
             return 'APPLIED';
         }
         const companion = findTargetCard(
@@ -1798,7 +1811,7 @@ export function preventPendingEffect(
         if (!companion || !applyExert(G, companion)) return 'INVALID';
         G.pendingEvent = undefined;
         closeResponseWindow(G);
-        setRawStatus(G, 'Les Peuples Libres empêchent l’affectation (compagnon affaibli).');
+        setStatus(G, 'FORCE_ASSIGN_PREVENTED_EXERT');
         flushPendingActionYield(G);
         return 'APPLIED';
     }
@@ -1810,7 +1823,7 @@ export function preventPendingEffect(
         applyWoundAndCheckDeath(G, rb, 1);
         G.pendingEvent = undefined;
         closeResponseWindow(G);
-        setRawStatus(G, 'Les Peuples Libres empêchent les menaces (Porteur blessé).');
+        setStatus(G, 'THREATS_PREVENTED_WOUND_BEARER');
         flushPendingActionYield(G);
         return 'APPLIED';
     }
@@ -1822,7 +1835,7 @@ export function preventPendingEffect(
             G.twilightPool = (G.twilightPool || 0) + n;
             G.pendingEvent = undefined;
             closeResponseWindow(G);
-            setRawStatus(G, `Les Peuples Libres empêchent la défausse (+${n} crépuscule${n > 1 ? 's' : ''}).`);
+            setStatus(G, 'DISCARD_PREVENTED_TWILIGHT', { count: n });
             flushPendingActionYield(G);
             return 'APPLIED';
         }
@@ -1831,7 +1844,7 @@ export function preventPendingEffect(
             addFpBurdens(G, n);
             G.pendingEvent = undefined;
             closeResponseWindow(G);
-            setRawStatus(G, `Les Peuples Libres empêchent la défausse (+${n} fardeau${n > 1 ? 'x' : ''}).`);
+            setStatus(G, 'DISCARD_PREVENTED_BURDENS', { count: n });
             flushPendingActionYield(G);
             return 'APPLIED';
         }
@@ -1860,7 +1873,7 @@ export function requestAddThreats(
     ) {
         G.pendingEvent = { type: 'ABOUT_TO_ADD_THREATS', count };
         openResponseWindow(G);
-        setRawStatus(G, 'Réponse Peuples Libres : blesser le Porteur pour empêcher les menaces, ou passer.');
+        setStatus(G, 'RESPONSE_PREVENT_THREATS');
         return true;
     }
     addThreats(G, count);
@@ -1901,7 +1914,7 @@ export function requestAddBurdens(
         return true;
     }
     openResponseWindow(G);
-    setRawStatus(G, 'Réponse : empêcher l’ajout de point-fardeau ou passer.');
+    setStatus(G, 'RESPONSE_PREVENT_BURDEN');
     return true;
 }
 
@@ -1931,7 +1944,9 @@ export function resolveForceAssignPreventDiscard(
     if (!victim) return false;
     discardCardFromPlay(G, victim);
     G.pendingForceAssignPreventDiscard = undefined;
-    setRawStatus(G, `Les Peuples Libres empêchent l’affectation (${victim.i18n?.fr?.title || victim.title || 'compagnon'} défaussé).`);
+    setStatus(G, 'FORCE_ASSIGN_PREVENTED', {
+        victim: victim.i18n?.fr?.title || victim.title || 'compagnon',
+    });
     flushPendingActionYield(G);
     return true;
 }
@@ -1977,11 +1992,15 @@ export function requestDiscardFromPlay(
     }
     openResponseWindow(G);
     if (typeof addTwilight === 'number' && addTwilight > 0) {
-        setRawStatus(G, `Réponse Peuples Libres : ajouter ${addTwilight} crépuscule${addTwilight > 1 ? 's' : ''} pour empêcher la défausse, ou passer.`);
+        setStatus(G, 'RESPONSE_PREVENT_DISCARD_TWILIGHT', {
+            count: addTwilight,
+        });
     } else if (typeof addBurdens === 'number' && addBurdens > 0) {
-        setRawStatus(G, `Réponse Peuples Libres : ajouter ${addBurdens} fardeau${addBurdens > 1 ? 'x' : ''} pour empêcher la défausse, ou passer.`);
+        setStatus(G, 'RESPONSE_PREVENT_DISCARD_BURDENS', {
+            count: addBurdens,
+        });
     } else {
-        setRawStatus(G, 'Réponse : empêcher la défausse ou passer.');
+        setStatus(G, 'RESPONSE_PREVENT_DISCARD');
     }
     return true;
 }
@@ -2009,7 +2028,7 @@ export function tryOpenHealResponse(G: GameState): 'APPLIED' | 'WAITING' {
             continue;
         }
         openResponseWindow(G);
-        setRawStatus(G, 'Réponse Ombre : un compagnon a été soigné. Jouez une réponse ou passez.');
+        setStatus(G, 'RESPONSE_HEAL_SHADOW');
         return 'WAITING';
     }
     G.pendingHealQueue = undefined;
@@ -2040,7 +2059,7 @@ function startShadowArcheryAssign(G: GameState): boolean {
         G.archeryState.shadowRemainingWounds = shadowWoundsToAssign;
         G.archeryState.fpRemainingWounds = 0;
     }
-    setRawStatus(G, 'Passage à l’assignation des blessures d’Ombre.');
+    setStatus(G, 'ARCHERY_TO_SHADOW_ASSIGN');
     return true;
 }
 
@@ -2054,9 +2073,10 @@ function concludeArcheryPhase(G: GameState): void {
         livingMinions.length === 0
             ? enterPhase('regroup')
             : enterPhase('assignment');
-    setRawStatus(G, livingMinions.length === 0
-            ? 'Plus aucun séide sur le plateau ! Passage au Regroupement.'
-            : 'Phase d’Archerie terminée. Passage à l’Assignation.');
+    setStatus(
+        G,
+        livingMinions.length === 0 ? 'ARCHERY_NO_MINIONS' : 'ARCHERY_DONE'
+    );
 }
 
 function tryResumeArcheryAfterResponses(G: GameState): void {

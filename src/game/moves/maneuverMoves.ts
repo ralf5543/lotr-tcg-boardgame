@@ -1,5 +1,5 @@
 import type { LotrMoveContext } from '../types';
-import { setRawStatus } from '../../i18n/status';
+import { setRawStatus, setStatus } from '../../i18n/status';
 import { canTransferAid } from '../engine/validations/canTransferAid';
 import { findTargetCard } from '../../utils/cardUtils';
 import { hasActionableStartOfPhaseCards } from '../logic/hasActionableStartOfPhaseCards';
@@ -115,7 +115,10 @@ export const transferAid = (
         follower.i18n?.fr?.title || follower.title || 'le Suivant';
     const targetTitle =
         targetCard.i18n?.fr?.title || targetCard.title || 'le personnage';
-    setRawStatus(G, `${followerTitle} est attaché à ${targetTitle}.`);
+    setStatus(G, 'FOLLOWER_ATTACHED', {
+        follower: followerTitle,
+        target: targetTitle,
+    });
 
     // Vérification des cartes actionnables restantes
     const remainingActionable = hasActionableStartOfPhaseCards(

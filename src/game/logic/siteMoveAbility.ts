@@ -1,5 +1,5 @@
 import type { Ability, CardState, GameState, SiteCardState } from '../types';
-import { setRawStatus, setStatus } from '../../i18n/status';
+import { setStatus } from '../../i18n/status';
 import { applyAbilityEffect } from '../engine/abilities/applyAbilityEffect';
 import {
     canPayAbilityCost,
@@ -214,9 +214,7 @@ function openPendingSiteMove(
         pendingPhaseAfterSiteMove: nextPhase,
         fromDeparture: fromDeparture || undefined,
     };
-    setRawStatus(G, fromDeparture
-        ? 'Déplacement : vous pouvez utiliser l’effet du site que vous quittez.'
-        : 'Déplacement : vous pouvez utiliser l’effet du site d’arrivée.');
+    setStatus(G, fromDeparture ? 'SITE_MOVE_DEPARTURE' : 'SITE_MOVE_ARRIVAL');
 }
 
 /**

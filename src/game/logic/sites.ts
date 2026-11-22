@@ -1,4 +1,4 @@
-import { setRawStatus } from '../../i18n/status';
+import { setStatus } from '../../i18n/status';
 import type {
     CardKeyword,
     CardState,
@@ -907,9 +907,9 @@ export function playNextSiteFromDeck(
         }
 
         G.path[nextIndex] = playedSite;
-        setRawStatus(G, `${
-            playedSite.name || playedSite.i18n?.fr?.title || 'Site'
-        } remplace le prochain site du chemin.`);
+        setStatus(G, 'SITE_REPLACES_NEXT', {
+            site: playedSite.name || playedSite.i18n?.fr?.title || 'Site',
+        });
         return true;
     }
 
@@ -917,9 +917,9 @@ export function playNextSiteFromDeck(
     playedSite.stacked = playedSite.stacked || [];
     delete playedSite.controlledBy;
     G.path[nextIndex] = playedSite;
-    setRawStatus(G, `${
-        playedSite.name || playedSite.i18n?.fr?.title || 'Site'
-    } est posé comme prochain site du chemin.`);
+    setStatus(G, 'SITE_PLACED_NEXT', {
+        site: playedSite.name || playedSite.i18n?.fr?.title || 'Site',
+    });
     return true;
 }
 

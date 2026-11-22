@@ -1,5 +1,5 @@
 import type { Ability, CardState, GameState } from '../../types';
-import { setRawStatus, setStatus } from '../../../i18n/status';
+import { setStatus } from '../../../i18n/status';
 import {
     applyAbilityEffect,
     abilityNeedsSiteReplace,
@@ -324,7 +324,7 @@ export function declinePendingWhenPlayed(
     const pending = G.pendingWhenPlayed;
     if (!pending || pending.playerId !== playerID) return false;
     G.pendingWhenPlayed = undefined;
-    setRawStatus(G, 'Effet optionnel refusé.');
+    setStatus(G, 'OPTIONAL_EFFECT_DECLINED');
     flushPendingYouPlayQueue(G);
     return true;
 }

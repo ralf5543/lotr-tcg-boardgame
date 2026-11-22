@@ -1,5 +1,5 @@
 import type { Ability, CardState, GameState, SiteCardState } from '../types';
-import { setRawStatus } from '../../i18n/status';
+import { setStatus } from '../../i18n/status';
 import { applyAbilityEffect } from '../engine/abilities/applyAbilityEffect';
 import { getEffectDesignationCandidates } from '../engine/abilities/designation';
 import { getEffectiveVitality } from '../../utils/cardStats';
@@ -73,7 +73,7 @@ export function beginOptionalSiteFollowerTransferAbility(
         siteInstanceId: siteInstanceKey(site),
         abilityId: ability.id,
     };
-    setRawStatus(G, 'Ombre : vous pouvez affaiblir un compagnon (×2) après le transfert de suivant.');
+    setStatus(G, 'SITE_FOLLOWER_EXERT_OFFER');
     return true;
 }
 
@@ -93,7 +93,7 @@ export function resolvePendingSiteFollowerTransferAbility(
 
     if (!accept) {
         G.pendingSiteFollowerTransfer = undefined;
-        setRawStatus(G, 'Ombre : effet du site (transfert) décliné.');
+        setStatus(G, 'SITE_FOLLOWER_DECLINED');
         return true;
     }
 
@@ -124,6 +124,6 @@ export function resolvePendingSiteFollowerTransferAbility(
     }
 
     G.pendingSiteFollowerTransfer = undefined;
-    setRawStatus(G, `${site.name || 'Le site'} : compagnon affaibli.`);
+    setStatus(G, 'SITE_COMPANION_EXERTED', { site: site.name || undefined });
     return true;
 }

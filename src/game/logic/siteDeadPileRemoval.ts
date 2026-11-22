@@ -1,5 +1,5 @@
 import type { Ability, CardState, GameState, SiteCardState } from '../types';
-import { setRawStatus } from '../../i18n/status';
+import { setStatus } from '../../i18n/status';
 import { triggerConditionsMet } from '../engine/abilities/siteMove';
 import { tryOpenFellowshipMoves } from '../engine/responseWindow';
 import { getCurrentSite } from './sites';
@@ -79,7 +79,7 @@ export function beginDeadPileRemovalIfNeeded(
         abilityId: ability.id,
         pendingPhaseAfter: nextPhase,
     };
-    setRawStatus(G, 'Falls of Rauros : placez une carte de votre pile de mort hors jeu.');
+    setStatus(G, 'DEAD_PILE_REMOVE');
     return true;
 }
 
@@ -105,7 +105,10 @@ export function resolveDeadPileRemoval(
     fp.removedFromGame.push(card);
 
     const site = getCurrentSite(G);
-    setRawStatus(G, `${site?.name || 'Site'} : ${card.title || card.id} est retiré du jeu.`);
+    setStatus(G, 'REMOVED_FROM_PLAY', {
+        site: site?.name || 'Site',
+        card: card.title || card.id,
+    });
 
     const nextPhase = pending.pendingPhaseAfter;
     G.pendingDeadPileRemoval = undefined;

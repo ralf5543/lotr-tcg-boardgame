@@ -1,5 +1,5 @@
 import type { Ability, CardState, GameState } from '../../types';
-import { setRawStatus, setStatus } from '../../../i18n/status';
+import { setStatus } from '../../../i18n/status';
 import { applyAbilityEffect } from './applyAbilityEffect';
 import { canPayAbilityCost, payAbilityCost } from './payAbilityCost';
 import { forEachInPlayCard } from './resolveCostTarget';
@@ -199,7 +199,7 @@ export function maybeOfferSiteYouPlayResponse(
             phase: options?.phase,
             fromSite: true,
         };
-        setRawStatus(G, 'Vous pouvez activer l’effet optionnel de ce site.');
+        setStatus(G, 'OPTIONAL_SITE_EFFECT');
         pauseActionYieldForResponses(G, fpId);
         return;
     }

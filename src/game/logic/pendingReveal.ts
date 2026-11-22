@@ -1,5 +1,5 @@
 import type { CardState, GameState } from '../types';
-import { setRawStatus } from '../../i18n/status';
+import { setStatus } from '../../i18n/status';
 import { addThreats } from './threats';
 import {
     placeCultureTokens,
@@ -68,7 +68,7 @@ export function confirmPendingReveal(
                 discarded?.i18n?.fr?.title ||
                 discarded?.title ||
                 discardCardId;
-            setRawStatus(G, `Carte révélée défaussée : ${name}.`);
+            setStatus(G, 'REVEALED_CARD_DISCARDED', { card: name });
             G.pendingReveal = undefined;
             return true;
         }
@@ -87,7 +87,7 @@ export function confirmPendingReveal(
             }
         }
         if (aftermath?.mayDiscardOne) {
-            setRawStatus(G, 'Révélation validée sans défausse.');
+            setStatus(G, 'REVEAL_VALIDATED_NO_DISCARD');
         } else if (moved.length > 0) {
             const names = moved
                 .map(
@@ -97,9 +97,12 @@ export function confirmPendingReveal(
                         c.id
                 )
                 .join(', ');
-            setRawStatus(G, `Main révélée : ${names} placée${moved.length > 1 ? 's' : ''} sous la pioche.`);
+            setStatus(G, 'REVEALED_UNDER_DECK', {
+                names,
+                count: moved.length,
+            });
         } else {
-            setRawStatus(G, 'Main révélée : aucune carte Ombre sous la pioche.');
+            setStatus(G, 'REVEALED_NO_SHADOW_UNDER');
         }
         G.pendingReveal = undefined;
         return true;
@@ -155,7 +158,10 @@ export function confirmPendingReveal(
     }
 
     shufflePlayerDeck(G, subjectId);
-    setRawStatus(G, `Révélation validée : ${shadowCount} Ombre → menace(s), ${fpCount} PL → jeton(s). Pioche mélangée.`);
+    setStatus(G, 'REVEAL_VALIDATED_SHUFFLE', {
+        shadow: shadowCount,
+        fp: fpCount,
+    });
     G.pendingReveal = undefined;
     return true;
 }

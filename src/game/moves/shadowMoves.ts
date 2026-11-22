@@ -1,5 +1,5 @@
 import type { LotrMoveContext } from '../types';
-import { setRawStatus } from '../../i18n/status';
+import { setStatus } from '../../i18n/status';
 import { isFreeFpAttachmentTransfer } from '../logic/siteTransfer';
 
 export interface TransferPayload {
@@ -104,7 +104,12 @@ export const transferAttachment = (
     const sourceTitle = sourceHost.title || sourceHost.name || 'son hôte';
     const targetTitle = targetHost.title || targetHost.name || 'sa cible';
 
-    setRawStatus(G, `${attachmentTitle} est transféré de ${sourceTitle} vers ${targetTitle} (Coût : ${cost} Crépuscule).`);
+    setStatus(G, 'ATTACHMENT_TRANSFERRED', {
+        card: attachmentTitle,
+        source: sourceTitle,
+        target: targetTitle,
+        cost,
+    });
 };
 
 export const shadowMoves = {

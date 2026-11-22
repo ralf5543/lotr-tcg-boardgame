@@ -1,5 +1,5 @@
 import type { Ability, CardState, GameState } from '../../types';
-import { setRawStatus, setStatus } from '../../../i18n/status';
+import { setStatus } from '../../../i18n/status';
 import { applyAbilityEffect } from './applyAbilityEffect';
 import {
     abilityOwnerPlayerId,
@@ -47,7 +47,7 @@ function openForcedChoice(
               }
             : {}),
     };
-    setRawStatus(G, 'Contrainte du Porteur : choisissez une option pour commencer ce combat.');
+    setStatus(G, 'RING_BEARER_CONSTRAINT_CHOICE');
 }
 
 /**
@@ -174,7 +174,7 @@ export function resolveForcedChoice(
                 pendingOptionIndex: optionIndex,
                 needsExertTargets: need,
             };
-            setRawStatus(G, `Choisissez ${need} compagnons à affaiblir.`);
+            setStatus(G, 'CHOOSE_EXERT_COMPANIONS', { count: need });
             return true;
         }
         if (new Set(exertTargetIds).size !== exertTargetIds.length) {
@@ -203,7 +203,7 @@ export function resolveForcedChoice(
                 pendingOptionIndex: optionIndex,
                 needsHandDiscard: need,
             };
-            setRawStatus(G, `Choisissez ${need} carte${need > 1 ? 's' : ''} de votre main à défausser.`);
+            setStatus(G, 'CHOOSE_DISCARD_HAND', { count: need });
             return true;
         }
     }
@@ -286,7 +286,7 @@ export function cancelForcedChoice(
     }
 
     G.pendingForcedChoice = undefined;
-    setRawStatus(G, 'Action annulée.');
+    setStatus(G, 'ACTION_CANCELLED');
     return true;
 }
 

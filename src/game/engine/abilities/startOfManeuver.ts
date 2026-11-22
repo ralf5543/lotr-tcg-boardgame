@@ -1,5 +1,5 @@
 import type { Ability, AbilityEffect, CardState, GameState } from '../../types';
-import { setRawStatus } from '../../../i18n/status';
+import { setStatus } from '../../../i18n/status';
 import { findTargetCard } from '../../../utils/cardUtils';
 
 function currentSite(G: GameState): CardState | null {
@@ -63,7 +63,7 @@ export function applyStartOfManeuverSiteTriggers(G: GameState): boolean {
                 effects: o.effects as AbilityEffect[],
             })),
         };
-        setRawStatus(G, `${title} : les Peuples Libres doivent choisir une option.`);
+        setStatus(G, 'FP_MUST_CHOOSE_OPTION', { title });
         return true;
     }
     return false;

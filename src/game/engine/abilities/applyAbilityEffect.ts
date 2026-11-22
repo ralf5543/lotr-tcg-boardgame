@@ -1,4 +1,4 @@
-import { setRawStatus } from '../../../i18n/status';
+import { setRawStatus, setStatus } from '../../../i18n/status';
 import type {
     Ability,
     AbilityEffectExpiry,
@@ -989,7 +989,7 @@ export function applyAbilityEffect(
                     ? { perFreePeoplesCard: effect.perFreePeoplesCard }
                     : {}),
             };
-            setRawStatus(G, 'Cartes révélées : validez pour appliquer menaces / jetons et mélanger.');
+            setStatus(G, 'REVEAL_CONFIRM');
             continue;
         }
 
@@ -1040,7 +1040,7 @@ export function applyAbilityEffect(
                 .map((c) => c.instanceId || c.id)
                 .filter(Boolean) as string[];
             if (cardIds.length === 0) {
-                setRawStatus(G, 'Aucune carte révélée.');
+                setStatus(G, 'NO_CARDS_REVEALED');
                 continue;
             }
             G.pendingReveal = {
@@ -1057,11 +1057,13 @@ export function applyAbilityEffect(
                     : {}),
             };
             const mayDiscard = Boolean(effect.aftermath?.mayDiscardOne);
-            setRawStatus(G, viewerId === ownerId
-                    ? mayDiscard
-                        ? 'Cartes révélées : cliquez-en une pour la défausser, ou validez sans défausser.'
-                        : 'Main adverse révélée : consultez les cartes puis validez.'
-                    : 'Votre main est révélée : l’adversaire consulte…');
+            if (viewerId !== ownerId) {
+                setStatus(G, 'REVEAL_YOUR_HAND_WAIT');
+            } else if (mayDiscard) {
+                setStatus(G, 'REVEAL_MAY_DISCARD');
+            } else {
+                setStatus(G, 'REVEAL_OPPONENT_HAND');
+            }
             continue;
         }
 
@@ -1153,9 +1155,12 @@ export function applyAbilityEffect(
                             c.id
                     )
                     .join(', ');
-                setRawStatus(G, `Main révélée : ${names} placée${moved.length > 1 ? 's' : ''} sous la pioche.`);
+                setStatus(G, 'REVEALED_UNDER_DECK', {
+                    names,
+                    count: moved.length,
+                });
             } else {
-                setRawStatus(G, 'Main révélée : aucune carte Ombre.');
+                setStatus(G, 'REVEALED_NO_SHADOW');
             }
             continue;
         }
@@ -1997,7 +2002,7 @@ export function applyAbilityEffect(
                 sourceInstanceId: sourceId,
                 abilityId: ability.id,
             };
-            setRawStatus(G, 'Peuples Libres : défaussez une possession ou une situation.');
+            setStatus(G, 'FP_DISCARD_POSSESSION_OR_CONDITION');
             continue;
         }
         // Famille sites « Shadow: play… » (Buckland…) : la carte jouée est
@@ -2030,7 +2035,7 @@ export function applyAbilityEffect(
                     abilityId: ability.id,
                     effectIndex,
                 };
-                setRawStatus(G, 'Ombre : défaussez une situation en jeu.');
+                setStatus(G, 'SHADOW_DISCARD_CONDITION');
                 continue;
             }
         }
@@ -2288,7 +2293,10 @@ function applyOneEffect(
             source.title || source.i18n?.fr?.title || 'le compagnon';
         const targetName =
             target.title || target.i18n?.fr?.title || 'le compagnon';
-        setRawStatus(G, `${sourceName} remplace ${targetName} dans le combat.`);
+        setStatus(G, 'REPLACED_IN_SKIRMISH', {
+            source: sourceName,
+            target: targetName,
+        });
         return true;
     }
 
@@ -2401,7 +2409,7 @@ function applyTransferNamedCard(
         (c) => c && !c.isDead && c.type === 'COMPANION'
     );
     if (opponents.length === 0) {
-        setRawStatus(G, 'Aucun compagnon n’escarmouche le porteur pour le transfert.');
+        setStatus(G, 'TRANSFER_NO_SKIRMISHING_BEARER');
         return false;
     }
     const host = opponents[0]!;
@@ -2411,7 +2419,7 @@ function applyTransferNamedCard(
             att ? cardTitleMatches(att, cardTitle) : false
         );
         if (already) {
-            setRawStatus(G, `Limite 1 : ${cardTitle} est déjà sur ce personnage.`);
+            setStatus(G, 'TRANSFER_LIMIT_ONE', { card: cardTitle });
             return false;
         }
     }
@@ -2438,7 +2446,7 @@ function applyTransferNamedCard(
         }
     }
     if (!moved) {
-        setRawStatus(G, `${cardTitle} introuvable en soutien ou défausse.`);
+        setStatus(G, 'TRANSFER_NOT_FOUND', { card: cardTitle });
         return false;
     }
 
@@ -2446,7 +2454,10 @@ function applyTransferNamedCard(
     host.attachments.push(moved);
     const hostName =
         host.i18n?.fr?.title || host.title || 'le compagnon';
-    setRawStatus(G, `${cardTitle} est transféré sur ${hostName}.`);
+    setStatus(G, 'TRANSFERRED_TO_HOST', {
+        card: cardTitle,
+        host: hostName,
+    });
     return true;
 }
 
@@ -2555,14 +2566,14 @@ function applyTransferSelf(
     if (attachTo === 'SKIRMISH_LOSER') {
         hosts = resolveSkirmishLoserHosts(G);
         if (hosts.length === 0) {
-            setRawStatus(G, 'Aucun perdant pour le transfert.');
+            setStatus(G, 'TRANSFER_NO_LOSER');
             return false;
         }
     } else if (attachTo === 'SKIRMISHING_WITH') {
         if (!skirmishingWith || skirmishingWith.length === 0) return false;
         hosts = charactersSkirmishingWith(G, skirmishingWith);
         if (hosts.length === 0) {
-            setRawStatus(G, 'Aucun personnage n’escarmouche la classe indiquée.');
+            setStatus(G, 'TRANSFER_NO_CLASS_SKIRMISH');
             return false;
         }
     } else if (attachTo === 'TARGET') {
@@ -2571,7 +2582,7 @@ function applyTransferSelf(
             (c) => c && !c.isDead
         );
         if (hosts.length === 0) {
-            setRawStatus(G, 'Aucune cible pour le transfert.');
+            setStatus(G, 'TRANSFER_NO_TARGET');
             return false;
         }
     } else {
@@ -2589,7 +2600,7 @@ function applyTransferSelf(
         host = hosts[0]!;
     }
     if (!host) {
-        setRawStatus(G, 'Désignez le personnage pour le transfert.');
+        setStatus(G, 'DESIGNATE_TRANSFER_TARGET');
         return false;
     }
 
@@ -2604,7 +2615,7 @@ function applyTransferSelf(
                         cardTitleMatches(att, source.i18n.en.title)))
         );
         if (already) {
-            setRawStatus(G, `Limite 1 : ${sourceTitle} est déjà sur ce personnage.`);
+            setStatus(G, 'TRANSFER_LIMIT_ONE', { card: sourceTitle });
             return false;
         }
     }
@@ -2635,7 +2646,7 @@ function applyTransferSelf(
         }
     }
     if (!moved) {
-        setRawStatus(G, `${sourceTitle} introuvable en soutien ou défausse.`);
+        setStatus(G, 'TRANSFER_NOT_FOUND', { card: sourceTitle });
         return false;
     }
 
@@ -2643,7 +2654,10 @@ function applyTransferSelf(
     host.attachments.push(moved);
     const hostName =
         host.i18n?.fr?.title || host.title || 'le personnage';
-    setRawStatus(G, `${sourceTitle} est transféré sur ${hostName}.`);
+    setStatus(G, 'TRANSFERRED_TO_HOST', {
+        card: sourceTitle,
+        host: hostName,
+    });
     return true;
 }
 
@@ -2802,9 +2816,11 @@ function makeRingBearer(
     const name =
         newBearer.i18n?.fr?.title || newBearer.title || 'Ce personnage';
     const hasRing = newBearer.attachments.some((att) => att?.type === 'RING');
-    setRawStatus(G, hasRing
-        ? `${name} devient le Porteur de l’Anneau (résistance ${resistance}) et reçoit l’Anneau Unique.`
-        : `${name} devient le Porteur de l’Anneau (résistance ${resistance}).`);
+    setStatus(
+        G,
+        hasRing ? 'MAKE_RING_BEARER_WITH_RING' : 'MAKE_RING_BEARER',
+        { name, resistance }
+    );
     return true;
 }
 
@@ -2859,7 +2875,11 @@ function becomeMinionFromCondition(
 
     const name =
         source.i18n?.fr?.title || source.title || source.i18n?.en?.title || 'La situation';
-    setRawStatus(G, `${name} devient un séide (force ${effect.strength}, vitalité ${effect.vitality}).`);
+    setStatus(G, 'BECOMES_MINION', {
+        name,
+        strength: effect.strength,
+        vitality: effect.vitality,
+    });
     return true;
 }
 
