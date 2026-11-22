@@ -24,8 +24,11 @@ import {
 } from '../engine/responseWindow';
 import { clearExpiredTempKeywords } from '../engine/abilities/applyAbilityEffect';
 import {
-    appendJournal,
-    formatBlessuresCount,
+    formatJournalNotice,
+    type JournalKey,
+} from '../../i18n/journal';
+import {
+    appendJournalNotice,
     formatPointsFardeau,
 } from './journal';
 
@@ -179,11 +182,24 @@ export const resolveSkirmish = (G: GameState, _ctx?: Ctx) => {
         };
     }
 
-    const journalLines: string[] = [];
+    type PendingJournal = {
+        key: JournalKey;
+        params: Record<string, string | number | boolean | null | undefined>;
+    };
+    const journalPending: PendingJournal[] = [];
+    const pushJ = (
+        key: JournalKey,
+        params: PendingJournal['params'] = {}
+    ) => {
+        journalPending.push({ key, params });
+    };
 
     // ⚔️ CAS 1 : VICTOIRE DU COMPAGNON
     if (companionStrength > minionsStrength) {
-        journalLines.push(`${companionName} a vaincu ${minionsLabel}.`);
+        pushJ('SKIRMISH_WON', {
+            winner: companionName,
+            loser: minionsLabel,
+        });
 
         // Submersion séides : ×2 par défaut (pas d’effet « ×3 » côté séide ici).
         const isMinionsOverwhelmed =
@@ -200,15 +216,13 @@ export const resolveSkirmish = (G: GameState, _ctx?: Ctx) => {
             const minionName = getCardName(minion, 'Un séide');
             if (isMinionsOverwhelmed) {
                 applyOverwhelmAndCheckDeath(G, minion);
-                journalLines.push(`${minionName} est submergé et meurt.`);
+                pushJ('OVERWHELMED_DIED', { card: minionName });
             } else {
                 requestWounds(G, minion, woundsToApply);
                 if (!G.responseWindow?.isOpen) {
-                    const died = Boolean(minion.isDead);
-                    journalLines.push(
-                        died
-                            ? `${minionName} prend ${formatBlessuresCount(woundsToApply)} et meurt.`
-                            : `${minionName} prend ${formatBlessuresCount(woundsToApply)}.`
+                    pushJ(
+                        minion.isDead ? 'WOUND_TAKEN_DIED' : 'WOUND_TAKEN',
+                        { card: minionName, count: woundsToApply }
                     );
                 }
             }
@@ -216,10 +230,9 @@ export const resolveSkirmish = (G: GameState, _ctx?: Ctx) => {
     }
     // ⚔️ CAS 2 : VICTOIRE DE L'OMBRE (ou Égalité)
     else {
-        journalLines.push(
-            minionNames.length > 1
-                ? `${minionsLabel} ont vaincu ${companionName}.`
-                : `${minionsLabel} a vaincu ${companionName}.`
+        pushJ(
+            minionNames.length > 1 ? 'SKIRMISH_WON_PLURAL' : 'SKIRMISH_WON',
+            { winner: minionsLabel, loser: companionName }
         );
 
         // Everyone Knows (temp) / Boromir (WHILE) : seuil ×3 sur le compagnon.
@@ -234,7 +247,7 @@ export const resolveSkirmish = (G: GameState, _ctx?: Ctx) => {
 
         if (isCompanionOverwhelmed) {
             applyOverwhelmAndCheckDeath(G, companion);
-            journalLines.push(`${companionName} est submergé et meurt.`);
+            pushJ('OVERWHELMED_DIED', { card: companionName });
         } else {
             const damageBonus = getDamageBonus(minions, G);
             const woundsToApply = 1 + damageBonus;
@@ -250,24 +263,33 @@ export const resolveSkirmish = (G: GameState, _ctx?: Ctx) => {
             if (!waiting && burdensInstead) {
                 const each = G.wearingTheOneRing!.replaceWoundWithBurdens;
                 const total = each * woundsToApply;
-                journalLines.push(
-                    `${companionName} porte l’Anneau Unique : ${formatPointsFardeau(total)} à la place.`
-                );
+                pushJ('RING_BURDENS_INSTEAD', {
+                    card: companionName,
+                    bid: formatPointsFardeau(total),
+                });
             } else if (!waiting) {
-                journalLines.push(
-                    companion.isDead
-                        ? `${companionName} prend ${formatBlessuresCount(woundsToApply)} et meurt.`
-                        : `${companionName} prend ${formatBlessuresCount(woundsToApply)}.`
+                pushJ(
+                    companion.isDead ? 'WOUND_TAKEN_DIED' : 'WOUND_TAKEN',
+                    { card: companionName, count: woundsToApply }
                 );
             }
         }
     }
 
-    for (const line of journalLines) {
-        appendJournal(G, line);
+    for (const { key, params } of journalPending) {
+        appendJournalNotice(G, key, params);
     }
-    if (!G.responseWindow?.isOpen && journalLines.length > 0) {
-        setRawStatus(G, journalLines.join(' '));
+    if (!G.responseWindow?.isOpen && journalPending.length > 0) {
+        // Bandeau live : FR (repli termes côté client si langue ≠ FR).
+        setRawStatus(
+            G,
+            journalPending
+                .map(
+                    ({ key, params }) =>
+                        formatJournalNotice('fr', key, params).named
+                )
+                .join(' ')
+        );
     }
     if (tryOpenCharacterDies(G) === 'WAITING') return;
     if (tryOpenWinsSkirmish(G) === 'WAITING') return;

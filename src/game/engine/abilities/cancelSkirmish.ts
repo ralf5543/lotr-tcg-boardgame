@@ -13,7 +13,7 @@ import {
     forEachInPlayCard,
 } from './resolveCostTarget';
 import { displayTitle } from '../../../decks/cardMeta';
-import { appendJournal } from '../../logic/journal';
+import { appendJournalNotice } from '../../logic/journal';
 import {
     getEffectiveResistance,
     getEffectiveStrength,
@@ -216,8 +216,7 @@ export function cancelSkirmish(G: GameState, skirmishId: string): boolean {
         G.actionWindow = undefined;
     }
     clearSkirmishTemps(G);
-    const line = `Combat annulé (${name}).`;
-    appendJournal(G, line);
-    setRawStatus(G, line);
+    appendJournalNotice(G, 'SKIRMISH_CANCELLED', { card: name });
+    setRawStatus(G, `Combat annulé (${name}).`);
     return true;
 }

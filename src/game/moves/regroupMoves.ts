@@ -17,7 +17,6 @@ import {
 } from '../logic/playerName';
 import { displayTitle } from '../../decks/cardMeta';
 import {
-    appendActorJournal,
     appendActorJournalNotice,
     appendSideRolesJournal,
     formatSideRolesStatus,
@@ -282,11 +281,16 @@ export const discardForMuster = (
         musterState.discardedCount += 1;
         const cardName = displayTitle(discardedCard);
         const name = playerDisplayName(G, playerID);
-        appendActorJournal(G, playerID, {
-            vous: `Vous avez défaussé ${cardName} (ralliement ${musterState.discardedCount}/${musterState.allowedCount}).`,
-            named: `${name} a défaussé ${cardName} (ralliement ${musterState.discardedCount}/${musterState.allowedCount}).`,
+        appendActorJournalNotice(G, playerID, 'DISCARDED_HAND_MUSTER', {
+            player: name,
+            card: cardName,
+            discarded: musterState.discardedCount,
+            allowed: musterState.allowedCount,
         });
-        setRawStatus(G, `${name} a défaussé ${cardName} (ralliement ${musterState.discardedCount}/${musterState.allowedCount}).`);
+        setRawStatus(
+            G,
+            `${name} a défaussé ${cardName} (ralliement ${musterState.discardedCount}/${musterState.allowedCount}).`
+        );
         if (watchInitiative) {
             announceInitiativeIfChanged(G, hadInitiative);
         }
@@ -331,11 +335,13 @@ export const confirmMuster = ({
 
     if (!fpDone || !shadowDone) {
         const name = playerDisplayName(G, pId);
-        appendActorJournal(G, pId, {
-            vous: 'Vous avez validé votre ralliement.',
-            named: `${name} a validé son ralliement.`,
+        appendActorJournalNotice(G, pId, 'MUSTER_VALIDATED', {
+            player: name,
         });
-        setRawStatus(G, `${name} a validé son ralliement. En attente de ${playerDisplayName(G, otherPlayerId(pId))}…`);
+        setRawStatus(
+            G,
+            `${name} a validé son ralliement. En attente de ${playerDisplayName(G, otherPlayerId(pId))}…`
+        );
         return;
     }
 

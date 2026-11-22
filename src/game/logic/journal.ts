@@ -284,13 +284,6 @@ export function appendPhaseJournal(
     );
 }
 
-const STAT_FR: Record<string, string> = {
-    STRENGTH: 'force',
-    VITALITY: 'vitalité',
-    RESISTANCE: 'résistance',
-    TWILIGHT_COST: 'crépuscule',
-};
-
 function firstChosenId(
     chosen?: string | string[] | null
 ): string | undefined {
@@ -322,25 +315,25 @@ export function appendAbilityUsedJournal(
         : null;
 
     if (exert && tempStat && tempStat.type === 'ADD_TEMP_STAT') {
-        const stat = STAT_FR[tempStat.stat] || tempStat.stat.toLowerCase();
-        const sign = tempStat.value > 0 ? '+' : '';
-        const bonus = `${sign}${tempStat.value} en ${stat}`;
         const targetLabel = effectTarget
             ? displayTitle(effectTarget)
             : null;
         if (targetLabel) {
-            appendJournal(
-                G,
-                `${sourceName} s’est affaibli pour donner ${bonus} à ${targetLabel}.`
-            );
+            appendJournalNotice(G, 'ABILITY_EXERT_BUFF_TARGET', {
+                source: sourceName,
+                target: targetLabel,
+                stat: tempStat.stat,
+                value: tempStat.value,
+                sign: tempStat.value > 0 ? '+' : '',
+            });
             return;
         }
         const parts = formatAbilityLabelParts(ability, source);
         if (parts.effect) {
-            appendJournal(
-                G,
-                `${sourceName} s’est affaibli pour ${parts.effect}.`
-            );
+            appendJournalNotice(G, 'ABILITY_EXERT_FOR_EFFECT', {
+                source: sourceName,
+                effect: parts.effect,
+            });
             return;
         }
     }

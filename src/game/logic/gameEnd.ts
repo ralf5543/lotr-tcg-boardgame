@@ -4,7 +4,7 @@ import { isRingBearerCard } from '../../utils/cardUtils';
 import { getEffectiveResistance, getEffectiveVitality } from '../../utils/cardStats';
 import { getCardText } from '../../utils/i18n';
 import { otherPlayerId, playerDisplayName } from './playerName';
-import { appendActorJournal } from './journal';
+import { appendActorJournalNotice } from './journal';
 
 function fpPlayer(G: GameState) {
     return G.players[G.fpPlayerId || '0'];
@@ -120,9 +120,9 @@ function setGameResult(
         overlayDismissed: false,
     };
     // Barre partagée : nom du gagnant (pas « Vous », les deux camps voient le même texte).
-    appendActorJournal(G, winnerPlayerId, {
-        vous: `Vous remportez la partie. ${detail}`,
-        named: `${winnerName} remporte la partie. ${detail}`,
+    appendActorJournalNotice(G, winnerPlayerId, 'GAME_WON', {
+        player: winnerName,
+        detail,
     });
     setRawStatus(G, `${winnerName} remporte la partie. ${detail}`);
     return true;

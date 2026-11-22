@@ -13,7 +13,7 @@ import {
     resolveWhenAssigned,
     resolveWhenFpAssignsTo,
 } from '../engine/abilities/whenAssigned';
-import { appendJournal } from '../logic/journal';
+import { appendJournalNotice } from '../logic/journal';
 import { getCardText } from '../../utils/i18n';
 
 export const assignMinion = (
@@ -147,14 +147,32 @@ export const assignMinion = (
             }
         }
     }
-    const assignLine =
+    if (ambushAdded > 0) {
+        appendJournalNotice(G, 'ASSIGNED_AMBUSH', {
+            minion: minionName,
+            companion: compName,
+            twilight: ambushAdded,
+        });
+    } else if (assignBoost != null) {
+        appendJournalNotice(G, 'ASSIGNED_STRENGTH', {
+            minion: minionName,
+            companion: compName,
+            bonus: assignBoost,
+        });
+    } else {
+        appendJournalNotice(G, 'ASSIGNED', {
+            minion: minionName,
+            companion: compName,
+        });
+    }
+    setRawStatus(
+        G,
         ambushAdded > 0
             ? `${minionName} est assigné à ${compName}. Embuscade : +${ambushAdded} Crépuscule.`
             : assignBoost != null
               ? `${minionName} est assigné à ${compName} (force +${assignBoost} jusqu’au regroupement).`
-              : `${minionName} est assigné à ${compName}.`;
-    appendJournal(G, assignLine);
-    setRawStatus(G, assignLine);
+              : `${minionName} est assigné à ${compName}.`
+    );
 
     checkAssignmentProgress(G, ctx, events);
 };
@@ -172,10 +190,7 @@ export const yieldAssignmentToShadow = ({
         return 'INVALID_MOVE';
     }
 
-    appendJournal(
-        G,
-        'Les Peuples Libres laissent l’Ombre affecter les séides restants.'
-    );
+    appendJournalNotice(G, 'YIELD_ASSIGNMENT_TO_SHADOW');
     beginShadowAssignment(
         G,
         events,
@@ -195,14 +210,17 @@ export const passShadowAssignment = ({
 
     G.assignmentStep = 'COMPLETED';
     const leftover = getUnassignedMinions(G).length;
-    const passLine =
+    if (leftover > 0) {
+        appendJournalNotice(G, 'SHADOW_LEFT_UNASSIGNED', { count: leftover });
+    } else {
+        appendJournalNotice(G, 'ASSIGNMENT_DONE');
+    }
+    setRawStatus(
+        G,
         leftover > 0
-            ? `L’Ombre laisse ${leftover} séide${leftover > 1 ? 's' : ''} hors combat.`
-            : 'Affectation terminée.';
-    appendJournal(G, passLine);
-    setRawStatus(G, leftover > 0
-            ? `${passLine} Début des combats !`
-            : 'Affectation terminée. Début des combats !');
+            ? `L’Ombre laisse ${leftover} séide${leftover > 1 ? 's' : ''} hors combat. Début des combats !`
+            : 'Affectation terminée. Début des combats !'
+    );
     events?.endPhase?.();
 };
 

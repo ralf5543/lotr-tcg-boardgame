@@ -86,8 +86,12 @@ describe('journal défausse / phase / capacité', () => {
         };
 
         appendAbilityUsedJournal(G, faramir, ability, 'pippin-1');
-        expect(G.journalLog![G.journalLog!.length - 1].named).toBe(
+        const entry = G.journalLog![G.journalLog!.length - 1];
+        expect(formatJournalEntry(entry, '0', 'fr')).toBe(
             'Faramir s’est affaibli pour donner +2 en force à Pippin.'
+        );
+        expect(formatJournalEntry(entry, '0', 'en')).toBe(
+            'Faramir exerted to give +2 strength to Pippin.'
         );
     });
 
