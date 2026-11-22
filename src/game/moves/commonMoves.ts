@@ -37,6 +37,7 @@ import {
 } from '../logic/initiative';
 import { applyAutomaticToPlayCosts } from '../logic/applyToPlayCosts';
 import { checkRingBearerKilledLoss } from '../logic/gameEnd';
+import { setStatus, setRawStatus } from '../../i18n/status';
 import { getEffectiveTwilightCost } from '../../utils/roamingDetection';
 import {
     otherPlayerId,
@@ -161,7 +162,10 @@ export const confirmStartOfPhase = ({
             vous: 'Vous avez terminé vos actions de début de phase.',
             named: `${name} a terminé ses actions de début de phase.`,
         });
-        G.statusMessage = `${name} a terminé ses actions de début de phase. En attente de ${playerDisplayName(G, otherPlayerId(String(playerID ?? '0')))}…`;
+        setStatus(G, 'START_OF_PHASE_DONE_WAITING', {
+            name,
+            other: playerDisplayName(G, otherPlayerId(String(playerID ?? '0'))),
+        });
     }
 };
 
@@ -202,8 +206,7 @@ export const passActionWindow = ({
         G.actionWindow = { ...G.actionWindow, isOpen: false, passesCount: 0 };
 
         if (ctx.phase === 'maneuver') {
-            G.statusMessage =
-                'Manœuvre terminée. Passage à la phase d’Archerie.';
+            setRawStatus(G, 'Manœuvre terminée. Passage à la phase d’Archerie.');
             events?.endPhase?.();
         } else if (ctx.phase === 'archery') {
             advanceArcheryAssignmentStep(G, events);
@@ -217,8 +220,7 @@ export const passActionWindow = ({
             }
 
             G.regroupStep = 'SHADOW_REFILL';
-            G.statusMessage =
-                'Ombre : Vous pouvez défausser 1 carte, puis validez votre main à 8 cartes.';
+            setRawStatus(G, 'Ombre : Vous pouvez défausser 1 carte, puis validez votre main à 8 cartes.');
         }
     } else {
         G.actionWindow = {
@@ -307,7 +309,10 @@ export const attachCard = (
         if (!targetCard.attachments) targetCard.attachments = [];
         targetCard.attachments.push(attachedCard);
         appendCardPlayedJournal(G, actingPlayerId, attachedCard);
-        G.statusMessage = `${playerDisplayName(G, actingPlayerId)} a joué ${displayFullName(attachedCard)}.`;
+        setStatus(G, 'PLAYED_CARD', {
+            player: playerDisplayName(G, actingPlayerId),
+            card: displayFullName(attachedCard),
+        });
     }
 
     afterCardPlayed(G, attachedCard, {
@@ -484,7 +489,10 @@ export const playCard = (
             playedCard.isFaceDown = false;
             player.fellowshipArea.push(playedCard);
             appendCardPlayedJournal(G, actingPlayerId, playedCard);
-            G.statusMessage = `${playerDisplayName(G, actingPlayerId)} a joué ${displayFullName(playedCard)}.`;
+            setStatus(G, 'PLAYED_CARD', {
+            player: playerDisplayName(G, actingPlayerId),
+            card: displayFullName(playedCard),
+        });
         } else if (
             [
                 'ALLY',
@@ -497,7 +505,10 @@ export const playCard = (
             if (!player.supportArea) player.supportArea = [];
             player.supportArea.push(playedCard);
             appendCardPlayedJournal(G, actingPlayerId, playedCard);
-            G.statusMessage = `${playerDisplayName(G, actingPlayerId)} a joué ${displayFullName(playedCard)}.`;
+            setStatus(G, 'PLAYED_CARD', {
+            player: playerDisplayName(G, actingPlayerId),
+            card: displayFullName(playedCard),
+        });
         } else if (playedCard.type === 'EVENT') {
             if (!applyEventAbility(G, playedCard, ctx.phase || '', chosenTargetId)) {
                 player.hand.splice(cardIndex, 0, playedCard);
@@ -513,7 +524,10 @@ export const playCard = (
                 };
             }
             appendCardPlayedJournal(G, actingPlayerId, playedCard);
-            G.statusMessage = `${playerDisplayName(G, actingPlayerId)} a joué ${displayFullName(playedCard)}.`;
+            setStatus(G, 'PLAYED_CARD', {
+            player: playerDisplayName(G, actingPlayerId),
+            card: displayFullName(playedCard),
+        });
         } else {
             console.warn(
                 `❌ [playCard] Type de carte inconnu/non géré pour FP: ${playedCard.type}`
@@ -552,7 +566,10 @@ export const playCard = (
             if (!G.battlefield) G.battlefield = [];
             G.battlefield.push(playedCard);
             appendCardPlayedJournal(G, actingPlayerId, playedCard);
-            G.statusMessage = `${playerDisplayName(G, actingPlayerId)} a joué ${displayFullName(playedCard)}.`;
+            setStatus(G, 'PLAYED_CARD', {
+            player: playerDisplayName(G, actingPlayerId),
+            card: displayFullName(playedCard),
+        });
         } else if (
             [
                 'ALLY',
@@ -565,7 +582,10 @@ export const playCard = (
             if (!player.supportArea) player.supportArea = [];
             player.supportArea.push(playedCard);
             appendCardPlayedJournal(G, actingPlayerId, playedCard);
-            G.statusMessage = `${playerDisplayName(G, actingPlayerId)} a joué ${displayFullName(playedCard)}.`;
+            setStatus(G, 'PLAYED_CARD', {
+            player: playerDisplayName(G, actingPlayerId),
+            card: displayFullName(playedCard),
+        });
         } else if (playedCard.type === 'EVENT') {
             if (!applyEventAbility(G, playedCard, ctx.phase || '', chosenTargetId)) {
                 player.hand.splice(cardIndex, 0, playedCard);
@@ -581,7 +601,10 @@ export const playCard = (
                 };
             }
             appendCardPlayedJournal(G, actingPlayerId, playedCard);
-            G.statusMessage = `${playerDisplayName(G, actingPlayerId)} a joué ${displayFullName(playedCard)}.`;
+            setStatus(G, 'PLAYED_CARD', {
+            player: playerDisplayName(G, actingPlayerId),
+            card: displayFullName(playedCard),
+        });
         } else {
             console.warn(
                 `❌ [playCard] Type de carte inconnu/non géré pour Ombre: ${playedCard.type}`
@@ -713,10 +736,10 @@ export const playCardFromDiscard = (
         if (playedCard.playFromDiscard?.underDeckInsteadOfDiscard) {
             if (!player.deck) player.deck = [];
             player.deck.push(playedCard);
-            G.statusMessage = `${playedCard.title} est joué depuis la défausse, puis placé sous la pioche.`;
+            setRawStatus(G, `${playedCard.title} est joué depuis la défausse, puis placé sous la pioche.`);
         } else {
             placeCardIntoDiscardPile(G, actingPlayerId, playedCard);
-            G.statusMessage = `${playedCard.title} est joué depuis la défausse.`;
+            setRawStatus(G, `${playedCard.title} est joué depuis la défausse.`);
         }
     } else if (isAttachment && hostCard) {
         if (!(hostCard as CardState).attachments) {
@@ -727,11 +750,11 @@ export const playCardFromDiscard = (
             (hostCard as CardState).title ||
             (hostCard as CardState).i18n?.fr?.title ||
             'sa cible';
-        G.statusMessage = `${playedCard.title} est joué depuis la défausse et attaché à ${hostName}.`;
+        setRawStatus(G, `${playedCard.title} est joué depuis la défausse et attaché à ${hostName}.`);
     } else if (playedCard.type === 'MINION' && !isFP) {
         if (!G.battlefield) G.battlefield = [];
         G.battlefield.push(playedCard);
-        G.statusMessage = `${playedCard.title} entre sur le champ de bataille depuis la défausse.`;
+        setRawStatus(G, `${playedCard.title} entre sur le champ de bataille depuis la défausse.`);
         if ((ctx.phase || '').toLowerCase() === 'shadow') {
             beginOptionalSitePhaseAbility(G);
         }
@@ -1085,8 +1108,7 @@ export const resolveForcedChoiceMove = (
                 [shadowId]: { isDone: shadowDone },
             },
         };
-        G.statusMessage =
-            'Phase de Manœuvre : Capacités et effets de début de phase.';
+        setRawStatus(G, 'Phase de Manœuvre : Capacités et effets de début de phase.');
         return;
     }
     // Ouvre la fenêtre d’actions même si une réponse (blessure) s’ouvre ensuite :
@@ -1286,14 +1308,13 @@ export const assignThreatWound = (
 
     if (left <= 0 || stillLiving.length === 0) {
         G.threatWoundsToAssign = undefined;
-        G.statusMessage =
-            left > 0
+        setRawStatus(G, left > 0
                 ? 'Plus de compagnon à blesser. Blessures de menaces restantes perdues.'
-                : 'Blessures de menaces assignées.';
+                : 'Blessures de menaces assignées.');
         return;
     }
 
-    G.statusMessage = `Menaces : encore ${left} blessure(s) à assigner.`;
+    setRawStatus(G, `Menaces : encore ${left} blessure(s) à assigner.`);
 };
 
 export const assignSanctuaryHeal = (
@@ -1311,7 +1332,7 @@ export const assignSanctuaryHeal = (
     }
 
     const left = G.sanctuaryHeal?.remaining ?? 0;
-    G.statusMessage = `Sanctuaire : encore ${left} soin(s) possible(s).`;
+    setRawStatus(G, `Sanctuaire : encore ${left} soin(s) possible(s).`);
 };
 
 export const confirmSanctuaryHeals = ({

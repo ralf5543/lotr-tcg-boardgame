@@ -1,4 +1,5 @@
 import type { Ability, CardState, GameState, SiteCardState } from '../types';
+import { setRawStatus } from '../../i18n/status';
 import { getEffectiveVitality } from '../../utils/cardStats';
 import { requestWounds } from '../engine/responseWindow';
 import { tryOpenFellowshipMoves } from '../engine/responseWindow';
@@ -131,9 +132,9 @@ export function beginSiteMoveCharacterWoundsIfNeeded(
             pendingPhaseAfter: nextPhase,
             companionsOnly: found.companionsOnly || undefined,
         };
-        G.statusMessage = found.companionsOnly
+        setRawStatus(G, found.companionsOnly
             ? `Site : Peuples Libres, assignez ${fpNeed} blessure(s) à vos compagnons (une par allié).`
-            : `Site : Peuples Libres, assignez ${fpNeed} blessure(s) à vos personnages.`;
+            : `Site : Peuples Libres, assignez ${fpNeed} blessure(s) à vos personnages.`);
         return true;
     }
 
@@ -143,7 +144,7 @@ export function beginSiteMoveCharacterWoundsIfNeeded(
         queue: [],
         pendingPhaseAfter: nextPhase,
     };
-    G.statusMessage = `Site : Ombre, assignez ${shNeed} blessure(s) à vos séides.`;
+    setRawStatus(G, `Site : Ombre, assignez ${shNeed} blessure(s) à vos séides.`);
     return true;
 }
 
@@ -187,7 +188,7 @@ export function assignSiteCharacterWound(
         if (still.length === 0) {
             pending.remaining = 0;
         } else {
-            G.statusMessage = `Site : encore ${pending.remaining} blessure(s) à assigner.`;
+            setRawStatus(G, `Site : encore ${pending.remaining} blessure(s) à assigner.`);
             return true;
         }
     }
@@ -202,10 +203,9 @@ export function assignSiteCharacterWound(
         if (need > 0) {
             pending.playerId = nextId;
             pending.remaining = need;
-            G.statusMessage =
-                nextId === (G.fpPlayerId || '0')
+            setRawStatus(G, nextId === (G.fpPlayerId || '0')
                     ? `Site : Peuples Libres, assignez ${need} blessure(s).`
-                    : `Site : Ombre, assignez ${need} blessure(s) à vos séides.`;
+                    : `Site : Ombre, assignez ${need} blessure(s) à vos séides.`);
             return true;
         }
     }

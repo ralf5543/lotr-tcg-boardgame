@@ -1,4 +1,5 @@
 import type { CardState, LotrMoveContext } from '../types';
+import { setRawStatus } from '../../i18n/status';
 import { canUseAbility } from '../engine/canUseAbility';
 import {
     abilityNeedsSiteReplace,
@@ -325,7 +326,7 @@ export const activateAbility = (
     yieldPriorityAfterAction(G, String(playerID));
     appendAbilityUsedJournal(G, source, ability, effectTargetId);
     const title = source.i18n?.fr?.title || source.title || source.id;
-    G.statusMessage = `${title} active une capacité.`;
+    setRawStatus(G, `${title} active une capacité.`);
 
     // Site début de fellowship : après résolution, dual-wait ou suite de phase.
     if (

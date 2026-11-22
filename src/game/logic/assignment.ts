@@ -1,4 +1,5 @@
 import type { Ctx } from 'boardgame.io';
+import { setRawStatus } from '../../i18n/status';
 import type { GameState, CardState } from '../types';
 import { getKeywordValue } from '../engine/keywords/keywordUtils';
 import { getCurrentSite } from './sites';
@@ -50,7 +51,7 @@ export const openAssignmentActionWindow = (G: GameState): void => {
         passesCount: 0,
     };
     if (!keepDevStatus) {
-        G.statusMessage = 'Affectation : Ouverture de la fenêtre d’action.';
+        setRawStatus(G, 'Affectation : Ouverture de la fenêtre d’action.');
     }
 };
 
@@ -67,20 +68,19 @@ export const beginMinionAssignment = (
 
     if (unassignedMinions.length === 0 || assignable.length === 0) {
         G.assignmentStep = 'COMPLETED';
-        G.statusMessage =
-            unassignedMinions.length === 0
+        setRawStatus(G, unassignedMinions.length === 0
                 ? G.isFierceAssignment
                     ? 'Aucun séide Acharné (FIERCE) à assigner.'
                     : 'Aucun séide en jeu : pas d’affectation nécessaire.'
-                : 'Aucun compagnon ne peut combattre. Les séides restants ne sont pas affectés.';
+                : 'Aucun compagnon ne peut combattre. Les séides restants ne sont pas affectés.');
         events?.endPhase?.();
         return;
     }
 
     G.assignmentStep = 'FP_ASSIGN';
-    G.statusMessage = G.isFierceAssignment
+    setRawStatus(G, G.isFierceAssignment
         ? 'Phase d’Affectation Acharnée : Assignez les séides FIERCE.'
-        : 'Phase d’Affectation : Le joueur des Peuples Libres attribue les séides aux compagnons.';
+        : 'Phase d’Affectation : Le joueur des Peuples Libres attribue les séides aux compagnons.');
 };
 
 /**
@@ -201,14 +201,13 @@ export const beginShadowAssignment = (
     const companions = G.players[fpId]?.fellowshipArea || [];
     if (!companions.some(canCompanionBeAssigned)) {
         G.assignmentStep = 'COMPLETED';
-        G.statusMessage =
-            'Aucun compagnon ne peut combattre. Les séides restants ne sont pas affectés.';
+        setRawStatus(G, 'Aucun compagnon ne peut combattre. Les séides restants ne sont pas affectés.');
         events?.endPhase?.();
         return;
     }
 
     G.assignmentStep = 'SHADOW_ASSIGN';
-    G.statusMessage = statusMessage;
+    setRawStatus(G, statusMessage);
     events?.setActivePlayers?.({ value: { [shadowId]: 'play' } });
 };
 
@@ -224,8 +223,7 @@ export const checkAssignmentProgress = (
 
     if (unassignedMinions.length === 0) {
         G.assignmentStep = 'COMPLETED';
-        G.statusMessage =
-            'Toutes les affectations sont terminées. Début des combats !';
+        setRawStatus(G, 'Toutes les affectations sont terminées. Début des combats !');
         events?.endPhase?.();
         return;
     }
@@ -233,8 +231,7 @@ export const checkAssignmentProgress = (
     const assignableCompanions = companions.filter(canCompanionBeAssigned);
     if (assignableCompanions.length === 0) {
         G.assignmentStep = 'COMPLETED';
-        G.statusMessage =
-            'Aucun compagnon ne peut combattre. Les séides restants ne sont pas affectés.';
+        setRawStatus(G, 'Aucun compagnon ne peut combattre. Les séides restants ne sont pas affectés.');
         events?.endPhase?.();
         return;
     }

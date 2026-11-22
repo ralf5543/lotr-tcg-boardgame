@@ -1,4 +1,5 @@
 import type { Ctx } from 'boardgame.io';
+import { setRawStatus } from '../../i18n/status';
 import type { GameState, CardState, SkirmishState } from '../types';
 import {
     getEffectiveStrength,
@@ -266,7 +267,7 @@ export const resolveSkirmish = (G: GameState, _ctx?: Ctx) => {
         appendJournal(G, line);
     }
     if (!G.responseWindow?.isOpen && journalLines.length > 0) {
-        G.statusMessage = journalLines.join(' ');
+        setRawStatus(G, journalLines.join(' '));
     }
     if (tryOpenCharacterDies(G) === 'WAITING') return;
     if (tryOpenWinsSkirmish(G) === 'WAITING') return;

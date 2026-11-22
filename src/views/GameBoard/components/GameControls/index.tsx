@@ -8,6 +8,8 @@ import { useTargeting } from '../../../../contexts/TargetingContext';
 import { usePreferencesOptional } from '../../../../contexts/PreferencesContext';
 import { useUiMessages } from '../../../../i18n/ui/useUiMessages';
 import { shortPhaseLabel } from '../../../../i18n/ui';
+import { getInstructions } from '../../../../i18n/instructions';
+import { formatStoredStatus } from '../../../../i18n/status';
 import { findTargetCard } from '../../../../utils/cardUtils';
 import { getAbilityToastClause } from '../../../../utils/i18n';
 import { FormattedText } from '../../../../utils/FormattedText';
@@ -131,6 +133,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
     const uiLanguage = prefs?.uiLanguage ?? 'fr';
     const ui = useUiMessages();
     const c = ui.chrome;
+    const ins = getInstructions(uiLanguage);
 
     if (!G || !ctx) return null;
 
@@ -464,12 +467,20 @@ export const GameControls: React.FC<GameControlsProps> = ({
                 G.pendingForcedChoice?.title ||
                 (G.pendingForcedChoice?.needsExertTargets
                     ? c.toast.exert
-                    : 'DÉFAUSSE'),
+                    : c.toast.discard),
             body:
-                G.statusMessage ||
+                formatStoredStatus(
+                    uiLanguage,
+                    G.statusNotice,
+                    G.statusMessage
+                ) ||
                 (G.pendingForcedChoice?.needsExertTargets
-                    ? `Choisissez ${G.pendingForcedChoice.needsExertTargets} compagnons à affaiblir.`
-                    : `Défaussez ${G.pendingForcedChoice.needsHandDiscard} carte(s) de votre main.`),
+                    ? ins.forcedChoiceExert(
+                          G.pendingForcedChoice.needsExertTargets
+                      )
+                    : ins.forcedChoiceHand(
+                          G.pendingForcedChoice.needsHandDiscard || 0
+                      )),
             showPassButton: false,
             type: 'FORCED_CHOICE',
         };
@@ -491,8 +502,11 @@ export const GameControls: React.FC<GameControlsProps> = ({
             body: siteClause ? (
                 <FormattedText text={siteClause} />
             ) : (
-                G.statusMessage ||
-                c.toast.siteEffectOptional
+                formatStoredStatus(
+                    uiLanguage,
+                    G.statusNotice,
+                    G.statusMessage
+                ) || c.toast.siteEffectOptional
             ),
             showPassButton: false,
             type: siteStartChoiceLocked
@@ -503,7 +517,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
         toastConfig = {
             show: true,
             title: c.toast.siteEffect,
-            body: `${opponentName} décide d’utiliser l’effet du site…`,
+            body: c.toast.siteDecideWait(opponentName),
             showPassButton: false,
             type: 'STANDARD',
         };
@@ -526,8 +540,11 @@ export const GameControls: React.FC<GameControlsProps> = ({
             body: siteClause ? (
                 <FormattedText text={siteClause} />
             ) : (
-                G.statusMessage ||
-                c.toast.siteEffectOptional
+                formatStoredStatus(
+                    uiLanguage,
+                    G.statusNotice,
+                    G.statusMessage
+                ) || c.toast.siteEffectOptional
             ),
             showPassButton: false,
             type: 'SITE_MOVE_ABILITY',
@@ -536,7 +553,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
         toastConfig = {
             show: true,
             title: c.toast.siteEffect,
-            body: `${opponentName} décide d’utiliser l’effet du site…`,
+            body: c.toast.siteDecideWait(opponentName),
             showPassButton: false,
             type: 'STANDARD',
         };
@@ -557,8 +574,11 @@ export const GameControls: React.FC<GameControlsProps> = ({
             body: siteClause ? (
                 <FormattedText text={siteClause} />
             ) : (
-                G.statusMessage ||
-                c.toast.siteEffectOptional
+                formatStoredStatus(
+                    uiLanguage,
+                    G.statusNotice,
+                    G.statusMessage
+                ) || c.toast.siteEffectOptional
             ),
             showPassButton: false,
             type: 'SITE_PHASE_ABILITY',
@@ -567,7 +587,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
         toastConfig = {
             show: true,
             title: c.toast.siteEffect,
-            body: `${opponentName} décide d’utiliser l’effet du site…`,
+            body: c.toast.siteDecideWait(opponentName),
             showPassButton: false,
             type: 'STANDARD',
         };
@@ -588,8 +608,11 @@ export const GameControls: React.FC<GameControlsProps> = ({
             body: siteClause ? (
                 <FormattedText text={siteClause} />
             ) : (
-                G.statusMessage ||
-                c.toast.siteFollowerExert
+                formatStoredStatus(
+                    uiLanguage,
+                    G.statusNotice,
+                    G.statusMessage
+                ) || c.toast.siteFollowerExert
             ),
             showPassButton: false,
             type: 'SITE_FOLLOWER_TRANSFER',
@@ -598,7 +621,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
         toastConfig = {
             show: true,
             title: c.toast.siteEffect,
-            body: `${opponentName} décide d’utiliser l’effet du site…`,
+            body: c.toast.siteDecideWait(opponentName),
             showPassButton: false,
             type: 'STANDARD',
         };
@@ -607,8 +630,11 @@ export const GameControls: React.FC<GameControlsProps> = ({
             show: true,
             title: c.toast.discard,
             body:
-                G.statusMessage ||
-                c.toast.discardPossessionOrCondition,
+                formatStoredStatus(
+                    uiLanguage,
+                    G.statusNotice,
+                    G.statusMessage
+                ) || c.toast.discardPossessionOrCondition,
             showPassButton: false,
             type: 'FP_DISCARD',
         };
@@ -625,7 +651,11 @@ export const GameControls: React.FC<GameControlsProps> = ({
             show: true,
             title: c.toast.siteEffect,
             body:
-                G.statusMessage || c.toast.discardConditionInPlay,
+                formatStoredStatus(
+                    uiLanguage,
+                    G.statusNotice,
+                    G.statusMessage
+                ) || c.toast.discardConditionInPlay,
             showPassButton: false,
             type: 'SITE_PHASE_DESIGNATION',
         };
@@ -642,8 +672,11 @@ export const GameControls: React.FC<GameControlsProps> = ({
             show: true,
             title: c.toast.siteEffect,
             body:
-                G.statusMessage ||
-                'Placez une carte de votre pile de mort hors jeu.',
+                formatStoredStatus(
+                    uiLanguage,
+                    G.statusNotice,
+                    G.statusMessage
+                ) || c.toast.deadPileRemoveYou,
             showPassButton: false,
             type: 'DEAD_PILE_REMOVAL',
         };
@@ -651,7 +684,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
         toastConfig = {
             show: true,
             title: c.toast.siteEffect,
-            body: 'Les Peuples Libres placent une carte de leur pile de mort hors jeu…',
+            body: c.toast.deadPileRemoveWait,
             showPassButton: false,
             type: 'STANDARD',
         };
@@ -662,8 +695,8 @@ export const GameControls: React.FC<GameControlsProps> = ({
             body: myStartOfPhaseState.isDone
                 ? c.common.waitingFor(opponentName)
                 : startOfPhaseHasActions
-                  ? 'Activez vos effets de début de phase sur vos cartes, ou validez.'
-                  : 'Plus d’action disponible. Validez pour continuer.',
+                  ? ins.startOfPhaseAct
+                  : ins.startOfPhaseValidate,
             showPassButton: false,
             type: 'START_OF_PHASE',
         };
@@ -689,11 +722,14 @@ export const GameControls: React.FC<GameControlsProps> = ({
         const bodyText =
             shortClause ||
             siteClause ||
-            G.statusMessage ||
-            'Vous pouvez utiliser cet effet optionnel.';
+            formatStoredStatus(
+                uiLanguage,
+                G.statusNotice,
+                G.statusMessage
+            ) || c.toast.optionalEffectHint;
         toastConfig = {
             show: true,
-            title: isSiteSource ? 'EFFET DU SITE' : 'RÉPONSE',
+            title: isSiteSource ? c.toast.siteEffect : c.toast.response,
             body: <FormattedText text={bodyText} />,
             showPassButton: false,
             type: 'OPTIONAL_RESPONSE_ABILITY',
@@ -701,7 +737,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
     } else if (isResponseWindowActive && isMyTurnToAct) {
         toastConfig = {
             show: true,
-            title: G.responseWindow?.title || 'RÉPONSE',
+            title: G.responseWindow?.title || c.toast.response,
             body:
                 G.responseWindow?.message ||
                 c.toast.respondOrPass,
@@ -712,14 +748,14 @@ export const GameControls: React.FC<GameControlsProps> = ({
         const pendingType = G.pendingEvent?.type;
         const waitingBody =
             pendingType === 'ABOUT_TO_FORCE_ASSIGN'
-                ? 'Les Peuples Libres décident s’ils empêchent l’affectation…'
+                ? c.toast.preventAssignWait
                 : pendingType === 'ABOUT_TO_EXHAUST'
-                  ? 'Les Peuples Libres décident s’ils empêchent l’épuisement…'
+                  ? c.toast.preventExhaustWait
                   : pendingType === 'ABOUT_TO_ADD_THREATS'
-                    ? 'Les Peuples Libres décident s’ils empêchent les menaces…'
+                    ? c.toast.preventThreatsWait
                     : pendingType === 'ABOUT_TO_CANCEL_SKIRMISH'
-                      ? `${opponentName} peut empêcher l’annulation d’escarmouche…`
-                      : `En attente de la réponse de ${opponentName}…`;
+                      ? c.toast.preventCancelSkirmishWait(opponentName)
+                      : ins.responseWait(opponentName);
         toastConfig = {
             show: true,
             title: c.toast.response,
@@ -757,8 +793,11 @@ export const GameControls: React.FC<GameControlsProps> = ({
             body: clause ? (
                 <FormattedText text={clause} />
             ) : (
-                G.statusMessage ||
-                'Vous pouvez activer l’effet optionnel de cette carte.'
+                formatStoredStatus(
+                    uiLanguage,
+                    G.statusNotice,
+                    G.statusMessage
+                ) || c.toast.optionalEffectHint
             ),
             showPassButton: false,
             type: 'WHEN_PLAYED_CHOICE',
@@ -777,7 +816,9 @@ export const GameControls: React.FC<GameControlsProps> = ({
             whenPlayedAbility?.trigger?.type === 'START_OF_SKIRMISH';
         toastConfig = {
             show: true,
-            title: isStartOfSkirmish ? c.toast.startOfSkirmish : 'EFFET OPTIONNEL',
+            title: isStartOfSkirmish
+                ? c.toast.startOfSkirmish
+                : c.toast.optionalEffect,
             body: c.common.waitingFor(opponentName),
             showPassButton: false,
             type: 'STANDARD',
@@ -796,10 +837,13 @@ export const GameControls: React.FC<GameControlsProps> = ({
                 body:
                     revealZone === 'HAND'
                         ? mayDiscard
-                            ? 'Cartes révélées. Cliquez-en une pour la défausser, ou validez sans défausser.'
-                            : 'Main révélée. Consultez les cartes puis validez.'
-                        : G.statusMessage ||
-                          'Cartes révélées du dessus de la pioche adverse. Validez pour appliquer les effets.',
+                            ? c.toast.revealHandMayDiscard
+                            : c.toast.revealHandView
+                        : formatStoredStatus(
+                              uiLanguage,
+                              G.statusNotice,
+                              G.statusMessage
+                          ) || c.toast.revealDeckTop,
                 showPassButton: false,
                 type: 'STANDARD',
             };
@@ -809,8 +853,8 @@ export const GameControls: React.FC<GameControlsProps> = ({
                 title: c.toast.reveal,
                 body:
                     revealZone === 'HAND'
-                        ? `${opponentName} consulte votre main…`
-                        : `${opponentName} consulte les cartes révélées…`,
+                        ? c.toast.revealHandWait(opponentName)
+                        : c.toast.revealCardsWait(opponentName),
                 showPassButton: false,
                 type: 'STANDARD',
             };
@@ -822,8 +866,8 @@ export const GameControls: React.FC<GameControlsProps> = ({
             title: c.toast.threats,
             body:
                 currentPlayerId === fpPlayerId
-                    ? `Un compagnon ou un allié est mort. Assignez ${remaining} blessure(s) à vos compagnons.`
-                    : 'Les Peuples Libres assignent les blessures des menaces…',
+                    ? c.toast.threatWoundsAssign(remaining)
+                    : c.toast.threatWoundsWait,
             showPassButton: false,
             type: 'STANDARD',
         };
@@ -834,15 +878,15 @@ export const GameControls: React.FC<GameControlsProps> = ({
             show: true,
             title: c.toast.siteWounds,
             body: isAssigner
-                ? `Assignez ${pending.remaining} blessure(s) à vos personnages.`
-                : `${opponentName} assigne les blessures du site…`,
+                ? c.toast.siteWoundsAssign(pending.remaining)
+                : c.toast.siteWoundsWait(opponentName),
             showPassButton: false,
             type: 'STANDARD',
         };
     } else if (isActionWindowActive && isMyTurnToAct) {
         toastConfig = {
             show: true,
-            title: G.actionWindow?.title || 'À VOTRE TOUR DE RÉAGIR',
+            title: G.actionWindow?.title || c.toast.yourTurnToRespond,
             // Message moteur = « Au tour de {nom}… » (vue partagée) ;
             // côté local on parle à la 2ᵉ personne.
             body: c.toast.actOrPass,
@@ -852,7 +896,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
     } else if (isActionWindowActive && !isMyTurnToAct) {
         toastConfig = {
             show: true,
-            title: G.actionWindow?.title || 'TOUR D’ACTION',
+            title: G.actionWindow?.title || c.toast.yourTurnToAct,
             body: c.common.waitingFor(opponentName),
             showPassButton: false,
             type: 'STANDARD',
@@ -867,8 +911,8 @@ export const GameControls: React.FC<GameControlsProps> = ({
             title: c.toast.siteChoiceN(siteNumber),
             body:
                 targetSiteIdx === 0
-                    ? 'Choisissez et posez votre premier site depuis votre deck de sites.'
-                    : 'Choisissez et posez le prochain site sur la case inexplorée.',
+                    ? c.toast.placeSite1Body
+                    : c.toast.placeNextSiteBody,
             showPassButton: false,
             type: 'STANDARD',
         };
@@ -884,7 +928,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
         toastConfig = {
             show: true,
             title: c.toast.shadowRefill,
-            body: 'Cliquez sur les cartes de votre main pour les défausser si nécessaire, puis validez.',
+            body: c.toast.shadowRefillBody,
             showPassButton: false,
             type: 'STANDARD',
         };
@@ -892,7 +936,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
         toastConfig = {
             show: true,
             title: c.toast.fpRefill,
-            body: 'Cliquez sur les cartes de votre main pour ajuster à 8 cartes maximum et terminer le tour.',
+            body: c.toast.fpRefillBody,
             showPassButton: false,
             type: 'STANDARD',
         };
@@ -905,7 +949,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
         toastConfig = {
             show: true,
             title: c.toast.assignment,
-            body: 'Laissez l’Ombre affecter tous les autres séides non-affectés ?',
+            body: c.toast.yieldAssignmentAsk,
             showPassButton: false,
             type: 'ASSIGNMENT_YIELD',
         };
@@ -919,14 +963,14 @@ export const GameControls: React.FC<GameControlsProps> = ({
                 ? {
                       show: true,
                       title: c.toast.assignment,
-                      body: 'Affectez vos séides restants, ou passez directement aux combats.',
+                      body: c.toast.shadowAssignYou,
                       showPassButton: false,
                       type: 'ASSIGNMENT_PASS',
                   }
                 : {
                       show: true,
                       title: c.toast.assignment,
-                      body: 'L’Ombre affecte les séides restants…',
+                      body: c.toast.shadowAssignWait,
                       showPassButton: false,
                       type: 'STANDARD',
                   };
@@ -945,7 +989,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
             title: c.toast.siteEffect,
             body: (
                 <FormattedText
-                    text={targetingMessage || 'Choisissez une cible.'}
+                    text={targetingMessage || c.toast.chooseTargetBody}
                 />
             ),
             showPassButton: false,
@@ -963,8 +1007,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
             body: (
                 <FormattedText
                     text={
-                        targetingMessage ||
-                        'Choisissez un compagnon à affaiblir.'
+                        targetingMessage || c.toast.chooseExertCompanion
                     }
                 />
             ),
@@ -988,28 +1031,28 @@ export const GameControls: React.FC<GameControlsProps> = ({
             show: true,
             title:
                 targetingKind === 'HAND_DISCARD'
-                    ? 'DÉFAUSSE'
+                    ? c.toast.discard
                     : targetingKind === 'HAND_PICK'
-                      ? 'EMPILER'
+                      ? c.toast.stack
                       : targetingKind === 'SITE_REPLACE'
-                        ? 'REMPLACER UN SITE'
+                        ? c.toast.replaceSite
                         : targetingKind === 'SITE_REPLACE_PATH'
-                          ? 'REMPLACER UN SITE'
+                          ? c.toast.replaceSite
                           : targetingKind === 'SITE_ATTACH'
-                            ? 'JOUER SUR UN SITE'
+                            ? c.toast.playOnSite
                             : targetingKind === 'SITE_STACK'
-                              ? 'EMPILER SUR UN SITE'
+                              ? c.toast.stackOnSite
                               : targetingKind === 'STACK_PLAY'
-                                ? 'JOUER DEPUIS LA PILE'
+                                ? c.toast.playFromStack
                                 : targetingKind === 'SANCTUARY_HEAL'
-                                  ? 'SANCTUAIRE'
-                                  : 'CHOIX DE CIBLE',
+                                  ? c.toast.sanctuary
+                                  : c.toast.chooseTarget,
             body: (
                 <>
                     <FormattedText text={targetingMessage} />
                     {targetingKind === 'SANCTUARY_HEAL'
                         ? null
-                        : ' Échap pour annuler.'}
+                        : c.toast.escapeCancelHint}
                 </>
             ),
             showPassButton: false,
@@ -1027,7 +1070,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
         toastConfig = {
             show: true,
             title: c.toast.pendingCard,
-            body: `${opponentName} désigne une cible.`,
+            body: ins.opponentDesignating(opponentName),
             showPassButton: false,
             type: 'STANDARD',
         };
@@ -1037,37 +1080,44 @@ export const GameControls: React.FC<GameControlsProps> = ({
     const getInstructionText = (): string => {
         if (isBiddingStep) {
             return hasAlreadyBid
-                ? `Votre mise (${formatPointsFardeau(currentBid ?? 0)}) est enregistrée.`
-                : 'Choisissez le nombre de points-fardeau que vous êtes prêt à miser.';
+                ? ins.bidRecorded(formatPointsFardeau(currentBid ?? 0))
+                : ins.bidChoose;
         }
 
         if (isChoosingFirstStep) {
             return isAuctionWinner
-                ? "Vous avez remporté l'enchère ! Choisissez votre camp."
-                : `${opponentName} détermine l'ordre des joueurs…`;
+                ? ins.chooseSideWin
+                : ins.chooseSideWait(opponentName);
         }
 
         if (isMulliganStep) {
             return hasMadeMulliganChoice
-                ? 'Votre choix de Mulligan est enregistré.'
-                : 'Décidez si vous conservez votre main de départ ou si vous remélangez.';
+                ? ins.mulliganRecorded
+                : ins.mulliganDecide;
         }
 
         if (isMusterStep && myMusterState) {
             if (myMusterState.isDone) {
-                return `Effet de Rassembleur validé. En attente de ${opponentName}…`;
+                return ins.musterDoneWaiting(opponentName);
             }
-            return `Défaussées : ${myMusterState.discardedCount} / ${myMusterState.allowedCount} carte(s). Cliquez sur vos cartes ou validez.`;
+            return ins.musterProgress(
+                myMusterState.discardedCount,
+                myMusterState.allowedCount
+            );
         }
 
         if (isForcedChoiceActive) {
             return isMyTurnToAct
                 ? G.pendingForcedChoice?.needsExertTargets
-                    ? `Choisissez ${G.pendingForcedChoice.needsExertTargets} compagnons à affaiblir.`
+                    ? ins.forcedChoiceExert(
+                          G.pendingForcedChoice.needsExertTargets
+                      )
                     : G.pendingForcedChoice?.needsHandDiscard
-                      ? `Défaussez ${G.pendingForcedChoice.needsHandDiscard} carte(s) de votre main.`
-                      : 'Choisissez une option pour le site / l’effet en cours.'
-                : `${opponentName} doit résoudre un choix forcé…`;
+                      ? ins.forcedChoiceHand(
+                            G.pendingForcedChoice.needsHandDiscard
+                        )
+                      : ins.forcedChoicePick
+                : ins.forcedChoiceWait(opponentName);
         }
 
         if (isStartOfPhaseStep && myStartOfPhaseState) {
@@ -1075,29 +1125,29 @@ export const GameControls: React.FC<GameControlsProps> = ({
                 return c.common.waitingFor(opponentName);
             }
             return startOfPhaseHasActions
-                ? 'Activez vos effets de début de phase sur vos cartes, ou validez.'
-                : 'Plus d’action disponible. Validez pour continuer.';
+                ? ins.startOfPhaseAct
+                : ins.startOfPhaseValidate;
         }
 
         if (G.sanctuaryHeal) {
             const remaining = G.sanctuaryHeal.remaining;
             return currentPlayerId === fpPlayerId
-                ? `Sanctuaire : soignez jusqu’à ${remaining} blessure(s), ou validez.`
-                : 'Les Peuples Libres soignent leurs compagnons au sanctuaire...';
+                ? ins.sanctuaryHealYou(remaining)
+                : ins.sanctuaryHealWait;
         }
 
         if ((G.threatWoundsToAssign ?? 0) > 0) {
             const remaining = G.threatWoundsToAssign ?? 0;
             return currentPlayerId === fpPlayerId
-                ? `Assignez ${remaining} blessure(s) de menaces à vos compagnons.`
-                : 'Les Peuples Libres assignent les blessures des menaces...';
+                ? ins.threatWoundsYou(remaining)
+                : ins.threatWoundsWait;
         }
 
         if (G.pendingSiteCharacterWounds) {
             const pending = G.pendingSiteCharacterWounds;
             return String(currentPlayerId) === String(pending.playerId)
-                ? `Assignez ${pending.remaining} blessure(s) du site à vos personnages.`
-                : `${opponentName} assigne les blessures du site…`;
+                ? ins.siteWoundsYou(pending.remaining)
+                : ins.siteWoundsWait(opponentName);
         }
 
         if (
@@ -1110,13 +1160,13 @@ export const GameControls: React.FC<GameControlsProps> = ({
             return (
                 targetingMessage ||
                 (targetingKind === 'HAND_DISCARD'
-                    ? 'Cliquez sur les cartes à défausser.'
-                    : 'Cliquez sur une carte pour la désigner.')
+                    ? ins.clickDiscardHand
+                    : ins.clickDesignate)
             );
         }
 
         if (G.pendingPlay && G.pendingPlay.playerId !== currentPlayerId) {
-            return `${opponentName} désigne une cible.`;
+            return ins.opponentDesignating(opponentName);
         }
 
         if (isSiteMoveAbilityActive) {
@@ -1125,20 +1175,15 @@ export const GameControls: React.FC<GameControlsProps> = ({
                 isTargetingActive &&
                 targetingKind === 'DESIGNATION'
             ) {
-                return (
-                    targetingMessage ||
-                    'Cliquez sur une carte pour appliquer l’effet du site.'
-                );
+                return targetingMessage || ins.siteMoveClick;
             }
             return isMyTurnToAct
-                ? 'Vous pouvez utiliser l’effet du site d’arrivée.'
-                : `${opponentName} décide d’utiliser l’effet du site…`;
+                ? ins.siteMoveYou
+                : ins.siteMoveWait(opponentName);
         }
 
         if (isSitePhaseAbilityActive) {
-            return isMyTurnToAct
-                ? 'Vous pouvez utiliser l’effet du site (Ombre).'
-                : 'L’Ombre décide d’utiliser l’effet du site…';
+            return isMyTurnToAct ? ins.sitePhaseYou : ins.sitePhaseWait;
         }
 
         if (isSitePhaseDesignationActive) {
@@ -1149,8 +1194,8 @@ export const GameControls: React.FC<GameControlsProps> = ({
 
         if (isWhenPlayedChoiceActive) {
             return isMyTurnToAct
-                ? 'Vous pouvez activer l’effet optionnel de cette carte.'
-                : `${opponentName} décide d’un effet optionnel…`;
+                ? ins.optionalEffectYou
+                : ins.optionalEffectWait(opponentName);
         }
 
         if (isResponseWindowActive) {
@@ -1158,15 +1203,15 @@ export const GameControls: React.FC<GameControlsProps> = ({
                 return c.toast.respondOrPass;
             }
             if (G.pendingEvent?.type === 'ABOUT_TO_FORCE_ASSIGN') {
-                return `${opponentName} décide s’il empêche l’affectation…`;
+                return ins.preventAssignWait(opponentName);
             }
-            return `En attente de la réponse de ${opponentName}…`;
+            return ins.responseWait(opponentName);
         }
 
         if (isActionWindowActive) {
             return isMyTurnToAct
                 ? c.toast.actOrPass
-                : `En attente de la réaction de ${opponentName}…`;
+                : ins.actionWait(opponentName);
         }
 
         if (isAwaitingSiteActive) {
@@ -1174,22 +1219,22 @@ export const GameControls: React.FC<GameControlsProps> = ({
                 currentPlayerId === siteSelectorPlayerId;
             if (isMyTurnToPlaceSite) {
                 return targetSiteIdx === 0
-                    ? 'Posez votre site 1 pour démarrer l’aventure.'
-                    : 'Choix du prochain site à poser.';
+                    ? ins.placeSite1
+                    : ins.placeNextSite;
             }
-            return 'En attente de la sélection du site...';
+            return ins.waitingSite;
         }
 
         if (ctx.phase === 'fellowship') {
             return currentPlayerId === fpPlayerId
-                ? 'Jouez vos compagnons ou soutiens, puis terminez la phase.'
-                : 'Le joueur des Peuples Libres prépare sa compagnie...';
+                ? ins.fellowshipYou
+                : ins.fellowshipWait;
         }
 
         if (ctx.phase === 'shadow') {
             return currentPlayerId === shadowPlayerId
-                ? 'Jouez vos séides, traqueurs et soutiens.'
-                : "Le joueur de l'Ombre prépare ses forces...";
+                ? ins.shadowYou
+                : ins.shadowWait;
         }
 
         if (ctx.phase === 'archery') {
@@ -1197,54 +1242,58 @@ export const GameControls: React.FC<GameControlsProps> = ({
             if (archeryStep === 'FP_ASSIGN') {
                 const remaining = G.archeryState?.fpRemainingWounds ?? 0;
                 return currentPlayerId === fpPlayerId
-                    ? `Assignez vos ${remaining} blessure(s) d'archerie restantes aux compagnons.`
-                    : `Les Peuples Libres attribuent ${remaining} blessure(s) d'archerie...`;
+                    ? ins.archeryFpYou(remaining)
+                    : ins.archeryFpWait(remaining);
             }
             if (archeryStep === 'SHADOW_ASSIGN') {
                 const remaining = G.archeryState?.shadowRemainingWounds ?? 0;
                 return currentPlayerId === shadowPlayerId
-                    ? `Assignez vos ${remaining} blessure(s) d'archerie restantes aux séides.`
-                    : `L'Ombre attribue ${remaining} blessure(s) d'archerie...`;
+                    ? ins.archeryShadowYou(remaining)
+                    : ins.archeryShadowWait(remaining);
             }
-            return 'Phase d’Archerie en cours...';
+            return ins.archeryOngoing;
         }
 
         if (ctx.phase === 'assignment') {
             const step = G.assignmentStep;
             if (step === 'FP_ASSIGN') {
                 return currentPlayerId === fpPlayerId
-                    ? 'Assignez vos compagnons aux séides de l’Ombre.'
-                    : 'Les Peuples Libres effectuent leurs assignations de défense...';
+                    ? ins.assignFpYou
+                    : ins.assignFpWait;
             }
             if (step === 'SHADOW_ASSIGN') {
                 return currentPlayerId === shadowPlayerId
-                    ? 'Assignez vos séides restants aux compagnons de votre choix.'
-                    : 'L’Ombre assigne ses séides restants...';
+                    ? ins.assignShadowYou
+                    : ins.assignShadowWait;
             }
-            return 'Phase d’Assignation des combats.';
+            return ins.assignOngoing;
         }
 
         if (ctx.phase === 'regroup') {
             if (G.regroupStep === 'SHADOW_REFILL') {
                 return currentPlayerId === shadowPlayerId
-                    ? 'Ajustez votre main (max 8 cartes) et validez.'
-                    : "L'Ombre réorganise sa main...";
+                    ? ins.regroupShadowRefillYou
+                    : ins.regroupShadowRefillWait;
             }
             if (G.regroupStep === 'FP_REFILL') {
                 return currentPlayerId === fpPlayerId
-                    ? 'Ajustez votre main à 8 cartes et terminez le tour.'
-                    : 'Les Peuples Libres préparent leur main pour le tour suivant...';
+                    ? ins.regroupFpRefillYou
+                    : ins.regroupFpRefillWait;
             }
             return currentPlayerId === fpPlayerId
-                ? 'Choisissez de voyager vers le site suivant ou de terminer le tour.'
-                : 'Les Peuples Libres décident de la suite du voyage...';
+                ? ins.regroupDecideYou
+                : ins.regroupDecideWait;
         }
 
         return '';
     };
 
     const currentNarrativeLog =
-        G.statusMessage || statusMessage || c.toast.gameInProgress;
+        formatStoredStatus(
+            uiLanguage,
+            G.statusNotice,
+            G.statusMessage || statusMessage
+        ) || c.toast.gameInProgress;
     const instructionText = getInstructionText();
 
     // Toaster ouvert = source live. Sinon : une seule ligne dans le bandeau.

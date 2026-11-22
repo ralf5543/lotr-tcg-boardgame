@@ -1,4 +1,5 @@
 import type { FnContext } from 'boardgame.io';
+import type { StatusNotice } from '../i18n/status/types';
 import type { StatModifier, StatType } from './logic/stats/types';
 
 export type CardKind = 'FREE_PEOPLE' | 'SHADOW' | 'NONE';
@@ -2239,6 +2240,11 @@ export interface GameState {
     isFierceAssignment?: boolean;
     pendingFierceAssignment?: boolean;
     statusMessage: string;
+    /**
+     * Consigne structurée (clé + params) : chaque client traduit localement.
+     * `statusMessage` reste le repli FR (journal / outils / DEV).
+     */
+    statusNotice?: StatusNotice | null;
     /**
      * Journal de partie (faits passés). Pas de consignes ni d’« en attente ».
      * Le fil chat UI lit ceci + les messages joueur.

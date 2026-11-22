@@ -1,4 +1,5 @@
 import type { CardState, GameState } from '../types';
+import { setRawStatus } from '../../i18n/status';
 import { applyHeal } from '../../utils/applyHeal';
 import { isCurrentSiteSanctuary } from './sites';
 
@@ -21,8 +22,7 @@ export const beginSanctuaryHeals = (G: GameState): boolean => {
 
     G.sanctuaryHeal = { remaining: SANCTUARY_HEAL_LIMIT };
     G.lastHealedCardIds = [];
-    G.statusMessage =
-        'Sanctuaire : soignez jusqu’à 5 blessures sur vos compagnons.';
+    setRawStatus(G, 'Sanctuaire : soignez jusqu’à 5 blessures sur vos compagnons.');
     return true;
 };
 

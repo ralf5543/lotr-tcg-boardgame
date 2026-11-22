@@ -1,4 +1,5 @@
 import type { Ability, CardState, GameState } from '../../types';
+import { setRawStatus } from '../../../i18n/status';
 import {
     applyAbilityEffect,
     abilityNeedsSiteReplace,
@@ -187,7 +188,7 @@ function beginOptionalWhenPlayed(
         phase,
     };
     // Texte affiché côté UI via getCardText (langue du joueur), pas ability.text EN.
-    G.statusMessage = 'Vous pouvez activer l’effet optionnel de cette carte.';
+    setRawStatus(G, 'Vous pouvez activer l’effet optionnel de cette carte.');
     pauseActionYieldForResponses(G, playerId);
 }
 
@@ -266,8 +267,7 @@ export function flushPendingYouPlayQueue(G: GameState): void {
         delete G.pendingYouPlayQueue;
     }
     G.pendingWhenPlayed = next;
-    G.statusMessage =
-        'Désignez la cible de l’effet déclenché (jouer une carte).';
+    setRawStatus(G, 'Désignez la cible de l’effet déclenché (jouer une carte).');
     pauseActionYieldForResponses(G, next.playerId);
 }
 
@@ -324,7 +324,7 @@ export function declinePendingWhenPlayed(
     const pending = G.pendingWhenPlayed;
     if (!pending || pending.playerId !== playerID) return false;
     G.pendingWhenPlayed = undefined;
-    G.statusMessage = 'Effet optionnel refusé.';
+    setRawStatus(G, 'Effet optionnel refusé.');
     flushPendingYouPlayQueue(G);
     return true;
 }

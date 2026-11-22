@@ -1,4 +1,5 @@
 import type { Ability, CardState, GameState, SiteCardState } from '../types';
+import { setRawStatus } from '../../i18n/status';
 import { applyAbilityEffect } from '../engine/abilities/applyAbilityEffect';
 import {
     canPayAbilityCost,
@@ -191,8 +192,7 @@ export function beginOptionalSitePhaseAbility(G: GameState): boolean {
         siteInstanceId: siteInstanceKey(found.site),
         abilityId: found.ability.id,
     };
-    G.statusMessage =
-        'Ombre : vous pouvez utiliser l’effet du site (Spot requis).';
+    setRawStatus(G, 'Ombre : vous pouvez utiliser l’effet du site (Spot requis).');
     return true;
 }
 
@@ -210,7 +210,7 @@ export function resolvePendingSitePhaseAbility(
     if (!accept) {
         G.sitePhaseAbilityOfferedThisPhase = true;
         G.pendingSitePhaseAbility = undefined;
-        G.statusMessage = 'Ombre : effet du site décliné.';
+        setRawStatus(G, 'Ombre : effet du site décliné.');
         return true;
     }
 
@@ -261,7 +261,7 @@ export function resolvePendingSitePhaseAbility(
     }
 
     G.pendingSitePhaseAbility = undefined;
-    G.statusMessage = `${site.name || 'Le site'} : effet appliqué.`;
+    setRawStatus(G, `${site.name || 'Le site'} : effet appliqué.`);
 
     if (isSitePhasePlayFamilyAbility(ability)) {
         // Action répétable : ré-offrir si elle reste légale (sauf si une
@@ -340,7 +340,7 @@ export function resolvePendingSitePhaseDesignation(
     }
 
     G.pendingSitePhaseDesignation = undefined;
-    G.statusMessage = `${site.name || 'Le site'} : effet appliqué.`;
+    setRawStatus(G, `${site.name || 'Le site'} : effet appliqué.`);
     // Action répétable : ré-offrir si encore légale.
     beginOptionalSitePhaseAbility(G);
     return true;

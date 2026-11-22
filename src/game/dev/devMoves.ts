@@ -1,3 +1,4 @@
+import { setRawStatus } from '../../i18n/status';
 import type {
     LotrMoveContext,
     LotrPhaseContext,
@@ -80,7 +81,7 @@ export const devMoves = {
         } else {
             fpPlayer.burdens = Math.max(0, deltaOrAmount);
         }
-        G.statusMessage = `[DEV] Burdens ajustés à ${fpPlayer.burdens}.`;
+        setRawStatus(G, `[DEV] Burdens ajustés à ${fpPlayer.burdens}.`);
     },
 
     devSetThreats: ({ G }: LotrMoveContext, delta: number) => {
@@ -90,11 +91,11 @@ export const devMoves = {
         const limit = getThreatLimit(G);
 
         if (delta > 0 && added === 0) {
-            G.statusMessage = `[DEV] Menaces déjà au plafond (${threats}/${limit} compagnons).`;
+            setRawStatus(G, `[DEV] Menaces déjà au plafond (${threats}/${limit} compagnons).`);
             return;
         }
 
-        G.statusMessage = `[DEV] Menaces ajustées à ${threats}/${limit}.`;
+        setRawStatus(G, `[DEV] Menaces ajustées à ${threats}/${limit}.`);
     },
 
     /** ±1 blessure : déjà blessé, sinon 1er non–porteur, sinon 1er compagnon. */
@@ -107,7 +108,7 @@ export const devMoves = {
         const nonRingBearer = fellowship.find((c) => !isRingBearerCard(c));
         const card = wounded || nonRingBearer || fellowship[0];
         if (!card) {
-            G.statusMessage = '[DEV] Aucun compagnon FP pour les blessures.';
+            setRawStatus(G, '[DEV] Aucun compagnon FP pour les blessures.');
             return;
         }
         // Soin DEV = vrai soin (file HEAL → Enquëa…), pas un simple compteur.
@@ -118,12 +119,12 @@ export const devMoves = {
             if (removed > 0) {
                 tryOpenHealResponse(G);
             }
-            G.statusMessage = `[DEV] ${card.title || card.id} : ${card.wounds || 0} blessure(s).`;
+            setRawStatus(G, `[DEV] ${card.title || card.id} : ${card.wounds || 0} blessure(s).`);
             return;
         }
         const next = Math.max(0, (card.wounds || 0) + delta);
         card.wounds = next;
-        G.statusMessage = `[DEV] ${card.title || card.id} : ${next} blessure(s).`;
+        setRawStatus(G, `[DEV] ${card.title || card.id} : ${next} blessure(s).`);
     },
 
     /** ±1 crépuscule imprimé du site courant (test pulse badge site). */
@@ -134,11 +135,11 @@ export const devMoves = {
             0;
         const site = G.path?.[index];
         if (!site) {
-            G.statusMessage = '[DEV] Aucun site courant.';
+            setRawStatus(G, '[DEV] Aucun site courant.');
             return;
         }
         site.twilightCost = Math.max(0, (site.twilightCost ?? 0) + delta);
-        G.statusMessage = `[DEV] Site ${index + 1} crépuscule → ${site.twilightCost}.`;
+        setRawStatus(G, `[DEV] Site ${index + 1} crépuscule → ${site.twilightCost}.`);
     },
 
     /** ±1 jeton sur la 1ʳᵉ condition zone de soutien FP qui en a (ou la 1ʳᵉ). */
@@ -152,8 +153,7 @@ export const devMoves = {
         );
         const card = withTokens || support[0];
         if (!card) {
-            G.statusMessage =
-                '[DEV] Aucune carte en zone de soutien FP pour les jetons.';
+            setRawStatus(G, '[DEV] Aucune carte en zone de soutien FP pour les jetons.');
             return;
         }
         const culture =
@@ -164,7 +164,7 @@ export const devMoves = {
         } else {
             removeCultureTokensFromCard(card, culture, -delta);
         }
-        G.statusMessage = `[DEV] ${card.title || card.id} : ${tokenCountOnCard(card, 'ANY')} jeton(s) ${culture}.`;
+        setRawStatus(G, `[DEV] ${card.title || card.id} : ${tokenCountOnCard(card, 'ANY')} jeton(s) ${culture}.`);
     },
 
     devSetArchery: ({ G }: LotrMoveContext, amount: number) => {
@@ -186,7 +186,7 @@ export const devMoves = {
         }
         G.archeryWoundsToAssign = newAmount;
 
-        G.statusMessage = `[DEV] Archerie FP forcée à : ${newAmount}`;
+        setRawStatus(G, `[DEV] Archerie FP forcée à : ${newAmount}`);
     },
 
     /** Place la compagnie sur l’emplacement 0–8 du chemin (sites déjà posés ou non). */
@@ -202,9 +202,9 @@ export const devMoves = {
             site?.name ||
             (site as { title?: string } | null)?.title ||
             site?.id;
-        G.statusMessage = site
+        setRawStatus(G, site
             ? `[DEV] Téléport site ${index + 1} : ${label} (pas de crépuscule ni effets move)`
-            : `[DEV] Téléport emplacement ${index + 1} (vide)`;
+            : `[DEV] Téléport emplacement ${index + 1} (vide)`);
     },
 
     devSetPhase: ({ G, events }: LotrPhaseContext, targetPhase: string) => {
@@ -217,7 +217,7 @@ export const devMoves = {
             }
         }
 
-        G.statusMessage = `[DEV] Phase forcée : ${targetPhase}`;
+        setRawStatus(G, `[DEV] Phase forcée : ${targetPhase}`);
         events?.setPhase?.(targetPhase);
 
         // setPhase ne rejoue pas onBegin si on est déjà sur cette phase.

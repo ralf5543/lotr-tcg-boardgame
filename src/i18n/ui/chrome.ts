@@ -120,6 +120,33 @@ export type ChromeMessages = {
         shadowChooseCondition: string;
         discardConditionInPlay: string;
         gameInProgress: string;
+        deadPileRemoveYou: string;
+        deadPileRemoveWait: string;
+        preventAssignWait: string;
+        preventExhaustWait: string;
+        preventThreatsWait: string;
+        preventCancelSkirmishWait: (name: string) => string;
+        revealHandMayDiscard: string;
+        revealHandView: string;
+        revealDeckTop: string;
+        revealHandWait: (name: string) => string;
+        revealCardsWait: (name: string) => string;
+        threatWoundsAssign: (n: number) => string;
+        threatWoundsWait: string;
+        siteWoundsAssign: (n: number) => string;
+        siteWoundsWait: (name: string) => string;
+        placeSite1Body: string;
+        placeNextSiteBody: string;
+        shadowRefillBody: string;
+        fpRefillBody: string;
+        yieldAssignmentAsk: string;
+        shadowAssignYou: string;
+        shadowAssignWait: string;
+        chooseTargetBody: string;
+        chooseExertCompanion: string;
+        siteDecideWait: (name: string) => string;
+        optionalEffectHint: string;
+        escapeCancelHint: string;
     };
     bidding: {
         bidRecorded: (pointsLabel: string) => string;
@@ -307,6 +334,50 @@ const fr: ChromeMessages = {
         shadowChooseCondition: 'L’Ombre choisit une situation à défausser…',
         discardConditionInPlay: 'Défaussez une situation en jeu.',
         gameInProgress: 'Partie en cours',
+        deadPileRemoveYou: 'Placez une carte de votre pile de mort hors jeu.',
+        deadPileRemoveWait:
+            'Les Peuples Libres placent une carte de leur pile de mort hors jeu…',
+        preventAssignWait:
+            'Les Peuples Libres décident s’ils empêchent l’affectation…',
+        preventExhaustWait:
+            'Les Peuples Libres décident s’ils empêchent l’épuisement…',
+        preventThreatsWait:
+            'Les Peuples Libres décident s’ils empêchent les menaces…',
+        preventCancelSkirmishWait: (name) =>
+            `${name} peut empêcher l’annulation d’escarmouche…`,
+        revealHandMayDiscard:
+            'Cartes révélées. Cliquez-en une pour la défausser, ou validez sans défausser.',
+        revealHandView: 'Main révélée. Consultez les cartes puis validez.',
+        revealDeckTop:
+            'Cartes révélées du dessus de la pioche adverse. Validez pour appliquer les effets.',
+        revealHandWait: (name) => `${name} consulte votre main…`,
+        revealCardsWait: (name) => `${name} consulte les cartes révélées…`,
+        threatWoundsAssign: (n) =>
+            `Un compagnon ou un allié est mort. Assignez ${n} blessure(s) à vos compagnons.`,
+        threatWoundsWait:
+            'Les Peuples Libres assignent les blessures des menaces…',
+        siteWoundsAssign: (n) =>
+            `Assignez ${n} blessure(s) à vos personnages.`,
+        siteWoundsWait: (name) => `${name} assigne les blessures du site…`,
+        placeSite1Body:
+            'Choisissez et posez votre premier site depuis votre deck de sites.',
+        placeNextSiteBody:
+            'Choisissez et posez le prochain site sur la case inexplorée.',
+        shadowRefillBody:
+            'Cliquez sur les cartes de votre main pour les défausser si nécessaire, puis validez.',
+        fpRefillBody:
+            'Cliquez sur les cartes de votre main pour ajuster à 8 cartes maximum et terminer le tour.',
+        yieldAssignmentAsk:
+            'Laissez l’Ombre affecter tous les autres séides non-affectés ?',
+        shadowAssignYou:
+            'Affectez vos séides restants, ou passez directement aux combats.',
+        shadowAssignWait: 'L’Ombre affecte les séides restants…',
+        chooseTargetBody: 'Choisissez une cible.',
+        chooseExertCompanion: 'Choisissez un compagnon à affaiblir.',
+        siteDecideWait: (name) => `${name} décide d’utiliser l’effet du site…`,
+        optionalEffectHint:
+            'Vous pouvez activer l’effet optionnel de cette carte.',
+        escapeCancelHint: ' Échap pour annuler.',
     },
     bidding: {
         bidRecorded: (points) => `Mise enregistrée : ${points}`,
@@ -502,6 +573,47 @@ const en: ChromeMessages = {
         shadowChooseCondition: 'Shadow chooses a condition to discard…',
         discardConditionInPlay: 'Discard a condition in play.',
         gameInProgress: 'Game in progress',
+        deadPileRemoveYou: 'Place a card from your dead pile out of play.',
+        deadPileRemoveWait:
+            'Free Peoples are placing a card from their dead pile out of play…',
+        preventAssignWait:
+            'Free Peoples are deciding whether to prevent the assignment…',
+        preventExhaustWait:
+            'Free Peoples are deciding whether to prevent the exhaust…',
+        preventThreatsWait:
+            'Free Peoples are deciding whether to prevent the threats…',
+        preventCancelSkirmishWait: (name) =>
+            `${name} may prevent the skirmish cancellation…`,
+        revealHandMayDiscard:
+            'Cards revealed. Click one to discard, or confirm without discarding.',
+        revealHandView: 'Hand revealed. Review the cards then confirm.',
+        revealDeckTop:
+            'Cards revealed from the top of the opponent’s draw deck. Confirm to apply effects.',
+        revealHandWait: (name) => `${name} is looking at your hand…`,
+        revealCardsWait: (name) => `${name} is reviewing the revealed cards…`,
+        threatWoundsAssign: (n) =>
+            `A companion or ally died. Assign ${n} wound(s) to your companions.`,
+        threatWoundsWait: 'Free Peoples are assigning threat wounds…',
+        siteWoundsAssign: (n) => `Assign ${n} wound(s) to your characters.`,
+        siteWoundsWait: (name) => `${name} is assigning site wounds…`,
+        placeSite1Body:
+            'Choose and place your first site from your site deck.',
+        placeNextSiteBody:
+            'Choose and place the next site on the unexplored spot.',
+        shadowRefillBody:
+            'Click cards in your hand to discard if needed, then confirm.',
+        fpRefillBody:
+            'Click cards in your hand to adjust to 8 cards max and end the turn.',
+        yieldAssignmentAsk:
+            'Let Shadow assign all other unassigned minions?',
+        shadowAssignYou:
+            'Assign your remaining minions, or proceed straight to skirmishes.',
+        shadowAssignWait: 'Shadow is assigning remaining minions…',
+        chooseTargetBody: 'Choose a target.',
+        chooseExertCompanion: 'Choose a companion to exert.',
+        siteDecideWait: (name) => `${name} is deciding whether to use the site…`,
+        optionalEffectHint: 'You may activate this card’s optional effect.',
+        escapeCancelHint: ' Escape to cancel.',
     },
     bidding: {
         bidRecorded: (points) => `Bid recorded: ${points}`,
@@ -695,8 +807,49 @@ const de: ChromeMessages = {
         fpChooseDiscard:
             'Die Freien Völker wählen einen Besitz oder Zustand zum Ablegen…',
         shadowChooseCondition: 'Der Schatten wählt einen Zustand zum Ablegen…',
-        discardConditionInPlay: 'Lege einen Zustand im Spiel ab.',
-        gameInProgress: 'Spiel läuft',
+                discardConditionInPlay: 'Lege eine Situation im Spiel ab.',
+        gameInProgress: 'Partie läuft',
+        deadPileRemoveYou: 'Lege eine Karte aus deinem Friedhof aus dem Spiel.',
+        deadPileRemoveWait:
+            'Freie Völker legen eine Karte aus ihrem Friedhof aus dem Spiel…',
+        preventAssignWait:
+            'Freie Völker entscheiden, ob sie die Zuweisung verhindern…',
+        preventExhaustWait:
+            'Freie Völker entscheiden, ob sie das Erschöpfen verhindern…',
+        preventThreatsWait:
+            'Freie Völker entscheiden, ob sie die Bedrohungen verhindern…',
+        preventCancelSkirmishWait: (name) =>
+            `${name} kann die Kampfaufhebung verhindern…`,
+        revealHandMayDiscard:
+            'Karten aufgedeckt. Klicke eine zum Ablegen oder bestätige ohne Ablegen.',
+        revealHandView: 'Hand aufgedeckt. Sieh die Karten an und bestätige.',
+        revealDeckTop:
+            'Karten vom Nachziehstapel des Gegners aufgedeckt. Bestätige, um Effekte anzuwenden.',
+        revealHandWait: (name) => `${name} sieht sich deine Hand an…`,
+        revealCardsWait: (name) => `${name} sieht sich die aufgedeckten Karten an…`,
+        threatWoundsAssign: (n) =>
+            `Ein Gefährte oder Verbündeter ist gestorben. Weise ${n} Wunde(n) zu.`,
+        threatWoundsWait: 'Freie Völker weisen Bedrohungswunden zu…',
+        siteWoundsAssign: (n) => `Weise ${n} Wunde(n) deinen Charakteren zu.`,
+        siteWoundsWait: (name) => `${name} weist Ortswunden zu…`,
+        placeSite1Body:
+            'Wähle und lege deinen ersten Ort aus deinem Ortdeck.',
+        placeNextSiteBody:
+            'Wähle und lege den nächsten Ort auf das unerforschte Feld.',
+        shadowRefillBody:
+            'Klicke Handkarten zum Ablegen falls nötig, dann bestätige.',
+        fpRefillBody:
+            'Passe deine Hand auf max. 8 an und beende den Zug.',
+        yieldAssignmentAsk:
+            'Schatten die übrigen nicht zugewiesenen Diener zuweisen lassen?',
+        shadowAssignYou:
+            'Weise verbleibende Diener zu, oder gehe direkt zu den Kämpfen.',
+        shadowAssignWait: 'Schatten weist verbleibende Diener zu…',
+        chooseTargetBody: 'Wähle ein Ziel.',
+        chooseExertCompanion: 'Wähle einen Gefährten zum Anstrengen.',
+        siteDecideWait: (name) => `${name} entscheidet über den Ortseffekt…`,
+        optionalEffectHint: 'Du darfst den optionalen Effekt dieser Karte aktivieren.',
+        escapeCancelHint: ' Escape zum Abbrechen.',
     },
     bidding: {
         bidRecorded: (points) => `Gebot gespeichert: ${points}`,
@@ -892,8 +1045,51 @@ const it: ChromeMessages = {
         fpChooseDiscard:
             'I Popoli Liberi scelgono un possesso o una condizione da scartare…',
         shadowChooseCondition: 'L’Ombra sceglie una condizione da scartare…',
-        discardConditionInPlay: 'Scarta una condizione in gioco.',
+                discardConditionInPlay: 'Scarta una situazione in gioco.',
         gameInProgress: 'Partita in corso',
+        deadPileRemoveYou: 'Metti fuori gioco una carta dalla pila dei morti.',
+        deadPileRemoveWait:
+            'I Popoli Liberi mettono fuori gioco una carta dalla pila dei morti…',
+        preventAssignWait:
+            'I Popoli Liberi decidono se impedire l’assegnazione…',
+        preventExhaustWait:
+            'I Popoli Liberi decidono se impedire l’esaurimento…',
+        preventThreatsWait:
+            'I Popoli Liberi decidono se impedire le minacce…',
+        preventCancelSkirmishWait: (name) =>
+            `${name} può impedire l’annullamento della schermaglia…`,
+        revealHandMayDiscard:
+            'Carte rivelate. Cliccane una per scartarla, o conferma senza scartare.',
+        revealHandView: 'Mano rivelata. Consulta le carte poi conferma.',
+        revealDeckTop:
+            'Carte rivelate dalla cima del mazzo avversario. Conferma per applicare gli effetti.',
+        revealHandWait: (name) => `${name} consulta la tua mano…`,
+        revealCardsWait: (name) => `${name} consulta le carte rivelate…`,
+        threatWoundsAssign: (n) =>
+            `Un compagno o alleato è morto. Assegna ${n} ferita/e ai tuoi compagni.`,
+        threatWoundsWait: 'I Popoli Liberi assegnano le ferite da minaccia…',
+        siteWoundsAssign: (n) =>
+            `Assegna ${n} ferita/e ai tuoi personaggi.`,
+        siteWoundsWait: (name) => `${name} assegna le ferite del sito…`,
+        placeSite1Body:
+            'Scegli e piazza il tuo primo sito dal mazzo siti.',
+        placeNextSiteBody:
+            'Scegli e piazza il prossimo sito sulla casella inesplorata.',
+        shadowRefillBody:
+            'Clicca le carte in mano per scartarle se serve, poi conferma.',
+        fpRefillBody:
+            'Sistema la mano a massimo 8 carte e termina il turno.',
+        yieldAssignmentAsk:
+            'Lascia che l’Ombra assegni tutti gli altri servitori non assegnati?',
+        shadowAssignYou:
+            'Assegna i servitori restanti, o passa direttamente ai combattimenti.',
+        shadowAssignWait: 'L’Ombra assegna i servitori restanti…',
+        chooseTargetBody: 'Scegli un bersaglio.',
+        chooseExertCompanion: 'Scegli un compagno da affaticare.',
+        siteDecideWait: (name) => `${name} decide se usare l’effetto del sito…`,
+        optionalEffectHint:
+            'Puoi attivare l’effetto opzionale di questa carta.',
+        escapeCancelHint: ' Esc per annullare.',
     },
     bidding: {
         bidRecorded: (points) => `Punta registrata: ${points}`,
@@ -1089,8 +1285,52 @@ const es: ChromeMessages = {
         fpChooseDiscard:
             'Los Pueblos Libres eligen una posesión o condición para descartar…',
         shadowChooseCondition: 'La Sombra elige una condición para descartar…',
-        discardConditionInPlay: 'Descarta una condición en juego.',
+                discardConditionInPlay: 'Descarta una situación en juego.',
         gameInProgress: 'Partida en curso',
+        deadPileRemoveYou: 'Coloca fuera de juego una carta de tu pila de muertos.',
+        deadPileRemoveWait:
+            'Los Pueblos Libres colocan fuera de juego una carta de su pila de muertos…',
+        preventAssignWait:
+            'Los Pueblos Libres deciden si impiden la asignación…',
+        preventExhaustWait:
+            'Los Pueblos Libres deciden si impiden el agotamiento…',
+        preventThreatsWait:
+            'Los Pueblos Libres deciden si impiden las amenazas…',
+        preventCancelSkirmishWait: (name) =>
+            `${name} puede impedir la cancelación de escaramuza…`,
+        revealHandMayDiscard:
+            'Cartas reveladas. Haz clic en una para descartarla, o valida sin descartar.',
+        revealHandView: 'Mano revelada. Consulta las cartas y valida.',
+        revealDeckTop:
+            'Cartas reveladas de la cima del mazo rival. Valida para aplicar los efectos.',
+        revealHandWait: (name) => `${name} consulta tu mano…`,
+        revealCardsWait: (name) => `${name} consulta las cartas reveladas…`,
+        threatWoundsAssign: (n) =>
+            `Un compañero o aliado ha muerto. Asigna ${n} herida(s) a tus compañeros.`,
+        threatWoundsWait:
+            'Los Pueblos Libres asignan las heridas de amenazas…',
+        siteWoundsAssign: (n) =>
+            `Asigna ${n} herida(s) a tus personajes.`,
+        siteWoundsWait: (name) => `${name} asigna las heridas del sitio…`,
+        placeSite1Body:
+            'Elige y coloca tu primer sitio desde tu mazo de sitios.',
+        placeNextSiteBody:
+            'Elige y coloca el siguiente sitio en la casilla inexplorada.',
+        shadowRefillBody:
+            'Haz clic en cartas de tu mano para descartar si hace falta, luego valida.',
+        fpRefillBody:
+            'Ajusta tu mano a máximo 8 cartas y termina el turno.',
+        yieldAssignmentAsk:
+            '¿Dejar que la Sombra asigne el resto de esbirros no asignados?',
+        shadowAssignYou:
+            'Asigna tus esbirros restantes, o pasa directamente a los combates.',
+        shadowAssignWait: 'La Sombra asigna los esbirros restantes…',
+        chooseTargetBody: 'Elige un objetivo.',
+        chooseExertCompanion: 'Elige un compañero para agotar.',
+        siteDecideWait: (name) => `${name} decide si usar el efecto del sitio…`,
+        optionalEffectHint:
+            'Puedes activar el efecto opcional de esta carta.',
+        escapeCancelHint: ' Esc para cancelar.',
     },
     bidding: {
         bidRecorded: (points) => `Puja registrada: ${points}`,

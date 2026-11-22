@@ -1,4 +1,5 @@
 import type { CardState, GameState } from '../types';
+import { setRawStatus } from '../../i18n/status';
 import { addThreats } from './threats';
 import {
     placeCultureTokens,
@@ -67,7 +68,7 @@ export function confirmPendingReveal(
                 discarded?.i18n?.fr?.title ||
                 discarded?.title ||
                 discardCardId;
-            G.statusMessage = `Carte révélée défaussée : ${name}.`;
+            setRawStatus(G, `Carte révélée défaussée : ${name}.`);
             G.pendingReveal = undefined;
             return true;
         }
@@ -86,7 +87,7 @@ export function confirmPendingReveal(
             }
         }
         if (aftermath?.mayDiscardOne) {
-            G.statusMessage = 'Révélation validée sans défausse.';
+            setRawStatus(G, 'Révélation validée sans défausse.');
         } else if (moved.length > 0) {
             const names = moved
                 .map(
@@ -96,9 +97,9 @@ export function confirmPendingReveal(
                         c.id
                 )
                 .join(', ');
-            G.statusMessage = `Main révélée : ${names} placée${moved.length > 1 ? 's' : ''} sous la pioche.`;
+            setRawStatus(G, `Main révélée : ${names} placée${moved.length > 1 ? 's' : ''} sous la pioche.`);
         } else {
-            G.statusMessage = 'Main révélée : aucune carte Ombre sous la pioche.';
+            setRawStatus(G, 'Main révélée : aucune carte Ombre sous la pioche.');
         }
         G.pendingReveal = undefined;
         return true;
@@ -154,7 +155,7 @@ export function confirmPendingReveal(
     }
 
     shufflePlayerDeck(G, subjectId);
-    G.statusMessage = `Révélation validée : ${shadowCount} Ombre → menace(s), ${fpCount} PL → jeton(s). Pioche mélangée.`;
+    setRawStatus(G, `Révélation validée : ${shadowCount} Ombre → menace(s), ${fpCount} PL → jeton(s). Pioche mélangée.`);
     G.pendingReveal = undefined;
     return true;
 }

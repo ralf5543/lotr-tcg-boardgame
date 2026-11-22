@@ -1,4 +1,5 @@
 import type { Ability, CardState, GameState } from '../../types';
+import { setRawStatus } from '../../../i18n/status';
 import { applyAbilityEffect } from './applyAbilityEffect';
 import { canPayAbilityCost, payAbilityCost } from './payAbilityCost';
 import { forEachInPlayCard } from './resolveCostTarget';
@@ -36,8 +37,7 @@ function queueOrOfferYouPlayPending(
         return;
     }
     G.pendingWhenPlayed = entry;
-    G.statusMessage =
-        'Désignez la cible de l’effet déclenché (jouer une carte).';
+    setRawStatus(G, 'Désignez la cible de l’effet déclenché (jouer une carte).');
     pauseActionYieldForResponses(G, playerId);
 }
 
@@ -133,8 +133,7 @@ export function maybeOfferInPlayYouPlayResponse(
                 abilityId: ability.id,
                 phase: options?.phase,
             };
-            G.statusMessage =
-                'Vous pouvez activer l’effet optionnel de cette carte.';
+            setRawStatus(G, 'Vous pouvez activer l’effet optionnel de cette carte.');
             pauseActionYieldForResponses(G, ownerId);
             return;
         }
@@ -200,7 +199,7 @@ export function maybeOfferSiteYouPlayResponse(
             phase: options?.phase,
             fromSite: true,
         };
-        G.statusMessage = 'Vous pouvez activer l’effet optionnel de ce site.';
+        setRawStatus(G, 'Vous pouvez activer l’effet optionnel de ce site.');
         pauseActionYieldForResponses(G, fpId);
         return;
     }

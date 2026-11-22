@@ -1,4 +1,5 @@
 import type { LotrMoveContext } from '../types';
+import { setRawStatus } from '../../i18n/status';
 import { drawCardsForPlayer } from '../../utils/drawCards';
 import {
     otherPlayerId,
@@ -56,7 +57,7 @@ export const submitMulliganChoice = (
     if (m0 !== null && m1 !== null) {
         G.setupState.step = 'COMPLETE';
         appendJournal(G, 'Mise en place terminée. Début de la partie.');
-        G.statusMessage = 'Mise en place terminée ! Début de la partie.';
+        setRawStatus(G, 'Mise en place terminée ! Début de la partie.');
 
         if (events?.setPhase) {
             events.setPhase('startOfFellowship');
@@ -65,7 +66,7 @@ export const submitMulliganChoice = (
         const live = doMulligan
             ? `${name} a fait un mulligan.`
             : `${name} a gardé sa main.`;
-        G.statusMessage = `${live} En attente de ${playerDisplayName(G, otherPlayerId(pId))}…`;
+        setRawStatus(G, `${live} En attente de ${playerDisplayName(G, otherPlayerId(pId))}…`);
     }
 };
 

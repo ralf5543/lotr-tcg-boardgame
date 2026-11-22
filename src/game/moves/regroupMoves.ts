@@ -1,6 +1,7 @@
 // src/game/engine/moves/regroupMoves.ts
 
 import type { LotrMoveContext } from '../types';
+import { setRawStatus } from '../../i18n/status';
 import { drawCardsForPlayer } from '../../utils/drawCards';
 import type { GameState } from '../types';
 import { exitStartOf } from '../logic/phaseEntry';
@@ -88,8 +89,7 @@ export const endTurnChoice = ({ G }: LotrMoveContext) => {
     });
 
     G.regroupStep = 'FP_REFILL';
-    G.statusMessage =
-        'Peuples Libres : Ajustez votre main à 8 cartes et validez pour terminer le tour.';
+    setRawStatus(G, 'Peuples Libres : Ajustez votre main à 8 cartes et validez pour terminer le tour.');
 };
 
 export const discardCardFromHand = (
@@ -123,8 +123,7 @@ export const discardCardFromHand = (
         console.warn(
             `⚠️ [moves.discardCardFromHand] Le Joueur ${actingPlayerId} a déjà défaussé sa carte optionnelle.`
         );
-        G.statusMessage =
-            'Vous avez déjà défaussé votre carte optionnelle pour ce tour.';
+        setRawStatus(G, 'Vous avez déjà défaussé votre carte optionnelle pour ce tour.');
         return 'INVALID_MOVE';
     }
 
@@ -145,7 +144,7 @@ export const discardCardFromHand = (
         vous: `Vous avez défaussé ${cardName}.`,
         named: `${name} a défaussé ${cardName}.`,
     });
-    G.statusMessage = `${name} a défaussé ${cardName}.`;
+    setRawStatus(G, `${name} a défaussé ${cardName}.`);
     if (watchInitiative) {
         announceInitiativeIfChanged(G, hadInitiative);
     }
@@ -186,13 +185,12 @@ export const confirmHandRefill = ({ G, events, playerID }: LotrMoveContext) => {
         const moveLimit = getMoveLimit(G);
         if ((G.movesThisTurn || 0) >= moveLimit || G.preventMoveAgain) {
             G.regroupStep = 'FP_REFILL';
-            G.statusMessage = G.preventMoveAgain
+            setRawStatus(G, G.preventMoveAgain
                 ? 'Déplacement supplémentaire empêché (site). Reconstitution de la main des Peuples Libres.'
-                : `Limite de déplacement atteinte (${moveLimit}/${moveLimit}). Reconstitution de la main des Peuples Libres.`;
+                : `Limite de déplacement atteinte (${moveLimit}/${moveLimit}). Reconstitution de la main des Peuples Libres.`);
         } else {
             G.regroupStep = 'FP_DECISION';
-            G.statusMessage =
-                "Peuples Libres : Choisissez d'avancer au site suivant ou de terminer le tour.";
+            setRawStatus(G, "Peuples Libres : Choisissez d'avancer au site suivant ou de terminer le tour.");
         }
         return;
     }
@@ -237,9 +235,9 @@ export const confirmHandRefill = ({ G, events, playerID }: LotrMoveContext) => {
         appendSideRolesJournal(G, nextFpPlayerId, {
             prefix: 'Nouveau tour !',
         });
-        G.statusMessage = formatSideRolesStatus(G, nextFpPlayerId, {
+        setRawStatus(G, formatSideRolesStatus(G, nextFpPlayerId, {
             prefix: 'Nouveau tour !',
-        });
+        }));
 
         events?.endTurn?.({ next: nextFpPlayerId });
         // Sanctuaire + capacités « début de compagnie » (ne pas sauter vers fellowship)
@@ -290,7 +288,7 @@ export const discardForMuster = (
             vous: `Vous avez défaussé ${cardName} (ralliement ${musterState.discardedCount}/${musterState.allowedCount}).`,
             named: `${name} a défaussé ${cardName} (ralliement ${musterState.discardedCount}/${musterState.allowedCount}).`,
         });
-        G.statusMessage = `${name} a défaussé ${cardName} (ralliement ${musterState.discardedCount}/${musterState.allowedCount}).`;
+        setRawStatus(G, `${name} a défaussé ${cardName} (ralliement ${musterState.discardedCount}/${musterState.allowedCount}).`);
         if (watchInitiative) {
             announceInitiativeIfChanged(G, hadInitiative);
         }
@@ -339,7 +337,7 @@ export const confirmMuster = ({
             vous: 'Vous avez validé votre ralliement.',
             named: `${name} a validé son ralliement.`,
         });
-        G.statusMessage = `${name} a validé son ralliement. En attente de ${playerDisplayName(G, otherPlayerId(pId))}…`;
+        setRawStatus(G, `${name} a validé son ralliement. En attente de ${playerDisplayName(G, otherPlayerId(pId))}…`);
         return;
     }
 

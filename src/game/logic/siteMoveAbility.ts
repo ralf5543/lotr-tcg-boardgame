@@ -1,4 +1,5 @@
 import type { Ability, CardState, GameState, SiteCardState } from '../types';
+import { setRawStatus } from '../../i18n/status';
 import { applyAbilityEffect } from '../engine/abilities/applyAbilityEffect';
 import {
     canPayAbilityCost,
@@ -213,9 +214,9 @@ function openPendingSiteMove(
         pendingPhaseAfterSiteMove: nextPhase,
         fromDeparture: fromDeparture || undefined,
     };
-    G.statusMessage = fromDeparture
+    setRawStatus(G, fromDeparture
         ? 'Déplacement : vous pouvez utiliser l’effet du site que vous quittez.'
-        : 'Déplacement : vous pouvez utiliser l’effet du site d’arrivée.';
+        : 'Déplacement : vous pouvez utiliser l’effet du site d’arrivée.');
 }
 
 /**
@@ -308,7 +309,7 @@ export function resolvePendingSiteMoveAbility(
         ) {
             return false;
         }
-        G.statusMessage = `${site.name || 'Le site'} : effet appliqué.`;
+        setRawStatus(G, `${site.name || 'Le site'} : effet appliqué.`);
     }
 
     const nextPhase = pending.pendingPhaseAfterSiteMove;

@@ -1,4 +1,5 @@
 import type { Ability, CardState, GameState } from '../../types';
+import { setRawStatus } from '../../../i18n/status';
 import { applyAbilityEffect } from './applyAbilityEffect';
 import {
     abilityOwnerPlayerId,
@@ -46,8 +47,7 @@ function openForcedChoice(
               }
             : {}),
     };
-    G.statusMessage =
-        'Contrainte du Porteur : choisissez une option pour commencer ce combat.';
+    setRawStatus(G, 'Contrainte du Porteur : choisissez une option pour commencer ce combat.');
 }
 
 /**
@@ -113,8 +113,7 @@ export function applyStartOfSkirmishTriggers(
                     abilityId: ability.id,
                     phase: 'skirmish',
                 };
-                G.statusMessage =
-                    'Vous pouvez activer l’effet optionnel de cette carte.';
+                setRawStatus(G, 'Vous pouvez activer l’effet optionnel de cette carte.');
                 pauseActionYieldForResponses(G, ownerId);
                 continue;
             }
@@ -175,7 +174,7 @@ export function resolveForcedChoice(
                 pendingOptionIndex: optionIndex,
                 needsExertTargets: need,
             };
-            G.statusMessage = `Choisissez ${need} compagnons à affaiblir.`;
+            setRawStatus(G, `Choisissez ${need} compagnons à affaiblir.`);
             return true;
         }
         if (new Set(exertTargetIds).size !== exertTargetIds.length) {
@@ -204,7 +203,7 @@ export function resolveForcedChoice(
                 pendingOptionIndex: optionIndex,
                 needsHandDiscard: need,
             };
-            G.statusMessage = `Choisissez ${need} carte${need > 1 ? 's' : ''} de votre main à défausser.`;
+            setRawStatus(G, `Choisissez ${need} carte${need > 1 ? 's' : ''} de votre main à défausser.`);
             return true;
         }
     }
@@ -287,7 +286,7 @@ export function cancelForcedChoice(
     }
 
     G.pendingForcedChoice = undefined;
-    G.statusMessage = 'Action annulée.';
+    setRawStatus(G, 'Action annulée.');
     return true;
 }
 

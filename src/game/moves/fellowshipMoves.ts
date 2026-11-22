@@ -14,6 +14,7 @@ import { appendCardPlayedJournal } from '../logic/journal';
 import { displayFullName } from '../../decks/cardMeta';
 import { playerDisplayName } from '../logic/playerName';
 import { dismissOwnOptionalPromptsAsPass } from '../logic/interactionCleanup';
+import { setStatus } from '../../i18n/status';
 
 /** Après un déplacement réel : réponses « each time the fellowship moves ». */
 export function afterFellowshipArrived(
@@ -83,12 +84,17 @@ export const advanceCompany = (G: GameState) => {
                 ? ''
                 : ` effets site ${siteEffectDelta > 0 ? '+' : ''}${siteEffectDelta} ;`;
 
-        G.statusMessage = `La compagnie avance au site ${siteNumber} : ${targetSite.name} (${siteEffectNote} +${totalAdded} crépuscule → ${G.twilightPool}).`;
+        setStatus(G, 'MOVE_TO_SITE', {
+            siteNumber,
+            siteName: targetSite.name,
+            note: siteEffectNote,
+            added: totalAdded,
+            pool: G.twilightPool,
+        });
     } else {
         // Départ enregistré ; « moves from / to » se résolvent à la pose du site
         G.awaitingSiteSelection = true;
-        G.statusMessage =
-            "En attente du joueur de l'Ombre pour poser le prochain site...";
+        setStatus(G, 'WAITING_SHADOW_SITE');
     }
 };
 
@@ -124,7 +130,7 @@ export const revealCompanion = (
         return 'INVALID_MOVE';
     }
 
-    G.statusMessage = `Une carte de la Compagnie a été révélée !`;
+    setStatus(G, 'GENERIC', { text: 'Une carte de la Compagnie a été révélée !' });
 };
 
 export const playSite = (
@@ -222,7 +228,10 @@ export const playSite = (
         }
     });
 
-    G.statusMessage = `${playerDisplayName(G, playerID)} a joué ${displayFullName(playedSite as CardState)}.`;
+    setStatus(G, 'PLAYED_CARD', {
+        player: playerDisplayName(G, playerID),
+        card: displayFullName(playedSite as CardState),
+    });
 
     if (ctx.phase === 'fellowship') {
         const next = enterPhase('shadow');

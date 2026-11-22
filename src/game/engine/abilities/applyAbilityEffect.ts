@@ -1,3 +1,4 @@
+import { setRawStatus } from '../../../i18n/status';
 import type {
     Ability,
     AbilityEffectExpiry,
@@ -988,8 +989,7 @@ export function applyAbilityEffect(
                     ? { perFreePeoplesCard: effect.perFreePeoplesCard }
                     : {}),
             };
-            G.statusMessage =
-                'Cartes révélées : validez pour appliquer menaces / jetons et mélanger.';
+            setRawStatus(G, 'Cartes révélées : validez pour appliquer menaces / jetons et mélanger.');
             continue;
         }
 
@@ -1040,7 +1040,7 @@ export function applyAbilityEffect(
                 .map((c) => c.instanceId || c.id)
                 .filter(Boolean) as string[];
             if (cardIds.length === 0) {
-                G.statusMessage = 'Aucune carte révélée.';
+                setRawStatus(G, 'Aucune carte révélée.');
                 continue;
             }
             G.pendingReveal = {
@@ -1057,12 +1057,11 @@ export function applyAbilityEffect(
                     : {}),
             };
             const mayDiscard = Boolean(effect.aftermath?.mayDiscardOne);
-            G.statusMessage =
-                viewerId === ownerId
+            setRawStatus(G, viewerId === ownerId
                     ? mayDiscard
                         ? 'Cartes révélées : cliquez-en une pour la défausser, ou validez sans défausser.'
                         : 'Main adverse révélée : consultez les cartes puis validez.'
-                    : 'Votre main est révélée : l’adversaire consulte…';
+                    : 'Votre main est révélée : l’adversaire consulte…');
             continue;
         }
 
@@ -1154,9 +1153,9 @@ export function applyAbilityEffect(
                             c.id
                     )
                     .join(', ');
-                G.statusMessage = `Main révélée : ${names} placée${moved.length > 1 ? 's' : ''} sous la pioche.`;
+                setRawStatus(G, `Main révélée : ${names} placée${moved.length > 1 ? 's' : ''} sous la pioche.`);
             } else {
-                G.statusMessage = 'Main révélée : aucune carte Ombre.';
+                setRawStatus(G, 'Main révélée : aucune carte Ombre.');
             }
             continue;
         }
@@ -1389,11 +1388,10 @@ export function applyAbilityEffect(
                     effects: o.effects,
                 })),
             };
-            G.statusMessage =
-                effect.message ||
+            setRawStatus(G, effect.message ||
                 (chooserId === fpId
                     ? 'Les Peuples Libres doivent choisir une option.'
-                    : 'L’Ombre doit choisir une option.');
+                    : 'L’Ombre doit choisir une option.'));
             continue;
         }
 
@@ -1999,8 +1997,7 @@ export function applyAbilityEffect(
                 sourceInstanceId: sourceId,
                 abilityId: ability.id,
             };
-            G.statusMessage =
-                'Peuples Libres : défaussez une possession ou une situation.';
+            setRawStatus(G, 'Peuples Libres : défaussez une possession ou une situation.');
             continue;
         }
         // Famille sites « Shadow: play… » (Buckland…) : la carte jouée est
@@ -2033,8 +2030,7 @@ export function applyAbilityEffect(
                     abilityId: ability.id,
                     effectIndex,
                 };
-                G.statusMessage =
-                    'Ombre : défaussez une situation en jeu.';
+                setRawStatus(G, 'Ombre : défaussez une situation en jeu.');
                 continue;
             }
         }
@@ -2292,7 +2288,7 @@ function applyOneEffect(
             source.title || source.i18n?.fr?.title || 'le compagnon';
         const targetName =
             target.title || target.i18n?.fr?.title || 'le compagnon';
-        G.statusMessage = `${sourceName} remplace ${targetName} dans le combat.`;
+        setRawStatus(G, `${sourceName} remplace ${targetName} dans le combat.`);
         return true;
     }
 
@@ -2405,8 +2401,7 @@ function applyTransferNamedCard(
         (c) => c && !c.isDead && c.type === 'COMPANION'
     );
     if (opponents.length === 0) {
-        G.statusMessage =
-            'Aucun compagnon n’escarmouche le porteur pour le transfert.';
+        setRawStatus(G, 'Aucun compagnon n’escarmouche le porteur pour le transfert.');
         return false;
     }
     const host = opponents[0]!;
@@ -2416,7 +2411,7 @@ function applyTransferNamedCard(
             att ? cardTitleMatches(att, cardTitle) : false
         );
         if (already) {
-            G.statusMessage = `Limite 1 : ${cardTitle} est déjà sur ce personnage.`;
+            setRawStatus(G, `Limite 1 : ${cardTitle} est déjà sur ce personnage.`);
             return false;
         }
     }
@@ -2443,7 +2438,7 @@ function applyTransferNamedCard(
         }
     }
     if (!moved) {
-        G.statusMessage = `${cardTitle} introuvable en soutien ou défausse.`;
+        setRawStatus(G, `${cardTitle} introuvable en soutien ou défausse.`);
         return false;
     }
 
@@ -2451,7 +2446,7 @@ function applyTransferNamedCard(
     host.attachments.push(moved);
     const hostName =
         host.i18n?.fr?.title || host.title || 'le compagnon';
-    G.statusMessage = `${cardTitle} est transféré sur ${hostName}.`;
+    setRawStatus(G, `${cardTitle} est transféré sur ${hostName}.`);
     return true;
 }
 
@@ -2560,15 +2555,14 @@ function applyTransferSelf(
     if (attachTo === 'SKIRMISH_LOSER') {
         hosts = resolveSkirmishLoserHosts(G);
         if (hosts.length === 0) {
-            G.statusMessage = 'Aucun perdant pour le transfert.';
+            setRawStatus(G, 'Aucun perdant pour le transfert.');
             return false;
         }
     } else if (attachTo === 'SKIRMISHING_WITH') {
         if (!skirmishingWith || skirmishingWith.length === 0) return false;
         hosts = charactersSkirmishingWith(G, skirmishingWith);
         if (hosts.length === 0) {
-            G.statusMessage =
-                'Aucun personnage n’escarmouche la classe indiquée.';
+            setRawStatus(G, 'Aucun personnage n’escarmouche la classe indiquée.');
             return false;
         }
     } else if (attachTo === 'TARGET') {
@@ -2577,7 +2571,7 @@ function applyTransferSelf(
             (c) => c && !c.isDead
         );
         if (hosts.length === 0) {
-            G.statusMessage = 'Aucune cible pour le transfert.';
+            setRawStatus(G, 'Aucune cible pour le transfert.');
             return false;
         }
     } else {
@@ -2595,7 +2589,7 @@ function applyTransferSelf(
         host = hosts[0]!;
     }
     if (!host) {
-        G.statusMessage = 'Désignez le personnage pour le transfert.';
+        setRawStatus(G, 'Désignez le personnage pour le transfert.');
         return false;
     }
 
@@ -2610,7 +2604,7 @@ function applyTransferSelf(
                         cardTitleMatches(att, source.i18n.en.title)))
         );
         if (already) {
-            G.statusMessage = `Limite 1 : ${sourceTitle} est déjà sur ce personnage.`;
+            setRawStatus(G, `Limite 1 : ${sourceTitle} est déjà sur ce personnage.`);
             return false;
         }
     }
@@ -2641,7 +2635,7 @@ function applyTransferSelf(
         }
     }
     if (!moved) {
-        G.statusMessage = `${sourceTitle} introuvable en soutien ou défausse.`;
+        setRawStatus(G, `${sourceTitle} introuvable en soutien ou défausse.`);
         return false;
     }
 
@@ -2649,7 +2643,7 @@ function applyTransferSelf(
     host.attachments.push(moved);
     const hostName =
         host.i18n?.fr?.title || host.title || 'le personnage';
-    G.statusMessage = `${sourceTitle} est transféré sur ${hostName}.`;
+    setRawStatus(G, `${sourceTitle} est transféré sur ${hostName}.`);
     return true;
 }
 
@@ -2808,9 +2802,9 @@ function makeRingBearer(
     const name =
         newBearer.i18n?.fr?.title || newBearer.title || 'Ce personnage';
     const hasRing = newBearer.attachments.some((att) => att?.type === 'RING');
-    G.statusMessage = hasRing
+    setRawStatus(G, hasRing
         ? `${name} devient le Porteur de l’Anneau (résistance ${resistance}) et reçoit l’Anneau Unique.`
-        : `${name} devient le Porteur de l’Anneau (résistance ${resistance}).`;
+        : `${name} devient le Porteur de l’Anneau (résistance ${resistance}).`);
     return true;
 }
 
@@ -2865,7 +2859,7 @@ function becomeMinionFromCondition(
 
     const name =
         source.i18n?.fr?.title || source.title || source.i18n?.en?.title || 'La situation';
-    G.statusMessage = `${name} devient un séide (force ${effect.strength}, vitalité ${effect.vitality}).`;
+    setRawStatus(G, `${name} devient un séide (force ${effect.strength}, vitalité ${effect.vitality}).`);
     return true;
 }
 

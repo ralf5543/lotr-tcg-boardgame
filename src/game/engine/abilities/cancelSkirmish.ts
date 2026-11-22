@@ -1,3 +1,4 @@
+import { setRawStatus } from '../../../i18n/status';
 import type {
     AbilityEffect,
     AbilityTargetRef,
@@ -217,6 +218,6 @@ export function cancelSkirmish(G: GameState, skirmishId: string): boolean {
     clearSkirmishTemps(G);
     const line = `Combat annulé (${name}).`;
     appendJournal(G, line);
-    G.statusMessage = line;
+    setRawStatus(G, line);
     return true;
 }

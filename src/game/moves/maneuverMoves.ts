@@ -1,4 +1,5 @@
 import type { LotrMoveContext } from '../types';
+import { setRawStatus } from '../../i18n/status';
 import { canTransferAid } from '../engine/validations/canTransferAid';
 import { findTargetCard } from '../../utils/cardUtils';
 import { hasActionableStartOfPhaseCards } from '../logic/hasActionableStartOfPhaseCards';
@@ -77,7 +78,7 @@ export const transferAid = (
 
     const validation = canTransferAid(follower, targetCard, G, playerID);
     if (!validation.valid) {
-        G.statusMessage = `Transfert Aid impossible : ${validation.reason}`;
+        setRawStatus(G, `Transfert Aid impossible : ${validation.reason}`);
         return 'INVALID_MOVE';
     }
 
@@ -114,7 +115,7 @@ export const transferAid = (
         follower.i18n?.fr?.title || follower.title || 'le Suivant';
     const targetTitle =
         targetCard.i18n?.fr?.title || targetCard.title || 'le personnage';
-    G.statusMessage = `${followerTitle} est attaché à ${targetTitle}.`;
+    setRawStatus(G, `${followerTitle} est attaché à ${targetTitle}.`);
 
     // Vérification des cartes actionnables restantes
     const remainingActionable = hasActionableStartOfPhaseCards(

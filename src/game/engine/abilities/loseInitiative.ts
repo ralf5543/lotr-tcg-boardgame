@@ -1,4 +1,5 @@
 import type { Ability, CardState, GameState } from '../../types';
+import { setRawStatus } from '../../../i18n/status';
 import {
     abilityOwnerPlayerId,
     canPayAbilityCost,
@@ -54,8 +55,7 @@ export function maybeOfferLoseInitiativeResponse(G: GameState): void {
                 sourceInstanceId: sourceId,
                 abilityId: ability.id,
             };
-            G.statusMessage =
-                'Vous pouvez activer l’effet optionnel de cette carte.';
+            setRawStatus(G, 'Vous pouvez activer l’effet optionnel de cette carte.');
             pauseActionYieldForResponses(G, ownerId);
             return;
         }

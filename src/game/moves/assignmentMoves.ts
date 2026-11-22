@@ -1,4 +1,5 @@
 import type { CardState, LotrMoveContext } from '../types';
+import { setRawStatus } from '../../i18n/status';
 import {
     applyAmbushTwilight,
     beginShadowAssignment,
@@ -153,7 +154,7 @@ export const assignMinion = (
               ? `${minionName} est assigné à ${compName} (force +${assignBoost} jusqu’au regroupement).`
               : `${minionName} est assigné à ${compName}.`;
     appendJournal(G, assignLine);
-    G.statusMessage = assignLine;
+    setRawStatus(G, assignLine);
 
     checkAssignmentProgress(G, ctx, events);
 };
@@ -199,10 +200,9 @@ export const passShadowAssignment = ({
             ? `L’Ombre laisse ${leftover} séide${leftover > 1 ? 's' : ''} hors combat.`
             : 'Affectation terminée.';
     appendJournal(G, passLine);
-    G.statusMessage =
-        leftover > 0
+    setRawStatus(G, leftover > 0
             ? `${passLine} Début des combats !`
-            : 'Affectation terminée. Début des combats !';
+            : 'Affectation terminée. Début des combats !');
     events?.endPhase?.();
 };
 

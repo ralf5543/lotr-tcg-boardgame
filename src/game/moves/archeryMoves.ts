@@ -1,4 +1,5 @@
 import type { LotrMoveContext, CardState, GameState } from '../types';
+import { setRawStatus } from '../../i18n/status';
 import { getEffectiveVitality } from '../../utils/cardStats';
 import { requestWounds } from '../engine/responseWindow';
 import { enterPhase } from '../logic/phaseEntry';
@@ -45,7 +46,7 @@ function beginShadowArcheryAssign(G: GameState): void {
         G.archeryState.shadowRemainingWounds = shadowWoundsToAssign;
         G.archeryState.fpRemainingWounds = 0;
     }
-    G.statusMessage = 'Passage à l’assignation des blessures d’Ombre.';
+    setRawStatus(G, 'Passage à l’assignation des blessures d’Ombre.');
 }
 
 function endArcheryPhase(G: GameState, noMinionsLeft: boolean): void {
@@ -55,9 +56,9 @@ function endArcheryPhase(G: GameState, noMinionsLeft: boolean): void {
     G.nextPhase = noMinionsLeft
         ? enterPhase('regroup')
         : enterPhase('assignment');
-    G.statusMessage = noMinionsLeft
+    setRawStatus(G, noMinionsLeft
         ? 'Plus aucun séide sur le plateau ! Passage au Regroupement.'
-        : 'Phase d’Archerie terminée. Passage à l’Assignation.';
+        : 'Phase d’Archerie terminée. Passage à l’Assignation.');
 }
 
 export const assignArcheryWound = (
@@ -115,7 +116,7 @@ export const assignArcheryWound = (
                 endArcheryPhase(G, livingMinions(G).length === 0);
             }
         } else {
-            G.statusMessage = `Assignation d'archerie FP : ${remainingWounds} restante(s).`;
+            setRawStatus(G, `Assignation d'archerie FP : ${remainingWounds} restante(s).`);
         }
         return;
     }
@@ -152,12 +153,11 @@ export const assignArcheryWound = (
             } else {
                 endArcheryPhase(G, remaining.length === 0);
                 if (remaining.length === 0) {
-                    G.statusMessage =
-                        'Tous les séides ont été éliminés ! Passage au Regroupement.';
+                    setRawStatus(G, 'Tous les séides ont été éliminés ! Passage au Regroupement.');
                 }
             }
         } else {
-            G.statusMessage = `Ombre : Assignez encore ${remainingWounds} blessure(s).`;
+            setRawStatus(G, `Ombre : Assignez encore ${remainingWounds} blessure(s).`);
         }
     }
 };

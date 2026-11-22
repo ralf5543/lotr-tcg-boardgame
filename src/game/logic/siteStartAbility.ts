@@ -1,4 +1,5 @@
 import type { Ability, CardState, GameState, SiteCardState } from '../types';
+import { setRawStatus } from '../../i18n/status';
 import { canUseAbility } from '../engine/canUseAbility';
 import { abilityMatchesPhase } from '../engine/abilities/collectAbilities';
 import { canPayAbilityCost } from '../engine/abilities/payAbilityCost';
@@ -92,9 +93,9 @@ export function beginOptionalSiteStartAbility(
     };
     G.startOfPhaseState = undefined;
     const isShadow = found.playerId === shadowPlayerId(G);
-    G.statusMessage = isShadow
+    setRawStatus(G, isShadow
         ? 'Début de regroupement : l’Ombre peut utiliser l’effet du site.'
-        : 'Début de compagnie : vous pouvez utiliser l’effet du site.';
+        : 'Début de compagnie : vous pouvez utiliser l’effet du site.');
     return true;
 }
 
@@ -130,8 +131,7 @@ export function openStartOfFellowshipDualWait(
         G.startOfPhaseState = undefined;
         exitStartOf(events, 'fellowship');
     } else {
-        G.statusMessage =
-            'Début de la phase de compagnie : Capacités spéciales.';
+        setRawStatus(G, 'Début de la phase de compagnie : Capacités spéciales.');
     }
 }
 
@@ -195,8 +195,7 @@ export function openStartOfRegroupDualWait(
         G.startOfPhaseState = undefined;
         exitStartOf(events, 'regroup');
     } else if (!hasMusterToProcess) {
-        G.statusMessage =
-            'Phase de Regroupement : Étape initiale (Capacités).';
+        setRawStatus(G, 'Phase de Regroupement : Étape initiale (Capacités).');
     }
 }
 
@@ -244,8 +243,7 @@ export function afterSiteStartAbilityResolved(
         phase === 'startOfRegroup' &&
         beginOptionalSiteStartAbility(G, 'startOfRegroup')
     ) {
-        G.statusMessage =
-            'Ombre : vous pouvez encore utiliser l’effet du site, ou passer.';
+        setRawStatus(G, 'Ombre : vous pouvez encore utiliser l’effet du site, ou passer.');
         return;
     }
 

@@ -1,3 +1,4 @@
+import { setRawStatus } from '../../i18n/status';
 import type {
     CardCulture,
     CardState,
@@ -292,13 +293,12 @@ export const applyDevPreset = (
                 ),
             ];
 
-            G.statusMessage =
-                '[DEV] Calques artefact · Main = md (calque visible). Plateau / soutien = sm (survol → lg pour voir le calque). Cultures réelles + échantillons.';
+            setRawStatus(G, '[DEV] Calques artefact · Main = md (calque visible). Plateau / soutien = sm (survol → lg pour voir le calque). Cultures réelles + échantillons.');
             return { startPhase: 'fellowship' };
         }
 
         default:
-            G.statusMessage = `[DEV] Aucun preset actif (« ${presetType} »).`;
+            setRawStatus(G, `[DEV] Aucun preset actif (« ${presetType} »).`);
             return { startPhase: 'startOfFellowship' };
     }
 };

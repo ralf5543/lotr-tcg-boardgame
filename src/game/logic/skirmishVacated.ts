@@ -1,4 +1,5 @@
 import type { CardState, GameState, SkirmishState } from '../types';
+import { setRawStatus } from '../../i18n/status';
 import { getEffectiveVitality } from '../../utils/cardStats';
 import { cancelSkirmish } from '../engine/abilities/cancelSkirmish';
 import {
@@ -67,8 +68,7 @@ export function reconcileActiveSkirmishAfterLeave(
 
     if (reason === 'DISCARD') {
         cancelSkirmish(G, skirmish.id);
-        G.statusMessage =
-            'Escarmouche terminée : un combattant a quitté le combat (défausse). Pas de vainqueur.';
+        setRawStatus(G, 'Escarmouche terminée : un combattant a quitté le combat (défausse). Pas de vainqueur.');
         return;
     }
 
@@ -90,8 +90,7 @@ export function reconcileActiveSkirmishAfterLeave(
             skirmishId: skirmish.id,
         };
         G.actionWindow = undefined;
-        G.statusMessage =
-            'Escarmouche terminée : plus de séide en face — victoire des Peuples Libres.';
+        setRawStatus(G, 'Escarmouche terminée : plus de séide en face — victoire des Peuples Libres.');
         if (tryOpenCharacterDies(G) === 'WAITING') return;
         if (tryOpenWinsSkirmish(G) === 'WAITING') return;
         tryOpenLosesSkirmish(G);
@@ -109,8 +108,7 @@ export function reconcileActiveSkirmishAfterLeave(
             skirmishId: skirmish.id,
         };
         G.actionWindow = undefined;
-        G.statusMessage =
-            'Escarmouche terminée : le compagnon est mort — victoire de l’Ombre.';
+        setRawStatus(G, 'Escarmouche terminée : le compagnon est mort — victoire de l’Ombre.');
         if (tryOpenCharacterDies(G) === 'WAITING') return;
         if (tryOpenWinsSkirmish(G) === 'WAITING') return;
         tryOpenLosesSkirmish(G);
@@ -122,5 +120,5 @@ export function reconcileActiveSkirmishAfterLeave(
     G.activeSkirmishId = undefined;
     G.actionWindow = undefined;
     clearExpiredTempKeywords(G, 'SKIRMISH');
-    G.statusMessage = 'Escarmouche terminée : plus de combattants.';
+    setRawStatus(G, 'Escarmouche terminée : plus de combattants.');
 }

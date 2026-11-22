@@ -70,6 +70,7 @@ import { enterPhase, exitStartOf } from './logic/phaseEntry';
 import { checkSiteNineWin } from './logic/gameEnd';
 import { wrapMovesAgainstGameEnd } from './moves/guardGameEnd';
 import { dismissOwnOptionalPromptsAsPass } from './logic/interactionCleanup';
+import { setStatus, setRawStatus } from '../i18n/status';
 
 /** Coût toPlay.exert à désigner → playCard, pas playShadowCard. */
 function shadowCardNeedsDesignatedExert(card: CardState): boolean {
@@ -217,7 +218,10 @@ export const advanceArcheryAssignmentStep = (G: GameState, events: any) => {
 
         if (G.archeryState.fpRemainingWounds > 0) {
             G.archeryState.step = 'FP_ASSIGN';
-            G.statusMessage = `Phase d'Archerie : ${playerDisplayName(G, G.fpPlayerId || '0')} doit attribuer ${G.archeryState.fpRemainingWounds} blessure(s) d'archerie à ses compagnons.`;
+            setStatus(G, 'ARCHERY_FP_ASSIGN', {
+                name: playerDisplayName(G, G.fpPlayerId || '0'),
+                count: G.archeryState.fpRemainingWounds,
+            });
             return;
         }
         // Si les FP n'ont pas de blessures à subir, on passe directement à l'Ombre
@@ -235,7 +239,10 @@ export const advanceArcheryAssignmentStep = (G: GameState, events: any) => {
             G.archeryState.shadowRemainingWounds > 0 &&
             G.battlefield.length > 0
         ) {
-            G.statusMessage = `Phase d'Archerie : ${playerDisplayName(G, shadowId)} doit attribuer ${G.archeryState.shadowRemainingWounds} blessure(s) d'archerie à ses séides.`;
+            setStatus(G, 'ARCHERY_SHADOW_ASSIGN', {
+                name: playerDisplayName(G, shadowId),
+                count: G.archeryState.shadowRemainingWounds,
+            });
             return;
         }
     }
@@ -250,12 +257,10 @@ export const advanceArcheryAssignmentStep = (G: GameState, events: any) => {
     );
 
     if (remainingMinions.length === 0) {
-        G.statusMessage =
-            "Plus aucun séide en jeu après l'archerie : passage direct au Regroupement.";
+        setStatus(G, 'ARCHERY_NO_MINIONS');
         events?.setPhase?.(enterPhase('regroup'));
     } else {
-        G.statusMessage =
-            "Phase d'Archerie terminée : Début de la phase d'Affectation.";
+        setStatus(G, 'ARCHERY_DONE');
         events?.setPhase?.(enterPhase('assignment'));
     }
 };
@@ -327,6 +332,7 @@ export const setupGame = (
         movesThisTurn: 0,
         statusMessage:
             'Phase de mise en place : Misez vos points-fardeau.',
+        statusNotice: { key: 'BIDDING_SETUP' },
         journalLog: [],
         awaitingSiteSelection: false,
         skirmishes: [],
@@ -363,14 +369,13 @@ export function initStandardRegroup(G: GameState, fpId: string) {
     if (keepFpDecision) {
         // Preset DEV déjà en « avancer / rester » — ne pas rouvrir l’action window.
         G.actionWindow = undefined;
-        if (devStatus) G.statusMessage = devStatus;
+        if (devStatus) setRawStatus(G, devStatus);
         return;
     }
 
     G.regroupStep = 'ACTION_WINDOW';
-    G.statusMessage = keepDevStatus
-        ? (devStatus as string)
-        : 'Phase de Regroupement : Jouer des cartes/effets de regroupement.';
+    if (keepDevStatus) setRawStatus(G, devStatus as string);
+    else setStatus(G, 'REGROUP_ACTIONS');
 
     G.actionWindow = {
         isOpen: true,
@@ -474,10 +479,19 @@ export const LotrGame: Game<GameState> = {
                             vous: 'Vous gagnez l’enchère.',
                             named: `${winnerName} gagne l’enchère.`,
                         });
-                        G.statusMessage = `${name0} (${formatPointsFardeau(bid0)}) — ${name1} (${formatPointsFardeau(bid1)}). ${winnerName} gagne l'enchère.`;
+                        setStatus(G, 'BID_REVEAL', {
+                            name0,
+                            bid0: formatPointsFardeau(bid0),
+                            name1,
+                            bid1: formatPointsFardeau(bid1),
+                            winner: winnerName,
+                        });
                     } else {
                         // Pas de montant dans le message partagé (secret jusqu’à révélation).
-                        G.statusMessage = `${name} a misé. En attente de ${playerDisplayName(G, otherPlayerId(pId))}…`;
+                        setStatus(G, 'BID_WAITING', {
+                            name,
+                            other: playerDisplayName(G, otherPlayerId(pId)),
+                        });
                     }
                 },
 
@@ -499,10 +513,11 @@ export const LotrGame: Game<GameState> = {
                     G.setupState.step = 'AWAITING_SITE';
                     G.awaitingSiteSelection = true;
                     appendSideRolesJournal(G, G.fpPlayerId || '0');
-                    G.statusMessage = formatSideRolesStatus(
+                    setRawStatus(
                         G,
-                        G.fpPlayerId || '0',
-                        { suffix: 'Posez le site 1.' }
+                        formatSideRolesStatus(G, G.fpPlayerId || '0', {
+                            suffix: 'Posez le site 1.',
+                        })
                     );
                 },
 
@@ -541,8 +556,7 @@ export const LotrGame: Game<GameState> = {
                     });
 
                     G.setupState.step = 'MULLIGAN';
-                    G.statusMessage =
-                        'Mulligan : garder ou piocher une nouvelle main.';
+                    setStatus(G, 'MULLIGAN_PROMPT');
                 },
 
                 submitMulliganChoice: (
@@ -591,14 +605,14 @@ export const LotrGame: Game<GameState> = {
                     if (m0 !== null && m1 !== null) {
                         G.setupState.step = 'COMPLETE';
                         appendJournal(G, 'Mise en place terminée. Début de la partie.');
-                        G.statusMessage =
-                            'Mise en place terminée ! Début de la partie.';
+                        setStatus(G, 'SETUP_COMPLETE');
                         events?.setPhase?.('startOfFellowship');
                     } else {
-                        const live = doMulligan
-                            ? `${name} a fait un mulligan.`
-                            : `${name} a gardé sa main.`;
-                        G.statusMessage = `${live} En attente de ${playerDisplayName(G, otherPlayerId(pId))}…`;
+                        setStatus(G, 'MULLIGAN_WAITING', {
+                            name,
+                            didMulligan: doMulligan,
+                            other: playerDisplayName(G, otherPlayerId(pId)),
+                        });
                     }
                 },
             },
@@ -631,9 +645,8 @@ export const LotrGame: Game<GameState> = {
                 G.movesThisTurn = 0;
                 G.fellowshipCardsDrawn = 0;
                 G.regroupStep = undefined;
-                G.statusMessage = G.lastHealedCardIds?.length
-                    ? 'Sanctuaire : les compagnons blessés sont soignés.'
-                    : 'Phase de compagnie : Jouez vos compagnons et soutiens.';
+                if (G.lastHealedCardIds?.length) setStatus(G, 'FELLOWSHIP_AFTER_SANCTUARY');
+                else setStatus(G, 'FELLOWSHIP_PHASE');
             },
             moves: {
                 ...allMoves,
@@ -675,8 +688,7 @@ export const LotrGame: Game<GameState> = {
                     G.startOfPhaseState = undefined;
                     exitStartOf(events, 'shadow');
                 } else {
-                    G.statusMessage =
-                        "Début de la phase d'Ombre : Capacités spéciales.";
+                    setStatus(G, 'SHADOW_PHASE_START');
                 }
             },
             onEnd: ({ G }) => {
@@ -702,7 +714,10 @@ export const LotrGame: Game<GameState> = {
                 G.pendingSitePhaseAbility = undefined;
 
                 const shadowId = G.fpPlayerId === '0' ? '1' : '0';
-                G.statusMessage = `Phase d'Ombre : Joueur Ombre (${shadowId}), jouez vos Séides/Soutiens. Crépuscule disponible : ${G.twilightPool}`;
+                setStatus(G, 'SHADOW_PHASE_PLAY', {
+                    shadowId,
+                    twilight: G.twilightPool,
+                });
                 // Shores : Spot déjà vrai (preset / 5 Orques en jeu) → toaster immédiat.
                 beginOptionalSitePhaseAbility(G);
             },
@@ -809,7 +824,10 @@ export const LotrGame: Game<GameState> = {
                     }
 
                     appendCardPlayedJournal(G, String(playerID), playedCard);
-                    G.statusMessage = `${playerDisplayName(G, String(playerID))} a joué ${displayFullName(playedCard)}.`;
+                    setStatus(G, 'PLAYED_CARD', {
+                        player: playerDisplayName(G, String(playerID)),
+                        card: displayFullName(playedCard),
+                    });
                 },
 
                 attachShadowCard: (
@@ -848,7 +866,10 @@ export const LotrGame: Game<GameState> = {
                     });
 
                     appendCardPlayedJournal(G, String(playerID), attachmentCard);
-                    G.statusMessage = `${playerDisplayName(G, String(playerID))} a joué ${displayFullName(attachmentCard)}.`;
+                    setStatus(G, 'PLAYED_CARD', {
+                        player: playerDisplayName(G, String(playerID)),
+                        card: displayFullName(attachmentCard),
+                    });
                 },
 
                 endShadowPhase: ({ G, events, playerID }: LotrMoveContext) => {
@@ -920,8 +941,7 @@ export const LotrGame: Game<GameState> = {
                 if (fpDone && shadowDone) {
                     exitStartOf(events, 'maneuver');
                 } else {
-                    G.statusMessage =
-                        'Phase de Manœuvre : Capacités et effets de début de phase.';
+                    setStatus(G, 'MANEUVER_START');
                 }
             },
             onEnd: ({ G }) => {
@@ -954,8 +974,7 @@ export const LotrGame: Game<GameState> = {
                     canPass: true,
                     passesCount: 0,
                 };
-                G.statusMessage =
-                    'Manœuvre : Ouverture de la fenêtre d’action.';
+                setStatus(G, 'MANEUVER_ACTION_WINDOW');
             },
 
             onEnd: ({ G }) => {
@@ -964,8 +983,7 @@ export const LotrGame: Game<GameState> = {
                 G.pendingPhaseEnd = undefined;
                 G.nextPhase = undefined;
                 if (shouldSkipPhase(G, 'ARCHERY')) {
-                    G.statusMessage =
-                        'Archerie ignorée (effet en jeu). Passage à la suite.';
+                    setStatus(G, 'ARCHERY_SKIPPED');
                 }
             },
 
@@ -978,8 +996,7 @@ export const LotrGame: Game<GameState> = {
                 if (shouldSkipPhase(G, 'ARCHERY')) {
                     G.startOfPhaseState = undefined;
                     G.actionWindow = undefined;
-                    G.statusMessage =
-                        'Archerie ignorée (effet en jeu). Passage à la suite.';
+                    setStatus(G, 'ARCHERY_SKIPPED');
                     events?.setPhase?.(phaseAfterSkippedArchery(G));
                     return;
                 }
@@ -1013,8 +1030,7 @@ export const LotrGame: Game<GameState> = {
                     G.startOfPhaseState = undefined;
                     exitStartOf(events, 'archery');
                 } else {
-                    G.statusMessage =
-                        "Début de la phase d'archerie : Capacités spéciales.";
+                    setStatus(G, 'ARCHERY_START');
                 }
             },
             onEnd: ({ G }) => {
@@ -1044,8 +1060,7 @@ export const LotrGame: Game<GameState> = {
                 if (shouldSkipPhase(G, 'ARCHERY')) {
                     G.archeryState = undefined;
                     G.actionWindow = undefined;
-                    G.statusMessage =
-                        'Archerie ignorée (effet en jeu). Passage à la suite.';
+                    setStatus(G, 'ARCHERY_SKIPPED');
                     events?.setPhase?.(phaseAfterSkippedArchery(G));
                     return;
                 }
@@ -1068,8 +1083,7 @@ export const LotrGame: Game<GameState> = {
                     canPass: true,
                     passesCount: 0,
                 };
-                G.statusMessage =
-                    'Phase d’Archerie : Fenêtre d’action ouverte.';
+                setStatus(G, 'ARCHERY_ACTION_WINDOW');
             },
             onEnd: ({ G }) => {
                 const fpId = G.fpPlayerId || '0';
@@ -1157,8 +1171,7 @@ export const LotrGame: Game<GameState> = {
                     G.startOfPhaseState = undefined;
                     exitStartOf(events, 'assignment');
                 } else {
-                    G.statusMessage =
-                        "Début de la phase d'affectation : Capacités spéciales.";
+                    setStatus(G, 'ASSIGNMENT_START');
                 }
             },
             onEnd: ({ G }) => {
@@ -1216,8 +1229,7 @@ export const LotrGame: Game<GameState> = {
                     G.startOfPhaseState = undefined;
                     exitStartOf(events, 'skirmish');
                 } else {
-                    G.statusMessage =
-                        'Début de la phase de combat : Capacités spéciales.';
+                    setStatus(G, 'SKIRMISH_START');
                 }
             },
             onEnd: ({ G }) => {
@@ -1276,8 +1288,7 @@ export const LotrGame: Game<GameState> = {
                         return 'INVALID_MOVE';
 
                     if ((G.threatWoundsToAssign ?? 0) > 0) {
-                        G.statusMessage =
-                            'Assignez d’abord les blessures de menaces avant de choisir un autre combat.';
+                        setStatus(G, 'THREAT_WOUNDS_FIRST');
                         return 'INVALID_MOVE';
                     }
 
@@ -1287,15 +1298,13 @@ export const LotrGame: Game<GameState> = {
                         G.pendingForcedChoice ||
                         G.pendingWhenPlayed
                     ) {
-                        G.statusMessage =
-                            'Une réponse ou un choix est en cours. Attendez la fin avant de choisir un autre combat.';
+                        setStatus(G, 'RESPONSE_OR_CHOICE_PENDING');
                         return 'INVALID_MOVE';
                     }
 
                     // Contrôle Lurker déporté
                     if (!canSelectSkirmish(G, skirmishId)) {
-                        G.statusMessage =
-                            'Impossible de choisir un combat Lurker tant qu’il reste d’autres combats à résoudre !';
+                        setStatus(G, 'LURKER_LOCKED');
                         return 'INVALID_MOVE';
                     }
 
@@ -1428,11 +1437,10 @@ export const LotrGame: Game<GameState> = {
                     G.startOfPhaseState = undefined;
                     exitStartOf(events, 'regroup');
                 } else if (!hasMusterToProcess) {
-                    G.statusMessage = keepDevStatus
-                        ? (devStatus as string)
-                        : 'Phase de Regroupement : Étape initiale (Capacités).';
+                    if (keepDevStatus) setRawStatus(G, devStatus as string);
+                    else setStatus(G, 'REGROUP_START');
                 } else if (keepDevStatus && devStatus) {
-                    G.statusMessage = devStatus;
+                    setRawStatus(G, devStatus);
                 }
             },
             onEnd: ({ G }) => {

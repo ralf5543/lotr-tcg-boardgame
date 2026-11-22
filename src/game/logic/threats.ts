@@ -1,4 +1,5 @@
 import type { CardState, GameState } from '../types';
+import { setRawStatus } from '../../i18n/status';
 import { getEffectiveVitality } from '../../utils/cardStats';
 
 /** Compagnons FP en jeu (les alliés ne comptent pas). */
@@ -78,16 +79,14 @@ export const beginThreatWoundAssignment = (G: GameState): void => {
 
     if (livingCompanionsForThreatWounds(G).length === 0) {
         G.threatWoundsToAssign = undefined;
-        G.statusMessage =
-            threats === 1
+        setRawStatus(G, threats === 1
                 ? '1 menace retirée, aucun compagnon à blesser.'
-                : `${threats} menaces retirées, aucun compagnon à blesser.`;
+                : `${threats} menaces retirées, aucun compagnon à blesser.`);
         return;
     }
 
     G.threatWoundsToAssign = threats;
-    G.statusMessage =
-        threats === 1
+    setRawStatus(G, threats === 1
             ? 'Menaces : assignez 1 blessure à un compagnon.'
-            : `Menaces : assignez ${threats} blessures à vos compagnons.`;
+            : `Menaces : assignez ${threats} blessures à vos compagnons.`);
 };

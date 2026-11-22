@@ -1,4 +1,5 @@
 import type { CardState, GameResult, GameState } from '../types';
+import { setRawStatus } from '../../i18n/status';
 import { isRingBearerCard } from '../../utils/cardUtils';
 import { getEffectiveResistance, getEffectiveVitality } from '../../utils/cardStats';
 import { getCardText } from '../../utils/i18n';
@@ -123,7 +124,7 @@ function setGameResult(
         vous: `Vous remportez la partie. ${detail}`,
         named: `${winnerName} remporte la partie. ${detail}`,
     });
-    G.statusMessage = `${winnerName} remporte la partie. ${detail}`;
+    setRawStatus(G, `${winnerName} remporte la partie. ${detail}`);
     return true;
 }
 

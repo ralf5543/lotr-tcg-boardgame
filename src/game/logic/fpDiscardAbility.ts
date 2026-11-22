@@ -1,4 +1,5 @@
 import type { CardState, GameState } from '../types';
+import { setRawStatus } from '../../i18n/status';
 import { applyAbilityEffect } from '../engine/abilities/applyAbilityEffect';
 import {
     findUniqueCardByTargetId,
@@ -55,6 +56,6 @@ export function resolvePendingFpDiscard(
     G.pendingFpDiscard = undefined;
     const name =
         target.i18n?.fr?.title || target.title || 'La situation';
-    G.statusMessage = `${name} est défaussée.`;
+    setRawStatus(G, `${name} est défaussée.`);
     return true;
 }

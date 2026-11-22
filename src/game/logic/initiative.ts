@@ -1,4 +1,5 @@
 import type { CardState, GameState } from '../types';
+import { setRawStatus } from '../../i18n/status';
 import { maybeOfferLoseInitiativeResponse } from '../engine/abilities/loseInitiative';
 
 /**
@@ -26,9 +27,9 @@ export function announceInitiativeIfChanged(
 ): void {
     const hasNow = freePeoplesHasInitiative(G);
     if (hasNow === hadBefore) return;
-    G.statusMessage = hasNow
+    setRawStatus(G, hasNow
         ? 'Les Peuples Libres gagnent l’initiative.'
-        : 'Les Peuples Libres perdent l’initiative.';
+        : 'Les Peuples Libres perdent l’initiative.');
     if (hadBefore && !hasNow) {
         maybeOfferLoseInitiativeResponse(G);
     }
