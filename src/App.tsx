@@ -13,6 +13,9 @@ import { DragProvider } from './contexts/DragProvider';
 import { FactionProvider } from './contexts/FactionProvider';
 import { TargetingProvider } from './contexts/TargetingContext';
 import { audioService } from './services/audioService';
+import { initFullscreenEscapeLock } from './utils/fullscreen';
+
+initFullscreenEscapeLock();
 
 const humanMultiplayer = import.meta.env.DEV
     ? SocketIO({ server: `http://${window.location.hostname}:8000` })

@@ -18,6 +18,7 @@ import {
 } from './components/OutOfPlayRail';
 import { CardZoneOverlay } from './components/CardZoneOverlay';
 import { Dock } from './components/Dock';
+import { OptionsModal } from './components/OptionsModal';
 import { SitesPicker } from './components/SitePicker';
 import { GameControls } from './components/GameControls';
 import {
@@ -216,6 +217,26 @@ const DesignationOverlay: React.FC<{ G: GameState; myId: string }> = ({
             )}
         </S.DesignationOverlay>
     );
+};
+
+/** Échap ouvre les options seulement si rien d’autre ne consomme la touche. */
+const OpenOptionsOnEscape: React.FC<{
+    blocked: boolean;
+    onOpen: () => void;
+}> = ({ blocked, onOpen }) => {
+    const { dragged } = useDrag();
+
+    useEffect(() => {
+        if (blocked || dragged) return;
+        const onKeyDown = (event: KeyboardEvent) => {
+            if (event.key !== 'Escape') return;
+            onOpen();
+        };
+        window.addEventListener('keydown', onKeyDown);
+        return () => window.removeEventListener('keydown', onKeyDown);
+    }, [blocked, dragged, onOpen]);
+
+    return null;
 };
 
 const PendingPlayOnDrag: React.FC<{
@@ -2311,6 +2332,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
 
     const [openOutOfPlayZone, setOpenOutOfPlayZone] =
         useState<OutOfPlayZoneKey | null>(null);
+    const [optionsOpen, setOptionsOpen] = useState(false);
 
     /** Recherche pioche + défausse (Captured / Gandalf Returned…) — grille pleine, sélection restreinte. */
     const [deckDiscardPick, setDeckDiscardPick] = useState<{
@@ -3889,6 +3911,9 @@ export const GameBoard: React.FC<GameBoardProps> = ({
     useEffect(() => {
         const onKeyDown = (event: KeyboardEvent) => {
             if (event.key !== 'Escape') return;
+            // OptionsModal gère sa propre fermeture (capture).
+            if (optionsOpen) return;
+
             const isMine = G.pendingPlay?.playerId === myId;
             const canCancelChoice =
                 G.pendingForcedChoice?.cancelable &&
@@ -3908,14 +3933,16 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                 targetingKind !== 'SITE_STACK' &&
                 targetingKind !== 'STACK_PLAY' &&
                 !isMine
-            )
+            ) {
                 return;
+            }
             stopTargeting();
             if (isMine) moves.cancelPendingPlay?.();
         };
         window.addEventListener('keydown', onKeyDown);
         return () => window.removeEventListener('keydown', onKeyDown);
     }, [
+        optionsOpen,
         targetingKind,
         stopTargeting,
         G.pendingPlay,
@@ -3923,6 +3950,26 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         myId,
         moves,
     ]);
+
+    const escapeBusyForOptions =
+        optionsOpen ||
+        Boolean(openOutOfPlayZone) ||
+        Boolean(deckDiscardPick) ||
+        Boolean(stackOverlay) ||
+        Boolean(revealOverlay) ||
+        Boolean(
+            G.pendingForcedChoice?.cancelable &&
+                G.pendingForcedChoice.playerId === myId
+        ) ||
+        Boolean(G.pendingPlay?.playerId === myId) ||
+        targetingKind === 'DESIGNATION' ||
+        targetingKind === 'HAND_DISCARD' ||
+        targetingKind === 'HAND_PICK' ||
+        targetingKind === 'SITE_REPLACE' ||
+        targetingKind === 'SITE_REPLACE_PATH' ||
+        targetingKind === 'SITE_ATTACH' ||
+        targetingKind === 'SITE_STACK' ||
+        targetingKind === 'STACK_PLAY';
 
     // Détermination de l'onglet prioritaire selon le state du jeu
     const getRequestedTab = (): 'hand' | 'sites' | null => {
@@ -3998,6 +4045,10 @@ export const GameBoard: React.FC<GameBoardProps> = ({
             >
                 <DragProvider>
                     <S.BoardContainer $faction={currentFaction}>
+                    <OpenOptionsOnEscape
+                        blocked={escapeBusyForOptions}
+                        onOpen={() => setOptionsOpen(true)}
+                    />
                     <PendingPlayOnDrag
                         G={G}
                         myId={myId}
@@ -4497,8 +4548,12 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                             )}
                         </S.HoveredCardsZone>
                     )}
+                    {optionsOpen && (
+                        <OptionsModal onClose={() => setOptionsOpen(false)} />
+                    )}
                     <Dock
                         handCount={me.hand?.length || 0}
+                        onOpenOptions={() => setOptionsOpen(true)}
                         sitesCount={(() => {
                             // Mere (Ombre) : cibles = deck d’aventure FP, pas le nôtre.
                             if (

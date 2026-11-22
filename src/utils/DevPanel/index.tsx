@@ -69,16 +69,6 @@ export const DevPanel: React.FC<DevPanelProps> = ({
         new URLSearchParams(window.location.search).get('match') ||
         'default';
 
-    const toggleFullScreen = () => {
-        if (!document.fullscreenElement) {
-            document.documentElement.requestFullscreen().catch((err) => {
-                console.error(`Erreur plein écran: ${err.message}`);
-            });
-        } else {
-            document.exitFullscreen();
-        }
-    };
-
     const handleHardReset = () => {
         const newMatchId = 'match_' + Date.now();
         const syncChannel = new BroadcastChannel(MATCH_SYNC_CHANNEL);
@@ -361,23 +351,8 @@ export const DevPanel: React.FC<DevPanelProps> = ({
                     <S.Section>
                         <S.Label>Session :</S.Label>
                         <S.ButtonGroup>
-                            <S.ActionButton
-                                onClick={toggleFullScreen}
-                                title="Plein écran"
-                            >
-                                Plein écran ⛶
-                            </S.ActionButton>
                             <S.ActionButton onClick={handleHardReset}>
                                 Reset partie 🔄
-                            </S.ActionButton>
-                            <S.ActionButton
-                                onClick={() => {
-                                    const url = new URL(window.location.href);
-                                    url.searchParams.set('view', 'decks');
-                                    window.location.href = url.toString();
-                                }}
-                            >
-                                Decks
                             </S.ActionButton>
                         </S.ButtonGroup>
                         <S.SessionLink

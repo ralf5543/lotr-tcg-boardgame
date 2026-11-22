@@ -33,6 +33,9 @@ export const DockBar = styled.div`
 `;
 
 export const DockButton = styled.button<{ $isActive?: boolean; $isClose?: boolean }>`
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
     background: ${(props) =>
         props.$isClose
             ? '#2d333b'
@@ -52,6 +55,12 @@ export const DockButton = styled.button<{ $isActive?: boolean; $isClose?: boolea
         background: ${(props) => (props.$isActive ? '#f0cc4e' : '#30363d')};
         transform: translateY(-2px);
     }
+`;
+
+export const GearIcon = styled.svg`
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
 `;
 
 export const PlaceholderView = styled.div`
