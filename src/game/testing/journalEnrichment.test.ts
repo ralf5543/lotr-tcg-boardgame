@@ -49,7 +49,9 @@ describe('journal défausse / phase / capacité', () => {
         const entry = G.journalLog![G.journalLog!.length - 1];
         expect(entry.kind).toBe('phase');
         expect(entry.phaseKey).toBe('FELLOWSHIP');
-        expect(entry.named).toBe('Phase Compagnie');
+        expect(entry.phaseKey).toBe('FELLOWSHIP');
+        expect(formatJournalEntry(entry, '0', 'fr')).toBe('Phase Compagnie');
+        expect(formatJournalEntry(entry, '0', 'en')).toBe('Fellowship phase');
     });
 
     it('capacité : phrase riche avec cible d’effet', () => {
@@ -157,23 +159,28 @@ describe('journal défausse / phase / capacité', () => {
             wounds: 1,
         });
         appendWoundTakenJournal(G, aragorn, { source: 'archery' });
-        expect(G.journalLog!.at(-1)!.named).toBe(
+        expect(formatJournalEntry(G.journalLog!.at(-1)!, '0', 'fr')).toBe(
             'Aragorn prend une blessure (archerie).'
+        );
+        expect(formatJournalEntry(G.journalLog!.at(-1)!, '0', 'en')).toBe(
+            'Aragorn takes a wound (archery).'
         );
 
         aragorn.isDead = true;
         appendWoundTakenJournal(G, aragorn, { source: 'threat' });
-        expect(G.journalLog!.at(-1)!.named).toBe(
+        expect(formatJournalEntry(G.journalLog!.at(-1)!, '0', 'fr')).toBe(
             'Aragorn prend une blessure (menaces) et meurt.'
         );
 
         aragorn.isDead = false;
         appendHealedJournal(G, aragorn, 1);
-        expect(G.journalLog!.at(-1)!.named).toBe('Aragorn est soigné.');
+        expect(formatJournalEntry(G.journalLog!.at(-1)!, '0', 'en')).toBe(
+            'Aragorn is healed.'
+        );
 
         appendMovedToSiteJournal(G, 'The Prancing Pony', 2);
-        expect(G.journalLog!.at(-1)!.named).toBe(
-            'La compagnie avance au site 2 : The Prancing Pony.'
+        expect(formatJournalEntry(G.journalLog!.at(-1)!, '0', 'es')).toBe(
+            'La compañía avanza al sitio 2: The Prancing Pony.'
         );
     });
 });

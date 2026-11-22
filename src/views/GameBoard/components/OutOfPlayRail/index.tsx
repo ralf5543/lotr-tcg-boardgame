@@ -8,6 +8,7 @@ import {
 import { formatJournalEntry } from '../../../../game/logic/journal';
 import { getCardById } from '../../../../game/cardsData';
 import { useHoverCard } from '../../../../contexts/HoverCardContext';
+import { usePreferencesOptional } from '../../../../contexts/PreferencesContext';
 import { useImageSrcFallback } from '../../../../utils/useImageSrcFallback';
 import { usePulseOnChange } from '../../hooks/usePulseOnChange';
 import { TwilightPool } from '../TwilightPool';
@@ -328,6 +329,8 @@ export const OutOfPlayRail: React.FC<OutOfPlayRailProps> = ({
     sendChatMessage,
 }) => {
     const ui = useUiMessages();
+    const prefs = usePreferencesOptional();
+    const uiLanguage = prefs?.uiLanguage ?? 'fr';
     const holderLabel =
         initiativeHolder === 'FREE_PEOPLE'
             ? ui.chrome.common.freePeoples
@@ -340,12 +343,21 @@ export const OutOfPlayRail: React.FC<OutOfPlayRailProps> = ({
     const seenChatIdsRef = useRef<Set<string>>(new Set());
     const seenJournalLenRef = useRef(0);
     const feedEndRef = useRef<HTMLDivElement>(null);
+    const uiLangRef = useRef(uiLanguage);
 
     useEffect(() => {
         if (prevHolderRef.current === initiativeHolder) return;
         prevHolderRef.current = initiativeHolder;
         setPulseKey((key) => key + 1);
     }, [initiativeHolder]);
+
+    // Changement de langue UI → reconstruire les textes journal déjà en fil.
+    useEffect(() => {
+        if (uiLangRef.current === uiLanguage) return;
+        uiLangRef.current = uiLanguage;
+        seenJournalLenRef.current = 0;
+        setFeed((prev) => prev.filter((e) => e.kind === 'chat'));
+    }, [uiLanguage]);
 
     useEffect(() => {
         const log = journalLog ?? [];
@@ -365,7 +377,11 @@ export const OutOfPlayRail: React.FC<OutOfPlayRailProps> = ({
                 return {
                     kind: 'journal' as const,
                     key: `journal-${seenJournalLenRef.current + index}`,
-                    text: formatJournalEntry(normalized, myPlayerId),
+                    text: formatJournalEntry(
+                        normalized,
+                        myPlayerId,
+                        uiLanguage
+                    ),
                     entry: normalized,
                 };
             });
@@ -375,7 +391,7 @@ export const OutOfPlayRail: React.FC<OutOfPlayRailProps> = ({
             const next = [...prev, ...additions];
             return next.length > MAX_FEED ? next.slice(-MAX_FEED) : next;
         });
-    }, [journalLog, myPlayerId]);
+    }, [journalLog, myPlayerId, uiLanguage]);
 
     useEffect(() => {
         const playerChats = listPlayerChatMessages(chatMessages);

@@ -1,0 +1,22 @@
+---
+description: Toute nouvelle chaîne UI / consignes / journal en 5 langues
+alwaysApply: true
+---
+
+# i18n — cinq langues
+
+**Format : Standard (règles modernes).** Voir `.cursor/rules/format-standard.mdc`.
+
+## Règle
+
+Quand on **ajoute** ou **modifie** une chaîne visible joueur (chrome, toaster, bandeau, consignes `statusNotice`, journal, options, overlays…) :
+
+1. La fournir dans **les 5 langues d’interface** : `fr`, `en`, `de`, `it`, `es`.
+2. Préférer catalogues / messages typés (`src/i18n/…`) plutôt qu’une phrase FR en dur dans le moteur.
+3. Moteur partagé : stocker une **clé + params** (`statusNotice`, `JournalEntry.notice`…) ; chaque client formate avec sa langue UI.
+4. Repli : `localizeGameTerms` sur du FR brut uniquement pour l’existant non migré — **pas** pour du nouveau.
+
+## Hors scope
+
+- Textes de cartes (`i18n` carte / `cardLanguage`) : autre sélecteur ; pas à inventer ici.
+- Journal / consignes encore en FR historique : migrer au fil de l’eau, toujours 5× quand on touche une clé.

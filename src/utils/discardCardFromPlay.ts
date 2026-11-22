@@ -1,6 +1,6 @@
 import type { CardState, GameState } from '../game/types';
 import { displayTitle } from '../decks/cardMeta';
-import { appendJournal } from '../game/logic/journal';
+import { appendJournalNotice } from '../game/logic/journal';
 import { reconcileActiveSkirmishAfterLeave } from '../game/logic/skirmishVacated';
 import { discardDestinationPile } from '../game/logic/sites';
 
@@ -99,7 +99,7 @@ function ownerDiscardPile(
 function journalDiscard(G: GameState, discarded: CardState): void {
     const name = displayTitle(discarded);
     if (!name) return;
-    appendJournal(G, `${name} est défaussé.`);
+    appendJournalNotice(G, 'DISCARDED_FROM_PLAY', { card: name });
 }
 
 /**

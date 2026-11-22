@@ -18,6 +18,7 @@ import {
 import { displayTitle } from '../../decks/cardMeta';
 import {
     appendActorJournal,
+    appendActorJournalNotice,
     appendSideRolesJournal,
     formatSideRolesStatus,
 } from '../logic/journal';
@@ -83,10 +84,7 @@ export const endTurnChoice = ({ G }: LotrMoveContext) => {
 
     const fpId = G.fpPlayerId || '0';
     const name = playerDisplayName(G, fpId);
-    appendActorJournal(G, fpId, {
-        vous: 'Vous avez décidé de vous arrêter.',
-        named: `${name} a décidé de s’arrêter.`,
-    });
+    appendActorJournalNotice(G, fpId, 'DECIDED_STOP', { player: name });
 
     G.regroupStep = 'FP_REFILL';
     setRawStatus(G, 'Peuples Libres : Ajustez votre main à 8 cartes et validez pour terminer le tour.');
@@ -140,9 +138,9 @@ export const discardCardFromHand = (
     // CR : les cartes défaussées sont visibles de tous (une par une).
     const cardName = displayTitle(discarded);
     const name = playerDisplayName(G, actingPlayerId);
-    appendActorJournal(G, actingPlayerId, {
-        vous: `Vous avez défaussé ${cardName}.`,
-        named: `${name} a défaussé ${cardName}.`,
+    appendActorJournalNotice(G, actingPlayerId, 'DISCARDED_HAND', {
+        player: name,
+        card: cardName,
     });
     setRawStatus(G, `${name} a défaussé ${cardName}.`);
     if (watchInitiative) {

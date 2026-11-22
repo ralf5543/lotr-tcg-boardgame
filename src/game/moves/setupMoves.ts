@@ -1,13 +1,13 @@
 import type { LotrMoveContext } from '../types';
-import { setRawStatus } from '../../i18n/status';
+import { setStatus } from '../../i18n/status';
 import { drawCardsForPlayer } from '../../utils/drawCards';
 import {
     otherPlayerId,
     playerDisplayName,
 } from '../logic/playerName';
 import {
-    appendActorJournal,
-    appendJournal,
+    appendActorJournalNotice,
+    appendJournalNotice,
 } from '../logic/journal';
 
 export const submitMulliganChoice = (
@@ -40,33 +40,27 @@ export const submitMulliganChoice = (
     const m1 = G.setupState.mulligans['1'];
 
     const name = playerDisplayName(G, pId);
-    appendActorJournal(
+    appendActorJournalNotice(
         G,
         pId,
-        doMulligan
-            ? {
-                  vous: 'Vous avez fait un mulligan.',
-                  named: `${name} a fait un mulligan.`,
-              }
-            : {
-                  vous: 'Vous avez gardé votre main.',
-                  named: `${name} a gardé sa main.`,
-              }
+        doMulligan ? 'MULLIGAN_DONE' : 'MULLIGAN_KEPT',
+        { player: name }
     );
 
     if (m0 !== null && m1 !== null) {
         G.setupState.step = 'COMPLETE';
-        appendJournal(G, 'Mise en place terminée. Début de la partie.');
-        setRawStatus(G, 'Mise en place terminée ! Début de la partie.');
+        appendJournalNotice(G, 'SETUP_COMPLETE');
+        setStatus(G, 'SETUP_COMPLETE');
 
         if (events?.setPhase) {
             events.setPhase('startOfFellowship');
         }
     } else {
-        const live = doMulligan
-            ? `${name} a fait un mulligan.`
-            : `${name} a gardé sa main.`;
-        setRawStatus(G, `${live} En attente de ${playerDisplayName(G, otherPlayerId(pId))}…`);
+        setStatus(G, 'MULLIGAN_WAITING', {
+            name,
+            didMulligan: doMulligan,
+            other: playerDisplayName(G, otherPlayerId(pId)),
+        });
     }
 };
 

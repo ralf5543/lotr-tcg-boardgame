@@ -50,9 +50,9 @@ import {
     playerDisplayName,
 } from './logic/playerName';
 import {
-    appendActorJournal,
+    appendActorJournalNotice,
     appendCardPlayedJournal,
-    appendJournal,
+    appendJournalNotice,
     appendPhaseJournal,
     appendSideRolesJournal,
     formatPointsFardeau,
@@ -467,17 +467,16 @@ export const LotrGame: Game<GameState> = {
                         // dans le journal qu’une fois les deux posées.
                         const name0 = playerDisplayName(G, '0');
                         const name1 = playerDisplayName(G, '1');
-                        appendActorJournal(G, '0', {
-                            vous: `Vous avez misé ${formatPointsFardeau(bid0)}.`,
-                            named: `${name0} a misé ${formatPointsFardeau(bid0)}.`,
+                        appendActorJournalNotice(G, '0', 'BID_PLACED', {
+                            player: name0,
+                            bid: formatPointsFardeau(bid0),
                         });
-                        appendActorJournal(G, '1', {
-                            vous: `Vous avez misé ${formatPointsFardeau(bid1)}.`,
-                            named: `${name1} a misé ${formatPointsFardeau(bid1)}.`,
+                        appendActorJournalNotice(G, '1', 'BID_PLACED', {
+                            player: name1,
+                            bid: formatPointsFardeau(bid1),
                         });
-                        appendActorJournal(G, winnerId, {
-                            vous: 'Vous gagnez l’enchère.',
-                            named: `${winnerName} gagne l’enchère.`,
+                        appendActorJournalNotice(G, winnerId, 'BID_WON', {
+                            player: winnerName,
                         });
                         setStatus(G, 'BID_REVEAL', {
                             name0,
@@ -588,23 +587,16 @@ export const LotrGame: Game<GameState> = {
                     const m1 = G.setupState.mulligans['1'];
 
                     const name = playerDisplayName(G, pId);
-                    appendActorJournal(
+                    appendActorJournalNotice(
                         G,
                         pId,
-                        doMulligan
-                            ? {
-                                  vous: 'Vous avez fait un mulligan.',
-                                  named: `${name} a fait un mulligan.`,
-                              }
-                            : {
-                                  vous: 'Vous avez gardé votre main.',
-                                  named: `${name} a gardé sa main.`,
-                              }
+                        doMulligan ? 'MULLIGAN_DONE' : 'MULLIGAN_KEPT',
+                        { player: name }
                     );
 
                     if (m0 !== null && m1 !== null) {
                         G.setupState.step = 'COMPLETE';
-                        appendJournal(G, 'Mise en place terminée. Début de la partie.');
+                        appendJournalNotice(G, 'SETUP_COMPLETE');
                         setStatus(G, 'SETUP_COMPLETE');
                         events?.setPhase?.('startOfFellowship');
                     } else {
@@ -1482,9 +1474,8 @@ export const LotrGame: Game<GameState> = {
                     }
 
                     const moverName = playerDisplayName(G, fpId);
-                    appendActorJournal(G, fpId, {
-                        vous: 'Vous avez décidé d’avancer de nouveau.',
-                        named: `${moverName} a décidé d’avancer de nouveau.`,
+                    appendActorJournalNotice(G, fpId, 'DECIDED_MOVE_AGAIN', {
+                        player: moverName,
                     });
 
                     // Site quitté : fenêtre optionnelle avant le départ.

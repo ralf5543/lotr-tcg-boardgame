@@ -1,4 +1,5 @@
 import type { FnContext } from 'boardgame.io';
+import type { JournalNotice } from '../i18n/journal/types';
 import type { StatusNotice } from '../i18n/status/types';
 import type { StatModifier, StatType } from './logic/stats/types';
 
@@ -2173,6 +2174,11 @@ export type JournalEntry = {
     actorAvatar?: string;
     vous?: string;
     named: string;
+    /**
+     * Fait structuré : chaque client traduit avec sa langue UI.
+     * `vous` / `named` restent le repli FR.
+     */
+    notice?: JournalNotice;
     /**
      * Si présent : rendu riche avec lien carte
      * (« a joué » / « a utilisé »). Vignette selon `showThumb`.

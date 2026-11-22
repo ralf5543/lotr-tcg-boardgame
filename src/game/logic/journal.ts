@@ -4,6 +4,13 @@ import {
     displayTitle,
     isSiteCard,
 } from '../../decks/cardMeta';
+import type { SupportedLanguage } from '../../i18n/languages';
+import {
+    formatJournalNotice,
+    type JournalKey,
+    type JournalParams,
+} from '../../i18n/journal';
+import { localizeGameTerms } from '../../i18n/terms';
 import type {
     Ability,
     CardState,
@@ -39,11 +46,28 @@ function actorAvatarUrl(
     return url || undefined;
 }
 
-/** Ligne neutre (pas de « Vous »). */
+/** Ligne neutre (pas de « Vous ») — FR brut (repli). */
 export function appendJournal(G: GameState, text: string): void {
     const trimmed = text.trim();
     if (!trimmed) return;
     pushEntry(G, { named: trimmed });
+}
+
+/** Ligne neutre structurée (clé + params). */
+export function appendJournalNotice(
+    G: GameState,
+    key: JournalKey,
+    params: JournalParams = {},
+    extras?: Pick<JournalEntry, 'playedCard' | 'kind' | 'phaseKey'>
+): void {
+    const forms = formatJournalNotice('fr', key, params);
+    const named = forms.named.trim();
+    if (!named) return;
+    pushEntry(G, {
+        named,
+        notice: { key, params },
+        ...extras,
+    });
 }
 
 /**
@@ -54,7 +78,7 @@ export function appendActorJournal(
     G: GameState,
     actorId: string | null | undefined,
     forms: { vous: string; named: string },
-    extras?: Pick<JournalEntry, 'playedCard' | 'actorAvatar'>
+    extras?: Pick<JournalEntry, 'playedCard' | 'actorAvatar' | 'notice'>
 ): void {
     const vous = forms.vous.trim();
     const named = forms.named.trim();
@@ -70,7 +94,28 @@ export function appendActorJournal(
         named,
         actorAvatar: extras?.actorAvatar ?? actorAvatarUrl(G, id),
         playedCard: extras?.playedCard,
+        notice: extras?.notice,
     });
+}
+
+/** Fait acteur structuré (clé + params). */
+export function appendActorJournalNotice(
+    G: GameState,
+    actorId: string | null | undefined,
+    key: JournalKey,
+    params: JournalParams = {},
+    extras?: Pick<JournalEntry, 'playedCard' | 'actorAvatar'>
+): void {
+    const forms = formatJournalNotice('fr', key, params);
+    appendActorJournal(
+        G,
+        actorId,
+        {
+            vous: forms.vous || forms.named,
+            named: forms.named,
+        },
+        { ...extras, notice: { key, params } }
+    );
 }
 
 /**
@@ -92,23 +137,16 @@ export function appendCardPlayedJournal(
         raw.type === 'SITE' ||
         raw.kind === 'SITE' ||
         Boolean(raw.siteNumber != null && !raw.culture);
-    appendActorJournal(
-        G,
-        actorId,
-        {
-            vous: `Vous avez joué ${label}.`,
-            named: `${name} a joué ${label}.`,
+    const params = { player: name, card: label };
+    appendActorJournalNotice(G, actorId, 'PLAYED_CARD', params, {
+        playedCard: {
+            catalogId: catalogCardId(asCard),
+            label,
+            imageUrl: asCard.imageUrl || raw.imageUrl,
+            orientation: site ? 'landscape' : 'portrait',
+            showThumb: true,
         },
-        {
-            playedCard: {
-                catalogId: catalogCardId(asCard),
-                label,
-                imageUrl: asCard.imageUrl || raw.imageUrl,
-                orientation: site ? 'landscape' : 'portrait',
-                showThumb: true,
-            },
-        }
-    );
+    });
 }
 
 /** Réf. journal pour une carte mentionnée (lien ; vignette optionnelle). */
@@ -125,18 +163,32 @@ function journalCardRef(
     };
 }
 
-/** Texte à afficher pour le joueur local. */
+/** Texte à afficher pour le joueur local (langue UI). */
 export function formatJournalEntry(
     entry: JournalEntry | string,
-    myPlayerId: string | null | undefined
+    myPlayerId: string | null | undefined,
+    lang: SupportedLanguage = 'fr'
 ): string {
-    if (typeof entry === 'string') return entry;
+    if (typeof entry === 'string') {
+        return localizeGameTerms(entry, lang);
+    }
     const mine =
         entry.actorId != null &&
         myPlayerId != null &&
         String(entry.actorId) === String(myPlayerId);
-    if (mine && entry.vous) return entry.vous;
-    return entry.named;
+
+    if (entry.notice?.key) {
+        const forms = formatJournalNotice(
+            lang,
+            entry.notice.key,
+            entry.notice.params || {}
+        );
+        if (mine && forms.vous) return forms.vous;
+        return forms.named;
+    }
+
+    const raw = mine && entry.vous ? entry.vous : entry.named;
+    return localizeGameTerms(raw, lang);
 }
 
 /** Raccourci : ligne d’acteur avec le nom profil courant. */
@@ -172,13 +224,12 @@ export function appendSideRolesJournal(
         ? `${options.prefix.trim()} `
         : '';
 
-    appendActorJournal(G, fpId, {
-        vous: `${prefix}Vous jouez les Peuples Libres.`,
-        named: `${prefix}${fpName} joue les Peuples Libres.`,
+    appendActorJournalNotice(G, fpId, 'SIDE_FREE_PEOPLES', {
+        player: fpName,
+        prefix,
     });
-    appendActorJournal(G, shadowId, {
-        vous: 'Vous jouez l’Ombre.',
-        named: `${shadowName} joue l’Ombre.`,
+    appendActorJournalNotice(G, shadowId, 'SIDE_SHADOW', {
+        player: shadowName,
     });
 }
 
@@ -225,11 +276,12 @@ export function appendPhaseJournal(
     clearAbilityPhaseUses(G);
     // Coupe AW / toasters orphelins de la phase précédente.
     clearStaleInteractionOnPhaseEntry(G);
-    pushEntry(G, {
-        kind: 'phase',
-        phaseKey: meta.phaseKey,
-        named: `Phase ${meta.label}`,
-    });
+    appendJournalNotice(
+        G,
+        'PHASE',
+        { phaseKey: meta.phaseKey },
+        { kind: 'phase', phaseKey: meta.phaseKey }
+    );
 }
 
 const STAT_FR: Record<string, string> = {
@@ -307,10 +359,12 @@ export function appendAbilityUsedJournal(
         const bearerName = displayTitle(bearer);
         if (bearerName) {
             const card = journalCardRef(source, { showThumb: false });
-            pushEntry(G, {
-                named: `${bearerName} a utilisé ${card.label}.`,
-                playedCard: card,
-            });
+            appendJournalNotice(
+                G,
+                'ABILITY_USED_ATTACHED',
+                { bearer: bearerName, card: card.label },
+                { playedCard: card }
+            );
             return;
         }
     }
@@ -318,11 +372,10 @@ export function appendAbilityUsedJournal(
     const isCharacter = ['COMPANION', 'ALLY', 'MINION'].includes(
         source.type || ''
     );
-    appendJournal(
+    appendJournalNotice(
         G,
-        isCharacter
-            ? `${sourceName} a utilisé une compétence.`
-            : `${sourceName} a été utilisé.`
+        isCharacter ? 'ABILITY_USED_CHARACTER' : 'ABILITY_USED_SUPPORT',
+        { card: sourceName }
     );
 }
 
@@ -348,20 +401,15 @@ export function appendWoundTakenJournal(
 ): void {
     const name = displayTitle(card);
     if (!name) return;
-    const wounds = formatBlessuresCount(options?.count ?? 1);
-    const via =
-        options?.source === 'archery'
-            ? ' (archerie)'
-            : options?.source === 'threat'
-              ? ' (menaces)'
-              : options?.source === 'site'
-                ? ' (site)'
-                : '';
-    appendJournal(
+    const params = {
+        card: name,
+        count: options?.count ?? 1,
+        source: options?.source,
+    };
+    appendJournalNotice(
         G,
-        card.isDead
-            ? `${name} prend ${wounds}${via} et meurt.`
-            : `${name} prend ${wounds}${via}.`
+        card.isDead ? 'WOUND_TAKEN_DIED' : 'WOUND_TAKEN',
+        params
     );
 }
 
@@ -374,12 +422,7 @@ export function appendHealedJournal(
     const name = displayTitle(card);
     if (!name) return;
     const n = Math.max(1, Math.floor(Number(amount) || 1));
-    appendJournal(
-        G,
-        n === 1
-            ? `${name} est soigné.`
-            : `${name} est soigné (${formatBlessuresCount(n)}).`
-    );
+    appendJournalNotice(G, 'HEALED', { card: name, count: n });
 }
 
 /** Fait : la compagnie arrive sur un site déjà posé. */
@@ -389,5 +432,8 @@ export function appendMovedToSiteJournal(
     siteNumber: number
 ): void {
     const name = String(siteName || '').trim() || 'site inconnu';
-    appendJournal(G, `La compagnie avance au site ${siteNumber} : ${name}.`);
+    appendJournalNotice(G, 'MOVED_TO_SITE', {
+        siteName: name,
+        siteNumber,
+    });
 }
