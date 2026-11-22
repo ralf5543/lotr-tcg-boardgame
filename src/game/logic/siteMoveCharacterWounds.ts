@@ -3,6 +3,7 @@ import { setRawStatus } from '../../i18n/status';
 import { getEffectiveVitality } from '../../utils/cardStats';
 import { requestWounds } from '../engine/responseWindow';
 import { tryOpenFellowshipMoves } from '../engine/responseWindow';
+import { appendWoundTakenJournal } from './journal';
 import { getCurrentSite } from './sites';
 import { beginOptionalSiteMoveAbility } from './siteMoveAbility';
 
@@ -176,7 +177,10 @@ export function assignSiteCharacterWound(
     ).find((c) => c.instanceId === targetCardId || c.id === targetCardId);
     if (!target) return false;
 
-    requestWounds(G, target, 1);
+    const woundResult = requestWounds(G, target, 1);
+    if (woundResult === 'APPLIED' && !G.responseWindow?.isOpen) {
+        appendWoundTakenJournal(G, target, { source: 'site' });
+    }
     pending.remaining -= 1;
 
     if (pending.remaining > 0) {

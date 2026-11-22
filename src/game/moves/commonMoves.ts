@@ -46,6 +46,7 @@ import {
 import {
     appendActorJournal,
     appendCardPlayedJournal,
+    appendWoundTakenJournal,
 } from '../logic/journal';
 import { displayFullName } from '../../decks/cardMeta';
 import { getWhileTwilightCostModifier } from '../logic/stats/mechanics/whileModifier';
@@ -1300,7 +1301,10 @@ export const assignThreatWound = (
     );
     if (!companion) return 'INVALID_MOVE';
 
-    requestWounds(G, companion, 1);
+    const woundResult = requestWounds(G, companion, 1);
+    if (woundResult === 'APPLIED' && !G.responseWindow?.isOpen) {
+        appendWoundTakenJournal(G, companion, { source: 'threat' });
+    }
     G.threatWoundsToAssign = remaining - 1;
 
     const left = G.threatWoundsToAssign;

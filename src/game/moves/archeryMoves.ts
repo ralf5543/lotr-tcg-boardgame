@@ -4,6 +4,7 @@ import { getEffectiveVitality } from '../../utils/cardStats';
 import { requestWounds } from '../engine/responseWindow';
 import { enterPhase } from '../logic/phaseEntry';
 import { canCardTakeWound } from '../logic/sites';
+import { appendWoundTakenJournal } from '../logic/journal';
 
 function livingCompanions(G: GameState, fpId: string): CardState[] {
     const fpPlayer = G.players[fpId];
@@ -89,7 +90,10 @@ export const assignArcheryWound = (
         ) {
             return 'INVALID_MOVE';
         }
-        requestWounds(G, companion, 1);
+        const woundResult = requestWounds(G, companion, 1);
+        if (woundResult === 'APPLIED' && !G.responseWindow?.isOpen) {
+            appendWoundTakenJournal(G, companion, { source: 'archery' });
+        }
 
         if (G.archeryWoundsToAssign !== undefined) G.archeryWoundsToAssign -= 1;
         if (G.archeryState?.fpRemainingWounds !== undefined)
@@ -135,7 +139,10 @@ export const assignArcheryWound = (
         if (!canCardTakeWound(G, minion)) {
             return 'INVALID_MOVE';
         }
-        requestWounds(G, minion, 1);
+        const woundResult = requestWounds(G, minion, 1);
+        if (woundResult === 'APPLIED' && !G.responseWindow?.isOpen) {
+            appendWoundTakenJournal(G, minion, { source: 'archery' });
+        }
 
         if (G.archeryWoundsToAssign !== undefined) G.archeryWoundsToAssign -= 1;
         if (G.archeryState?.shadowRemainingWounds !== undefined)

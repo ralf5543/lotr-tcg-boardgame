@@ -333,3 +333,61 @@ export function formatBlessuresCount(count: number): string {
     if (n === 2) return 'deux blessures';
     return `${n} blessure${n > 1 ? 's' : ''}`;
 }
+
+export type WoundJournalSource = 'archery' | 'threat' | 'site';
+
+/**
+ * Fait : une carte a pris des blessures (hors escarmouche déjà journalisée).
+ * À appeler seulement si la blessure est réellement appliquée (pas en attente
+ * de réponse « Empêcher »).
+ */
+export function appendWoundTakenJournal(
+    G: GameState,
+    card: CardState,
+    options?: { source?: WoundJournalSource; count?: number }
+): void {
+    const name = displayTitle(card);
+    if (!name) return;
+    const wounds = formatBlessuresCount(options?.count ?? 1);
+    const via =
+        options?.source === 'archery'
+            ? ' (archerie)'
+            : options?.source === 'threat'
+              ? ' (menaces)'
+              : options?.source === 'site'
+                ? ' (site)'
+                : '';
+    appendJournal(
+        G,
+        card.isDead
+            ? `${name} prend ${wounds}${via} et meurt.`
+            : `${name} prend ${wounds}${via}.`
+    );
+}
+
+/** Fait : une carte a été soignée. */
+export function appendHealedJournal(
+    G: GameState,
+    card: CardState,
+    amount = 1
+): void {
+    const name = displayTitle(card);
+    if (!name) return;
+    const n = Math.max(1, Math.floor(Number(amount) || 1));
+    appendJournal(
+        G,
+        n === 1
+            ? `${name} est soigné.`
+            : `${name} est soigné (${formatBlessuresCount(n)}).`
+    );
+}
+
+/** Fait : la compagnie arrive sur un site déjà posé. */
+export function appendMovedToSiteJournal(
+    G: GameState,
+    siteName: string,
+    siteNumber: number
+): void {
+    const name = String(siteName || '').trim() || 'site inconnu';
+    appendJournal(G, `La compagnie avance au site ${siteNumber} : ${name}.`);
+}

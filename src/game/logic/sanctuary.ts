@@ -1,6 +1,7 @@
 import type { CardState, GameState } from '../types';
 import { setRawStatus } from '../../i18n/status';
 import { applyHeal } from '../../utils/applyHeal';
+import { appendHealedJournal } from './journal';
 import { isCurrentSiteSanctuary } from './sites';
 
 export const SANCTUARY_HEAL_LIMIT = 5;
@@ -34,7 +35,9 @@ export const assignSanctuaryHeal = (G: GameState, cardId: string): boolean => {
     );
     if (!target) return false;
 
-    applyHeal(G, target, 1);
+    const healed = applyHeal(G, target, 1);
+    if (healed <= 0) return false;
+    appendHealedJournal(G, target, healed);
     G.sanctuaryHeal.remaining -= 1;
     return true;
 };

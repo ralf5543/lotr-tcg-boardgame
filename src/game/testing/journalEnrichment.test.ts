@@ -4,7 +4,10 @@ import { displayTitle } from '../../decks/cardMeta';
 import {
     appendAbilityUsedJournal,
     appendActorJournal,
+    appendHealedJournal,
+    appendMovedToSiteJournal,
     appendPhaseJournal,
+    appendWoundTakenJournal,
     formatJournalEntry,
 } from '../logic/journal';
 import type { Ability } from '../types';
@@ -143,5 +146,34 @@ describe('journal défausse / phase / capacité', () => {
             `${displayTitle(pipe)} a été utilisé.`
         );
         expect(entry.named).not.toMatch(/ralliement|compétence/i);
+    });
+
+    it('blessure d’archerie / soin / déplacement', () => {
+        const G = createGameState();
+        const aragorn = createCompanion({
+            id: '1R89',
+            title: 'Aragorn',
+            i18n: { fr: { title: 'Aragorn' } },
+            wounds: 1,
+        });
+        appendWoundTakenJournal(G, aragorn, { source: 'archery' });
+        expect(G.journalLog!.at(-1)!.named).toBe(
+            'Aragorn prend une blessure (archerie).'
+        );
+
+        aragorn.isDead = true;
+        appendWoundTakenJournal(G, aragorn, { source: 'threat' });
+        expect(G.journalLog!.at(-1)!.named).toBe(
+            'Aragorn prend une blessure (menaces) et meurt.'
+        );
+
+        aragorn.isDead = false;
+        appendHealedJournal(G, aragorn, 1);
+        expect(G.journalLog!.at(-1)!.named).toBe('Aragorn est soigné.');
+
+        appendMovedToSiteJournal(G, 'The Prancing Pony', 2);
+        expect(G.journalLog!.at(-1)!.named).toBe(
+            'La compagnie avance au site 2 : The Prancing Pony.'
+        );
     });
 });

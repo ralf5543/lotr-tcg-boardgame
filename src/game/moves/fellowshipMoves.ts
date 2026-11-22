@@ -10,7 +10,10 @@ import {
 import { beginSiteMoveCharacterWoundsIfNeeded } from '../logic/siteMoveCharacterWounds';
 import { beginDeadPileRemovalIfNeeded } from '../logic/siteDeadPileRemoval';
 import { enforceWhileSelfDiscards } from '../engine/abilities/enforceWhileDiscard';
-import { appendCardPlayedJournal } from '../logic/journal';
+import {
+    appendCardPlayedJournal,
+    appendMovedToSiteJournal,
+} from '../logic/journal';
 import { displayFullName } from '../../decks/cardMeta';
 import { playerDisplayName } from '../logic/playerName';
 import { dismissOwnOptionalPromptsAsPass } from '../logic/interactionCleanup';
@@ -84,6 +87,11 @@ export const advanceCompany = (G: GameState) => {
                 ? ''
                 : ` effets site ${siteEffectDelta > 0 ? '+' : ''}${siteEffectDelta} ;`;
 
+        appendMovedToSiteJournal(
+            G,
+            String(targetSite.name || ''),
+            siteNumber
+        );
         setStatus(G, 'MOVE_TO_SITE', {
             siteNumber,
             siteName: targetSite.name,
