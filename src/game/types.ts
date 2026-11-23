@@ -2128,7 +2128,10 @@ export interface WoundQueueItem {
 export interface ResponseWindow {
     isOpen: boolean;
     title?: string;
+    /** Repli FR ; préférer `notice` côté UI. */
     message?: string;
+    /** Consigne traduite localement (même modèle que statusNotice). */
+    notice?: StatusNotice | null;
     activePlayerId: string;
     canPass?: boolean;
     passesCount?: number;

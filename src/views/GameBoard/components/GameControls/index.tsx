@@ -10,7 +10,10 @@ import { useUiMessages } from '../../../../i18n/ui/useUiMessages';
 import { shortPhaseLabel } from '../../../../i18n/ui';
 import type { ChromeMessages } from '../../../../i18n/ui/chrome';
 import { getInstructions } from '../../../../i18n/instructions';
-import { formatStoredStatus } from '../../../../i18n/status';
+import {
+    formatStatusNotice,
+    formatStoredStatus,
+} from '../../../../i18n/status';
 import { findTargetCard } from '../../../../utils/cardUtils';
 import { getAbilityToastClause } from '../../../../utils/i18n';
 import { FormattedText } from '../../../../utils/FormattedText';
@@ -736,12 +739,26 @@ export const GameControls: React.FC<GameControlsProps> = ({
             type: 'OPTIONAL_RESPONSE_ABILITY',
         };
     } else if (isResponseWindowActive && isMyTurnToAct) {
+        const windowNotice = G.responseWindow?.notice;
+        const responseBody =
+            (windowNotice
+                ? formatStatusNotice(
+                      uiLanguage,
+                      windowNotice.key,
+                      windowNotice.params
+                  )
+                : '') ||
+            G.responseWindow?.message ||
+            formatStoredStatus(
+                uiLanguage,
+                G.statusNotice,
+                G.statusMessage
+            ) ||
+            c.toast.respondOrPass;
         toastConfig = {
             show: true,
-            title: G.responseWindow?.title || c.toast.response,
-            body:
-                G.responseWindow?.message ||
-                c.toast.respondOrPass,
+            title: c.toast.response,
+            body: responseBody,
             showPassButton: G.responseWindow?.canPass ?? true,
             type: 'RESPONSE',
         };

@@ -138,7 +138,7 @@ export const revealCompanion = (
         return 'INVALID_MOVE';
     }
 
-    setStatus(G, 'GENERIC', { text: 'Une carte de la Compagnie a été révélée !' });
+    setStatus(G, 'FELLOWSHIP_CARD_REVEALED');
 };
 
 export const playSite = (

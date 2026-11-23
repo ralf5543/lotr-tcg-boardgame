@@ -1,4 +1,5 @@
-import { setStatus } from '../../i18n/status';
+import { formatStatusNotice, setStatus } from '../../i18n/status';
+import type { StatusKey, StatusParams } from '../../i18n/status';
 import type {
     Ability,
     CardState,
@@ -406,11 +407,14 @@ function pendingWoundIsRingBearer(G: GameState): boolean {
     return Boolean(card && isRingBearerCard(card));
 }
 
-function responseWoundMessage(G: GameState): string {
+function responseWoundNotice(G: GameState): {
+    key: StatusKey;
+    params?: StatusParams;
+} {
     if (G.wearingTheOneRing && pendingWoundIsRingBearer(G)) {
-        return 'L’Anneau Unique est porté. Jouez une autre réponse ou passez (fardeaux à la place).';
+        return { key: 'RESPONSE_WINDOW_RING_WORN' };
     }
-    return 'Un personnage est sur le point d’être blessé. Jouez une réponse ou passez.';
+    return { key: 'RESPONSE_WINDOW_ABOUT_TO_WOUND_GENERIC' };
 }
 
 function shouldReplaceWoundWithBurdens(
@@ -543,10 +547,13 @@ function fpCanPreventAddThreats(G: GameState): boolean {
     return Boolean(rb && canCardTakeWound(G, rb));
 }
 
-function aboutToWoundToastMessage(G: GameState): string {
+function aboutToWoundNotice(G: GameState): {
+    key: StatusKey;
+    params?: StatusParams;
+} {
     const event = G.pendingEvent;
     if (!event || event.type !== 'ABOUT_TO_WOUND') {
-        return 'Un personnage va prendre une blessure. Jouez une réponse ou passez.';
+        return { key: 'RESPONSE_WINDOW_ABOUT_TO_WOUND_GENERIC' };
     }
     const target = findTargetCard(G, event.targetId) as CardState | null;
     const name =
@@ -554,72 +561,105 @@ function aboutToWoundToastMessage(G: GameState): string {
         target?.title ||
         (target as { name?: string } | null)?.name ||
         'Un personnage';
-    const n = event.remaining || 1;
-    return `${name} va prendre ${n} blessure${n > 1 ? 's' : ''}. Jouez une réponse ou passez.`;
+    return {
+        key: 'RESPONSE_WINDOW_ABOUT_TO_WOUND',
+        params: { name, count: event.remaining || 1 },
+    };
 }
 
-function responseWindowMessage(G: GameState): string {
+function responseWindowNotice(G: GameState): {
+    key: StatusKey;
+    params?: StatusParams;
+} {
     if (G.pendingEvent?.type === 'WINS_SKIRMISH') {
-        return 'Un personnage a gagné ce combat. Jouez une réponse ou passez.';
+        return { key: 'RESPONSE_WINDOW_WINS' };
     }
     if (G.pendingEvent?.type === 'LOSES_SKIRMISH') {
-        return 'Un personnage a perdu ce combat. Jouez une réponse ou passez.';
+        return { key: 'RESPONSE_WINDOW_LOSES' };
     }
     if (G.pendingEvent?.type === 'ABOUT_TO_WOUND') {
-        return aboutToWoundToastMessage(G);
+        return aboutToWoundNotice(G);
     }
     if (G.pendingEvent?.type === 'TAKES_WOUND') {
-        return 'Un personnage a pris une blessure. Jouez une réponse ou passez.';
+        return { key: 'RESPONSE_WINDOW_TOOK_WOUND' };
     }
     if (G.pendingEvent?.type === 'CHARACTER_DIES') {
-        return 'Un personnage est mort. Jouez une réponse ou passez.';
+        return { key: 'RESPONSE_WINDOW_DIED' };
     }
     if (G.pendingEvent?.type === 'ABOUT_TO_CANCEL_SKIRMISH') {
-        const n = G.pendingEvent.removeTwilight;
-        return `Une escarmouche va être annulée. Retirez ${n} crépuscule${n > 1 ? 's' : ''} pour empêcher, ou passez.`;
+        return {
+            key: 'RESPONSE_WINDOW_CANCEL_SKIRMISH',
+            params: { count: G.pendingEvent.removeTwilight },
+        };
     }
     if (G.pendingEvent?.type === 'ABOUT_TO_EXHAUST') {
-        const n = G.pendingEvent.addBurdens;
-        return `Un personnage va être épuisé. Ajoutez ${n} fardeau${n > 1 ? 'x' : ''} pour empêcher, ou passez.`;
+        return {
+            key: 'RESPONSE_WINDOW_EXHAUST',
+            params: { count: G.pendingEvent.addBurdens },
+        };
     }
     if (G.pendingEvent?.type === 'ABOUT_TO_FORCE_ASSIGN') {
         if (G.pendingEvent.preventDiscardUnbound) {
-            return 'Un séide va être affecté au Porteur. Défaussez un compagnon dissocié pour empêcher, ou passez.';
+            return { key: 'RESPONSE_WINDOW_FORCE_ASSIGN_UNBOUND' };
         }
-        return 'Un séide va être affecté à un compagnon. Affaiblissez ce compagnon pour empêcher, ou passez.';
+        return { key: 'RESPONSE_WINDOW_FORCE_ASSIGN_EXERT' };
     }
     if (G.pendingEvent?.type === 'ABOUT_TO_ADD_THREATS') {
-        const n = G.pendingEvent.count;
-        return `${n} menace${n > 1 ? 's' : ''} ${n > 1 ? 'vont' : 'va'} être ajoutée${n > 1 ? 's' : ''}. Blessez le Porteur pour empêcher, ou passez.`;
+        return {
+            key: 'RESPONSE_WINDOW_ADD_THREATS',
+            params: { count: G.pendingEvent.count },
+        };
     }
     if (G.pendingEvent?.type === 'ABOUT_TO_ADD_BURDEN') {
-        const n = G.pendingEvent.count;
-        return `${n} point${n > 1 ? 's' : ''}-fardeau ${n > 1 ? 'vont' : 'va'} être ajouté${n > 1 ? 's' : ''}. Jouez une réponse ou passez.`;
+        return {
+            key: 'RESPONSE_WINDOW_ADD_BURDEN',
+            params: { count: G.pendingEvent.count },
+        };
     }
     if (G.pendingEvent?.type === 'ABOUT_TO_DISCARD') {
         const twilight = G.pendingEvent.addTwilight;
         if (typeof twilight === 'number' && twilight > 0) {
-            return `Une carte va être défaussée. Ajoutez ${twilight} crépuscule${twilight > 1 ? 's' : ''} pour empêcher, ou passez.`;
+            return {
+                key: 'RESPONSE_WINDOW_DISCARD_TWILIGHT',
+                params: { count: twilight },
+            };
         }
         const burdens = G.pendingEvent.addBurdens;
         if (typeof burdens === 'number' && burdens > 0) {
-            return `Une carte va être défaussée. Ajoutez ${burdens} fardeau${burdens > 1 ? 'x' : ''} pour empêcher, ou passez.`;
+            return {
+                key: 'RESPONSE_WINDOW_DISCARD_BURDENS',
+                params: { count: burdens },
+            };
         }
-        return 'Une carte va être défaussée. Jouez une réponse ou passez.';
+        return { key: 'RESPONSE_WINDOW_DISCARD' };
     }
     if (G.pendingEvent?.type === 'HEAL') {
-        return 'Un personnage a été soigné. Jouez une réponse ou passez.';
+        return { key: 'RESPONSE_WINDOW_HEALED' };
     }
     if (G.pendingEvent?.type === 'FELLOWSHIP_MOVES') {
-        return 'La compagnie s’est déplacée. Jouez une réponse ou passez.';
+        return { key: 'RESPONSE_WINDOW_MOVED' };
     }
     if (G.pendingEvent?.type === 'PUTS_ON_THE_ONE_RING') {
-        return 'Le Porteur a mis l’Anneau Unique. Jouez une réponse ou passez.';
+        return { key: 'RESPONSE_WINDOW_PUT_ON_RING' };
     }
     if (G.pendingEvent?.type === 'ABOUT_TO_USE_ABILITY') {
-        return 'Une capacité spéciale va se résoudre. Jouez une réponse ou passez.';
+        return { key: 'RESPONSE_ABOUT_TO_USE_ABILITY' };
     }
-    return responseWoundMessage(G);
+    return responseWoundNotice(G);
+}
+
+/** Consigne toaster de la fenêtre (clé + repli FR) — sans écraser le bandeau. */
+function buildResponseWindowPrompt(G: GameState): {
+    message: string;
+    notice: { key: StatusKey; params?: StatusParams };
+} {
+    const notice = responseWindowNotice(G);
+    const message = formatStatusNotice(
+        'fr',
+        notice.key,
+        notice.params || {}
+    );
+    return { message, notice };
 }
 
 function inPlayResponseIsLegal(
@@ -805,16 +845,18 @@ function openResponseWindow(G: GameState): void {
         : shadowId;
 
     const priorUsed = G.responseWindow?.usedResponseKeys || [];
+    const prompt = buildResponseWindowPrompt(G);
     G.responseWindow = {
         isOpen: true,
         activePlayerId,
         title: 'RÉPONSE',
-        message: responseWindowMessage(G),
+        message: prompt.message,
+        notice: prompt.notice,
         canPass: true,
         passesCount: 0,
         usedResponseKeys: priorUsed,
     };
-    setStatus(G, 'RESPONSE_PLAY_OR_PASS');
+    setStatus(G, prompt.notice.key, prompt.notice.params || {});
     clearActionableFlags(G);
 }
 
@@ -1385,11 +1427,13 @@ export function passResponseWindow(
         return concludeOpenResponse(G);
     }
 
+    const prompt = buildResponseWindowPrompt(G);
     G.responseWindow = {
         ...G.responseWindow,
         activePlayerId: other,
         passesCount: currentPasses,
-        message: `Au tour de ${playerDisplayName(G, other)} de répondre ou de passer.`,
+        message: prompt.message,
+        notice: prompt.notice,
     };
     setStatus(G, 'TURN_TO_RESPOND', {
         name: playerDisplayName(G, other),
@@ -1423,11 +1467,13 @@ export function yieldResponsePriorityAfterAction(
     const fpId = G.fpPlayerId || '0';
 
     if (playerHasEligibleResponse(G, other)) {
+        const prompt = buildResponseWindowPrompt(G);
         G.responseWindow = {
             ...G.responseWindow,
             activePlayerId: other,
             passesCount: 0,
-            message: `Au tour de ${playerDisplayName(G, other)} de répondre ou de passer.`,
+            message: prompt.message,
+            notice: prompt.notice,
         };
         setStatus(G, 'TURN_TO_RESPOND', {
             name: playerDisplayName(G, other),
@@ -1437,11 +1483,13 @@ export function yieldResponsePriorityAfterAction(
     }
 
     if (playerHasEligibleResponse(G, pid)) {
+        const prompt = buildResponseWindowPrompt(G);
         G.responseWindow = {
             ...G.responseWindow,
             activePlayerId: pid,
             passesCount: 1,
-            message: responseWindowMessage(G),
+            message: prompt.message,
+            notice: prompt.notice,
         };
         setStatus(
             G,
