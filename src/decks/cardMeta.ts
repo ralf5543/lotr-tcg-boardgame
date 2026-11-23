@@ -1,6 +1,10 @@
 import { CARDS_DATABASE, getCardById } from '../game/cardsData';
 import { TRANSLATIONS } from '../game/translations';
 import type { CardState } from '../game/types';
+import { getCardChrome } from '../i18n/cardChrome';
+import type { SupportedLanguage } from '../i18n/languages';
+import { localizeGameTerms } from '../i18n/terms';
+import { DECK_BUILDER_MESSAGES } from '../i18n/ui/deckBuilder';
 import { isLegalRingBearer, isOneRing } from './validateDeck';
 import { isStandardSiteSet } from './formatRules';
 
@@ -75,52 +79,42 @@ export const CATALOG_CAMP_OPTIONS: { value: CatalogCamp; label: string }[] = [
 
 export function labelForFilterValue(
     key: CatalogFilterKey,
-    value: string
+    value: string,
+    lang: SupportedLanguage = 'fr'
 ): string {
+    const chrome = getCardChrome(lang);
+    const db = DECK_BUILDER_MESSAGES[lang];
     if (key === 'camp') {
-        return (
-            CATALOG_CAMP_OPTIONS.find((o) => o.value === value)?.label || value
-        );
+        return db.camp[value as CatalogCamp] || value;
     }
     if (key === 'type') {
-        if (value === 'SITE') return 'Site';
-        if (value === 'RING') return 'Anneau';
-        return TRANSLATIONS.type[value as keyof typeof TRANSLATIONS.type] || value;
+        return chrome.type(value) || value;
     }
     if (key === 'culture') {
-        return (
-            TRANSLATIONS.culture[value as keyof typeof TRANSLATIONS.culture] ||
-            value
-        );
+        return chrome.culture(value) || value;
     }
     if (key === 'race') {
-        return TRANSLATIONS.race[value as keyof typeof TRANSLATIONS.race] || value;
+        return chrome.race(value) || value;
     }
     if (key === 'subtype') {
-        return TRANSLATIONS.subtype[value] || value;
+        return chrome.subtype(value) || value;
     }
     if (key === 'keyword') {
-        const kw = TRANSLATIONS.keyword[value as keyof typeof TRANSLATIONS.keyword];
-        return (kw && 'label' in kw ? kw.label : value) || value;
+        const kw =
+            TRANSLATIONS.keyword[
+                value as keyof typeof TRANSLATIONS.keyword
+            ];
+        const frLabel = (kw && 'label' in kw ? kw.label : value) || value;
+        return localizeGameTerms(frLabel, lang);
     }
     return value;
 }
 
-export function filterDimensionLabel(key: CatalogFilterKey): string {
-    switch (key) {
-        case 'camp':
-            return 'Camp';
-        case 'type':
-            return 'Type';
-        case 'culture':
-            return 'Culture';
-        case 'race':
-            return 'Race';
-        case 'subtype':
-            return 'Sous-type';
-        case 'keyword':
-            return 'Mot-clé';
-    }
+export function filterDimensionLabel(
+    key: CatalogFilterKey,
+    lang: SupportedLanguage = 'fr'
+): string {
+    return DECK_BUILDER_MESSAGES[lang].filterDim[key];
 }
 
 function matchesCamp(card: CardState, camp: CatalogCamp): boolean {
@@ -177,7 +171,10 @@ export function catalogCards(opts: {
 }
 
 /** Valeurs distinctes présentes dans la base (pour peupler les listes). */
-export function collectFilterOptions(key: CatalogFilterKey): string[] {
+export function collectFilterOptions(
+    key: CatalogFilterKey,
+    lang: SupportedLanguage = 'fr'
+): string[] {
     const set = new Set<string>();
     for (const card of CARDS_DATABASE) {
         if (key === 'camp') continue;
@@ -195,9 +192,9 @@ export function collectFilterOptions(key: CatalogFilterKey): string[] {
         }
     }
     return [...set].sort((a, b) =>
-        labelForFilterValue(key, a).localeCompare(
-            labelForFilterValue(key, b),
-            'fr'
+        labelForFilterValue(key, a, lang).localeCompare(
+            labelForFilterValue(key, b, lang),
+            lang
         )
     );
 }

@@ -38,7 +38,7 @@ import { Card } from '../GameBoard/components/Card';
 import { SiteCard } from '../GameBoard/components/SiteCard';
 import * as S from './styles';
 import { useUiMessages } from '../../i18n/ui/useUiMessages';
-import { localizeGameTerms } from '../../i18n/terms';
+import { formatDeckIssue } from '../../i18n/ui/deckValidation';
 
 function goToBoard(matchId?: string) {
     const url = new URL(window.location.href);
@@ -285,11 +285,11 @@ export const DeckBuilder: React.FC = () => {
         id: `${key}:${value}`,
         key,
         value,
-        label: `${db.filterDim[key]} : ${
-            key === 'camp'
-                ? db.camp[value as CatalogCamp]
-                : labelForFilterValue(key, value)
-        }`,
+        label: `${db.filterDim[key]} : ${labelForFilterValue(
+            key,
+            value,
+            uiLanguage
+        )}`,
     });
     const [decks, setDecks] = useState<DeckConfig[]>([]);
     const [selectedId, setSelectedId] = useState('');
@@ -317,14 +317,14 @@ export const DeckBuilder: React.FC = () => {
         setFilters((prev) =>
             prev.map((f) => ({
                 ...f,
-                label: `${db.filterDim[f.key]} : ${
-                    f.key === 'camp'
-                        ? db.camp[f.value as CatalogCamp]
-                        : labelForFilterValue(f.key, f.value)
-                }`,
+                label: `${db.filterDim[f.key]} : ${labelForFilterValue(
+                    f.key,
+                    f.value,
+                    uiLanguage
+                )}`,
             }))
         );
-    }, [db]);
+    }, [db, uiLanguage]);
 
     const refreshSeatDecks = () => setSeatDecks(getSelectedDeckIds());
 
@@ -404,8 +404,8 @@ export const DeckBuilder: React.FC = () => {
         if (filterDim === 'camp') {
             return CATALOG_CAMP_OPTIONS.map((o) => o.value);
         }
-        return collectFilterOptions(filterDim);
-    }, [filterDim]);
+        return collectFilterOptions(filterDim, uiLanguage);
+    }, [filterDim, uiLanguage]);
 
     // Pas de useMemo sur `draft` entier : le Porteur change le coût Halbarad
     // et la validité ; on recalcule à chaque rendu sur les champs utiles.
@@ -1085,13 +1085,11 @@ export const DeckBuilder: React.FC = () => {
                             <option value="">{db.addFilter}</option>
                             {valueOptions.map((value) => (
                                 <option key={value} value={value}>
-                                    {filterDim === 'camp'
-                                        ? db.camp[value as CatalogCamp] ||
-                                          value
-                                        : labelForFilterValue(
-                                              filterDim,
-                                              value
-                                          )}
+                                    {labelForFilterValue(
+                                        filterDim,
+                                        value,
+                                        uiLanguage
+                                    )}
                                 </option>
                             ))}
                         </S.Select>
@@ -1152,18 +1150,12 @@ export const DeckBuilder: React.FC = () => {
                                         key={e.code + e.message}
                                         $error
                                     >
-                                        {localizeGameTerms(
-                                            e.message,
-                                            uiLanguage
-                                        )}
+                                        {formatDeckIssue(uiLanguage, e)}
                                     </S.IssueLine>
                                 ))}
                                 {validation.warnings.map((w) => (
                                     <S.IssueLine key={w.code + w.message}>
-                                        {localizeGameTerms(
-                                            w.message,
-                                            uiLanguage
-                                        )}
+                                        {formatDeckIssue(uiLanguage, w)}
                                     </S.IssueLine>
                                 ))}
                             </S.IssuesToaster>

@@ -15,7 +15,9 @@ export type DeckIssueSeverity = 'error' | 'warning';
 export interface DeckIssue {
     code: string;
     severity: DeckIssueSeverity;
+    /** Repli FR (tests / journal). L’UI préfère `formatDeckIssue` + `params`. */
     message: string;
+    params?: Record<string, string | number | boolean | null | undefined>;
 }
 
 export interface DeckValidationResult {

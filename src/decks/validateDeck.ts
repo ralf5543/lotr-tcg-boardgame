@@ -1,5 +1,6 @@
 import { getCardById } from '../game/cardsData';
 import type { CardState } from '../game/types';
+import type { DeckWhereKey } from '../i18n/ui/deckValidation';
 import {
     isOnXList,
     isStandardSiteSet,
@@ -19,9 +20,10 @@ function isSiteCard(card: CardState): boolean {
 function issue(
     code: string,
     message: string,
-    severity: DeckIssue['severity'] = 'error'
+    severity: DeckIssue['severity'] = 'error',
+    params?: DeckIssue['params']
 ): DeckIssue {
-    return { code, severity, message };
+    return { code, severity, message, params };
 }
 
 function cardTitle(card: CardState): string {
@@ -100,11 +102,16 @@ function pushForbiddenCard(
     errors: DeckIssue[],
     id: string,
     card: CardState | undefined,
-    where: string
+    where: DeckWhereKey
 ): void {
     if (!card) {
         errors.push(
-            issue('UNKNOWN_CARD', `Carte introuvable : ${id} (${where}).`)
+            issue(
+                'UNKNOWN_CARD',
+                `Carte introuvable : ${id} (${where}).`,
+                'error',
+                { id, where }
+            )
         );
         return;
     }
@@ -112,7 +119,9 @@ function pushForbiddenCard(
         errors.push(
             issue(
                 'X_LIST',
-                `${cardTitle(card)} (${id}) est sur la liste X (${where}).`
+                `${cardTitle(card)} (${id}) est sur la liste X (${where}).`,
+                'error',
+                { title: cardTitle(card), id, where }
             )
         );
     }
@@ -131,7 +140,7 @@ export function validateDeck(config: DeckConfig): DeckValidationResult {
     }
 
     const rb = resolveCard(config.ringBearerId);
-    pushForbiddenCard(errors, config.ringBearerId, rb, 'Porteur');
+    pushForbiddenCard(errors, config.ringBearerId, rb, 'ringBearer');
     if (!isLegalRingBearer(rb)) {
         errors.push(
             issue(
@@ -142,10 +151,13 @@ export function validateDeck(config: DeckConfig): DeckValidationResult {
     }
 
     const ring = resolveCard(config.oneRingId);
-    pushForbiddenCard(errors, config.oneRingId, ring, 'Anneau');
+    pushForbiddenCard(errors, config.oneRingId, ring, 'oneRing');
     if (!isOneRing(ring)) {
         errors.push(
-            issue('ONE_RING', 'L’Anneau Unique doit être une carte de type Anneau.')
+            issue(
+                'ONE_RING',
+                'L’Anneau Unique doit être une carte de type Anneau.'
+            )
         );
     }
 
@@ -154,13 +166,15 @@ export function validateDeck(config: DeckConfig): DeckValidationResult {
     const startingIds = config.startingCompanionIds || [];
     for (const id of startingIds) {
         const card = resolveCard(id);
-        pushForbiddenCard(errors, id, card, 'compagnie de départ');
+        pushForbiddenCard(errors, id, card, 'starting');
         if (!card) continue;
         if (card.type !== 'COMPANION') {
             errors.push(
                 issue(
                     'STARTING_TYPE',
-                    `${cardTitle(card)} n’est pas un compagnon (compagnie de départ).`
+                    `${cardTitle(card)} n’est pas un compagnon (compagnie de départ).`,
+                    'error',
+                    { title: cardTitle(card) }
                 )
             );
             continue;
@@ -174,7 +188,12 @@ export function validateDeck(config: DeckConfig): DeckValidationResult {
         errors.push(
             issue(
                 'STARTING_COST',
-                `Coût de la compagnie de départ : ${startingCost} (max ${STARTING_FELLOWSHIP_TWILIGHT_CAP}).`
+                `Coût de la compagnie de départ : ${startingCost} (max ${STARTING_FELLOWSHIP_TWILIGHT_CAP}).`,
+                'error',
+                {
+                    cost: startingCost,
+                    max: STARTING_FELLOWSHIP_TWILIGHT_CAP,
+                }
             )
         );
     }
@@ -184,16 +203,26 @@ export function validateDeck(config: DeckConfig): DeckValidationResult {
 
     for (const id of freePeople) {
         const card = resolveCard(id);
-        pushForbiddenCard(errors, id, card, 'pioche Peuples Libres');
+        pushForbiddenCard(errors, id, card, 'fpDraw');
         if (!card) continue;
         if (isSiteCard(card)) {
             errors.push(
-                issue('FP_SITE', `Site interdit dans la pioche : ${id}.`)
+                issue(
+                    'FP_SITE',
+                    `Site interdit dans la pioche : ${id}.`,
+                    'error',
+                    { id }
+                )
             );
         }
         if (card.type === 'RING') {
             errors.push(
-                issue('FP_RING', `Anneau interdit dans la pioche : ${id}.`)
+                issue(
+                    'FP_RING',
+                    `Anneau interdit dans la pioche : ${id}.`,
+                    'error',
+                    { id }
+                )
             );
         }
         if (card.kind === 'SHADOW') {
@@ -202,7 +231,8 @@ export function validateDeck(config: DeckConfig): DeckValidationResult {
                 issue(
                     'FP_KIND',
                     `${cardTitle(card)} est marquée Ombre (pioche Peuples Libres).`,
-                    'warning'
+                    'warning',
+                    { title: cardTitle(card) }
                 )
             );
         }
@@ -210,16 +240,26 @@ export function validateDeck(config: DeckConfig): DeckValidationResult {
 
     for (const id of shadow) {
         const card = resolveCard(id);
-        pushForbiddenCard(errors, id, card, 'pioche Ombre');
+        pushForbiddenCard(errors, id, card, 'shadowDraw');
         if (!card) continue;
         if (isSiteCard(card)) {
             errors.push(
-                issue('SHADOW_SITE', `Site interdit dans la pioche : ${id}.`)
+                issue(
+                    'SHADOW_SITE',
+                    `Site interdit dans la pioche : ${id}.`,
+                    'error',
+                    { id }
+                )
             );
         }
         if (card.type === 'RING') {
             errors.push(
-                issue('SHADOW_RING', `Anneau interdit dans la pioche : ${id}.`)
+                issue(
+                    'SHADOW_RING',
+                    `Anneau interdit dans la pioche : ${id}.`,
+                    'error',
+                    { id }
+                )
             );
         }
         if (card.kind === 'FREE_PEOPLE') {
@@ -227,7 +267,8 @@ export function validateDeck(config: DeckConfig): DeckValidationResult {
                 issue(
                     'SHADOW_KIND',
                     `${cardTitle(card)} est marquée Peuples Libres (pioche Ombre).`,
-                    'warning'
+                    'warning',
+                    { title: cardTitle(card) }
                 )
             );
         }
@@ -239,7 +280,14 @@ export function validateDeck(config: DeckConfig): DeckValidationResult {
         errors.push(
             issue(
                 'BALANCE',
-                `Peuples Libres (${fpCount} = pioche ${freePeople.length} + départ ${startingIds.length}) ≠ Ombre (${shadowCount}).`
+                `Peuples Libres (${fpCount} = pioche ${freePeople.length} + départ ${startingIds.length}) ≠ Ombre (${shadowCount}).`,
+                'error',
+                {
+                    fp: fpCount,
+                    fpDraw: freePeople.length,
+                    starting: startingIds.length,
+                    shadow: shadowCount,
+                }
             )
         );
     }
@@ -248,7 +296,9 @@ export function validateDeck(config: DeckConfig): DeckValidationResult {
         errors.push(
             issue(
                 'SIZE',
-                `Pioche trop petite : ${drawSize} cartes (min ${MIN_DRAW_DECK_SIZE}, départ inclus).`
+                `Pioche trop petite : ${drawSize} cartes (min ${MIN_DRAW_DECK_SIZE}, départ inclus).`,
+                'error',
+                { n: drawSize, min: MIN_DRAW_DECK_SIZE }
             )
         );
     }
@@ -271,7 +321,9 @@ export function validateDeck(config: DeckConfig): DeckValidationResult {
             errors.push(
                 issue(
                     'COPIES',
-                    `Trop de copies de « ${title} » : ${count} (max ${max}).`
+                    `Trop de copies de « ${title} » : ${count} (max ${max}).`,
+                    'error',
+                    { title, count, max }
                 )
             );
         }
@@ -283,7 +335,9 @@ export function validateDeck(config: DeckConfig): DeckValidationResult {
         errors.push(
             issue(
                 'SITE_COUNT',
-                `Le paquet d’aventure doit avoir 9 sites (actuellement ${siteIds.length}).`
+                `Le paquet d’aventure doit avoir 9 sites (actuellement ${siteIds.length}).`,
+                'error',
+                { n: siteIds.length }
             )
         );
     }
@@ -291,21 +345,31 @@ export function validateDeck(config: DeckConfig): DeckValidationResult {
     const twilightCounts = new Map<number, number>();
     for (const id of siteIds) {
         if (seenSites.has(id.toLowerCase())) {
-            errors.push(issue('SITE_DUP', `Site en double : ${id}.`));
+            errors.push(
+                issue('SITE_DUP', `Site en double : ${id}.`, 'error', {
+                    id,
+                })
+            );
         }
         seenSites.add(id.toLowerCase());
         const card = resolveCard(id);
-        pushForbiddenCard(errors, id, card, "paquet d'aventure");
+        pushForbiddenCard(errors, id, card, 'adventure');
         if (!card) continue;
         if (!isSiteCard(card)) {
-            errors.push(issue('SITE_TYPE', `${id} n’est pas un site.`));
+            errors.push(
+                issue('SITE_TYPE', `${id} n’est pas un site.`, 'error', {
+                    id,
+                })
+            );
             continue;
         }
         if (!isStandardSiteSet(Number(card.set) || 0)) {
             errors.push(
                 issue(
                     'SITE_SET',
-                    `${cardTitle(card)} (${id}) : sites sets 11–18 uniquement.`
+                    `${cardTitle(card)} (${id}) : sites sets 11–18 uniquement.`,
+                    'error',
+                    { title: cardTitle(card), id }
                 )
             );
         }
@@ -317,7 +381,13 @@ export function validateDeck(config: DeckConfig): DeckValidationResult {
             errors.push(
                 issue(
                     'SITE_TWILIGHT',
-                    `${count} sites à crépuscule ${tw} (max ${MAX_SITES_SAME_TWILIGHT}).`
+                    `${count} sites à crépuscule ${tw} (max ${MAX_SITES_SAME_TWILIGHT}).`,
+                    'error',
+                    {
+                        count,
+                        tw,
+                        max: MAX_SITES_SAME_TWILIGHT,
+                    }
                 )
             );
         }
