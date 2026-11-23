@@ -19,13 +19,13 @@ describe('validateDeck', () => {
         expect(result.ok).toBe(true);
     });
 
-    it('Fumeurs : déséquilibre FP/Ombre signalé', () => {
+    it('Fumeurs : deck jouable (FP = Ombre)', () => {
         const result = validateDeck({
             ...(fumeurs as DeckConfig),
             id: 'test-fumeurs',
         });
-        expect(result.ok).toBe(false);
-        expect(result.errors.some((e) => e.code === 'BALANCE')).toBe(true);
+        expect(result.errors.filter((e) => e.code === 'BALANCE')).toEqual([]);
+        expect(result.ok).toBe(true);
     });
 
     it('plafond compagnie de départ (réductions SF)', () => {
