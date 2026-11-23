@@ -31,6 +31,20 @@ type TermPair = { fr: RegExp; en: string; de: string; it: string; es: string };
 /** Termes de règles fréquents dans les consignes encore en FR brut. */
 const TERM_TABLE: TermPair[] = [
     {
+        fr: /Choisissez/g,
+        en: 'Choose',
+        de: 'Wähle',
+        it: 'Scegli',
+        es: 'Elige',
+    },
+    {
+        fr: /choisissez/g,
+        en: 'choose',
+        de: 'wähle',
+        it: 'scegli',
+        es: 'elige',
+    },
+    {
         fr: /points-fardeau/gi,
         en: 'burdens',
         de: 'Lastmarken',

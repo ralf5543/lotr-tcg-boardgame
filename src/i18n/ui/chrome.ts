@@ -209,6 +209,12 @@ export type ChromeMessages = {
         revealedCards: string;
         opponentHandRevealed: string;
     };
+    dormantFellowship: {
+        banner: (n: number) => string;
+        collapse: string;
+        expand: string;
+        empty: string;
+    };
     gameEnd: {
         youWin: string;
         namedWins: (name: string) => string;
@@ -457,6 +463,13 @@ const fr: ChromeMessages = {
         revealedCards: 'Cartes révélées',
         opponentHandRevealed: 'Main adverse révélée',
     },
+    dormantFellowship: {
+        banner: (n) =>
+            `🛡️ Compagnie en sommeil (${n} compagnon${n > 1 ? 's' : ''})`,
+        collapse: 'Cliquez pour réduire 🔼',
+        expand: 'Cliquez pour inspecter 🔽',
+        empty: 'Aucun compagnon.',
+    },
     gameEnd: {
         youWin: 'Vous remportez la partie',
         namedWins: (name) => `${name} remporte la partie`,
@@ -702,6 +715,13 @@ const en: ChromeMessages = {
         yourDiscard: 'Your discard',
         revealedCards: 'Revealed cards',
         opponentHandRevealed: 'Opponent hand revealed',
+    },
+    dormantFellowship: {
+        banner: (n) =>
+            `🛡️ Fellowship at rest (${n} companion${n > 1 ? 's' : ''})`,
+        collapse: 'Click to collapse 🔼',
+        expand: 'Click to inspect 🔽',
+        empty: 'No companions.',
     },
     gameEnd: {
         youWin: 'You win the game',
@@ -950,6 +970,13 @@ const de: ChromeMessages = {
         yourDiscard: 'Dein Ablagestapel',
         revealedCards: 'Aufgedeckte Karten',
         opponentHandRevealed: 'Gegnerische Hand aufgedeckt',
+    },
+    dormantFellowship: {
+        banner: (n) =>
+            `🛡️ Gemeinschaft ruht (${n} Gefährte${n > 1 ? 'n' : ''})`,
+        collapse: 'Klicken zum Einklappen 🔼',
+        expand: 'Klicken zum Ansehen 🔽',
+        empty: 'Keine Gefährten.',
     },
     gameEnd: {
         youWin: 'Du gewinnst das Spiel',
@@ -1202,6 +1229,13 @@ const it: ChromeMessages = {
         revealedCards: 'Carte rivelate',
         opponentHandRevealed: 'Mano avversaria rivelata',
     },
+    dormantFellowship: {
+        banner: (n) =>
+            `🛡️ Compagnia a riposo (${n} compagn${n > 1 ? 'i' : 'o'})`,
+        collapse: 'Clicca per ridurre 🔼',
+        expand: 'Clicca per ispezionare 🔽',
+        empty: 'Nessun compagno.',
+    },
     gameEnd: {
         youWin: 'Hai vinto la partita',
         namedWins: (name) => `${name} vince la partita`,
@@ -1452,6 +1486,13 @@ const es: ChromeMessages = {
         yourDiscard: 'Tu descarte',
         revealedCards: 'Cartas reveladas',
         opponentHandRevealed: 'Mano rival revelada',
+    },
+    dormantFellowship: {
+        banner: (n) =>
+            `🛡️ Compañía en reposo (${n} compañero${n > 1 ? 's' : ''})`,
+        collapse: 'Haz clic para reducir 🔼',
+        expand: 'Haz clic para inspeccionar 🔽',
+        empty: 'Ningún compañero.',
     },
     gameEnd: {
         youWin: 'Ganas la partida',

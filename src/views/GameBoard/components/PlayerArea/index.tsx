@@ -14,6 +14,7 @@ import { groupSupportAreaForDisplay } from '../../../../game/logic/supportAreaSt
 import { useFaction } from '../../../../contexts/FactionContext';
 import { audioService } from '../../../../services/audioService';
 import { AssignedMinionsTrackContext } from './AssignedMinionsTrackContext';
+import { useUiMessages } from '../../../../i18n/ui/useUiMessages';
 
 interface SkirmishEntry {
     id?: string;
@@ -64,6 +65,7 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
     onActivateAbility,
 }) => {
     const { activeTargetId, registerTarget, startDrag, dragged } = useDrag();
+    const dormant = useUiMessages().chrome.dormantFellowship;
     const [isDormantExpanded, setIsDormantExpanded] = useState(false);
 
     // Identification des rôles : Seul le joueur Peuples Libres a sa Compagnie active
@@ -140,15 +142,11 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
                     $isOpponent={isOpponent}
                     onClick={() => setIsDormantExpanded(!isDormantExpanded)}
                 >
-                    <span>
-                        🛡️ Compagnie en sommeil ({fellowshipArea.length}{' '}
-                        compagnon
-                        {fellowshipArea.length > 1 ? 's' : ''})
-                    </span>
+                    <span>{dormant.banner(fellowshipArea.length)}</span>
                     <S.ExpandHint>
                         {isDormantExpanded
-                            ? 'Cliquez pour réduire 🔼'
-                            : 'Cliquez pour inspecter 🔽'}
+                            ? dormant.collapse
+                            : dormant.expand}
                     </S.ExpandHint>
 
                     {isDormantExpanded && (
@@ -159,7 +157,7 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
                             <S.CardScroller>
                             <S.CardRow $isOpponent={isOpponent}>
                                 {fellowshipArea.length === 0 && (
-                                    <S.EmptyText>Aucun compagnon.</S.EmptyText>
+                                    <S.EmptyText>{dormant.empty}</S.EmptyText>
                                 )}
                                 {fellowshipArea.map(
                                     (companion, companionIdx) => (

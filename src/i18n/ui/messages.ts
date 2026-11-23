@@ -1,9 +1,14 @@
 import type { SupportedLanguage } from '../languages';
 import { CHROME_MESSAGES, type ChromeMessages } from './chrome';
+import {
+    TARGETING_MESSAGES,
+    type TargetingMessages,
+} from './targeting';
 
 /** Chaînes d’interface (chrome). Les consignes moteur arriveront plus tard. */
 export type UiMessages = {
     chrome: ChromeMessages;
+    targeting: TargetingMessages;
     options: {
         title: string;
         close: string;
@@ -63,7 +68,7 @@ export type UiMessages = {
     };
 };
 
-type UiBase = Omit<UiMessages, 'chrome'>;
+type UiBase = Omit<UiMessages, 'chrome' | 'targeting'>;
 
 const fr: UiBase = {
     options: {
@@ -372,9 +377,13 @@ const es: UiBase = {
 
 function withChrome(
     lang: SupportedLanguage,
-    base: Omit<UiMessages, 'chrome'>
+    base: Omit<UiMessages, 'chrome' | 'targeting'>
 ): UiMessages {
-    return { ...base, chrome: CHROME_MESSAGES[lang] };
+    return {
+        ...base,
+        chrome: CHROME_MESSAGES[lang],
+        targeting: TARGETING_MESSAGES[lang],
+    };
 }
 
 export const UI_MESSAGES: Record<SupportedLanguage, UiMessages> = {

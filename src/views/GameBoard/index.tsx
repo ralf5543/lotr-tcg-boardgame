@@ -22,6 +22,8 @@ import { OptionsModal } from './components/OptionsModal';
 import { SitesPicker } from './components/SitePicker';
 import { GameControls } from './components/GameControls';
 import { useUiMessages } from '../../i18n/ui/useUiMessages';
+import { usePreferencesOptional } from '../../contexts/PreferencesContext';
+import { localizeGameTerms } from '../../i18n/terms';
 import {
     canAttachToCharacter,
     attachesToSite,
@@ -247,6 +249,8 @@ const PendingPlayOnDrag: React.FC<{
     moves: GameBoardProps['moves'];
 }> = ({ G, myId, phase, moves }) => {
     const { dragged, isOverHandCancel } = useDrag();
+    const tg = useUiMessages().targeting;
+    const uiLanguage = usePreferencesOptional()?.uiLanguage ?? 'fr';
 
     useEffect(() => {
         if (
@@ -269,11 +273,14 @@ const PendingPlayOnDrag: React.FC<{
                 dragged.index,
                 ability
                     ? abilityNeedsSiteExchange(ability)
-                        ? 'Choisissez un de vos sites du chemin à échanger.'
+                        ? tg.exchangePathSite
                         : abilityReplaceSiteEffect(ability)?.scope === 'REGION'
-                          ? 'Choisissez un site de la région actuelle à remplacer.'
-                          : formatDesignationPrompt(ability)
-                    : 'Choisissez une cible.'
+                          ? tg.replaceRegionSite
+                          : localizeGameTerms(
+                                formatDesignationPrompt(ability),
+                                uiLanguage
+                            )
+                    : tg.chooseTarget
             );
             return;
         }
@@ -286,6 +293,8 @@ const PendingPlayOnDrag: React.FC<{
         myId,
         moves,
         phase,
+        tg,
+        uiLanguage,
     ]);
 
     return null;
@@ -312,6 +321,8 @@ export const GameBoard: React.FC<GameBoardProps> = ({
     useSkirmishAudio(G, ctx.phase);
     useSiteControlAudio(G);
     const ui = useUiMessages();
+    const tg = ui.targeting;
+    const uiLanguage = usePreferencesOptional()?.uiLanguage ?? 'fr';
     const myId = playerID || ctx.currentPlayer;
     const oppId = myId === '0' ? '1' : '0';
     const {
@@ -364,7 +375,10 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                         )
                       : getDesignationCandidates(G, source, ability);
             if (candidates.length === 0) return false;
-            const prompt = formatDesignationPrompt(ability, which);
+            const prompt = localizeGameTerms(
+                formatDesignationPrompt(ability, which),
+                uiLanguage
+            );
             if (source.type === 'EVENT' && typeof handIndex === 'number') {
                 moves.beginPendingPlay?.(handIndex, prompt);
             }
@@ -507,7 +521,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                 startTargeting({
                     kind: 'DESIGNATION',
                     targetableCardIds: hosts.flatMap(cardTargetIds),
-                    message: 'Choisissez le porteur de cette carte.',
+                    message: tg.chooseBearer,
                     onSelectTarget: (hostId) => commit(hostId),
                 });
                 return;
@@ -558,12 +572,12 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                     [site.instanceId, site.id].filter(Boolean)
                 ),
                 message: terrain
-                    ? `Choisissez un site ${terrain} dans votre deck d’aventure.`
+                    ? tg.chooseAdventureSiteTerrain(terrain)
                     : abilityNeedsSiteExchange(ability)
-                      ? 'Choisissez un site de votre deck d’aventure à échanger.'
+                      ? tg.chooseAdventureSiteExchange
                       : isPlayNext
-                        ? 'Choisissez le prochain site dans votre deck d’aventure.'
-                        : 'Choisissez un site dans votre deck d’aventure.',
+                        ? tg.chooseNextAdventureSite
+                        : tg.chooseAdventureSite,
                 onSelectTarget: (siteId) => {
                     onChosen(siteId);
                     stopTargeting();
@@ -614,8 +628,8 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                     [site.instanceId, site.id].filter(Boolean)
                 ),
                 message: isExchange
-                    ? 'Choisissez un de vos sites du chemin à échanger.'
-                    : 'Choisissez un site de la région actuelle à remplacer.',
+                    ? tg.exchangePathSite
+                    : tg.replaceRegionSite,
                 onSelectTarget: (pathSiteId) => {
                     const pathSite = pathSites.find(
                         ({ site }) =>
@@ -656,8 +670,8 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                     [site.instanceId, site.id].filter(Boolean)
                 ),
                 message: stacksOther
-                    ? 'Choisissez un site que vous contrôlez pour y empiler le séide choisi.'
-                    : 'Choisissez un site que vous contrôlez pour y empiler ce séide.',
+                    ? tg.stackChosenMinionOnControlled
+                    : tg.stackMinionOnControlled,
                 arrowFromCardId: source.instanceId || source.id,
                 onSelectTarget: (siteId) => {
                     onChosen(siteId);
@@ -762,16 +776,14 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                     selectedCardIds: picked,
                     upTo,
                     onConfirm: upTo ? commit : undefined,
-                    confirmLabel: upTo ? 'Valider la défausse' : undefined,
+                    confirmLabel: upTo ? tg.validateDiscard : undefined,
                     message: upTo
                         ? picked.length === 0
-                            ? `Défaussez jusqu’à ${need} carte${need > 1 ? 's' : ''} de votre main.`
-                            : picked.length >= need
-                              ? `${picked.length}/${need} — validez pour défausser.`
-                              : `${picked.length}/${need} choisie${picked.length > 1 ? 's' : ''}. Validez ou cliquez encore.`
+                            ? tg.discardHandUpTo(need)
+                            : tg.discardHandProgress(picked.length, need)
                         : remaining === need
-                          ? `Défaussez ${need} carte${need > 1 ? 's' : ''} de votre main.`
-                          : `Encore ${remaining} carte${remaining > 1 ? 's' : ''}.`,
+                          ? tg.discardHandExact(need)
+                          : tg.discardHandRemaining(remaining),
                     onSelectTarget: (cardId) => {
                         const card = hand.find(
                             (item) =>
@@ -867,11 +879,11 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                     selectedCardIds: picked,
                     message: onePerCulture
                         ? picked.length === 0
-                            ? `Choisissez un compagnon blessé de chaque culture (${need}).`
-                            : `Encore ${remaining} culture${remaining > 1 ? 's' : ''} (${picked.length}/${need}).`
+                            ? tg.chooseWoundedPerCulture(need)
+                            : tg.cultureProgress(remaining, picked.length, need)
                         : picked.length === 0
-                          ? `Choisissez ${need} ${multiNoun}.`
-                          : `Encore ${remaining} (${picked.length}/${need}).`,
+                          ? tg.chooseMulti(need, multiNoun)
+                          : tg.multiProgress(remaining, picked.length, need),
                     onSelectTarget: (cardId) => {
                         const card = allCandidates.find(
                             (item) =>
@@ -939,11 +951,11 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                     selectedCardIds: picked,
                     upTo: true,
                     onConfirm: commit,
-                    confirmLabel: 'Valider l’éreintement',
+                    confirmLabel: tg.validateToil,
                     message:
                         picked.length === 0
-                            ? `Éreintement ${amount} : affaiblissez des personnages de la même culture (−${amount} crépuscule chacun). Coût actuel ${baseCost}. Validez pour continuer (ou sans affaiblir).`
-                            : `${picked.length} affaibli${picked.length > 1 ? 's' : ''} → coût ${reduced} (base ${baseCost}). Validez ou continuez.`,
+                            ? tg.toilPrompt(amount, baseCost)
+                            : tg.toilProgress(picked.length, reduced, baseCost),
                     onSelectTarget: (cardId) => {
                         const match = candidates.find(
                             (item) =>
@@ -993,8 +1005,11 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                     selectedCardIds: picked,
                     message:
                         picked.length === 0
-                            ? formatDesignationPrompt(ability, 'cost')
-                            : `Encore ${remaining} (${picked.length}/${need}).`,
+                            ? localizeGameTerms(
+                                  formatDesignationPrompt(ability, 'cost'),
+                                  uiLanguage
+                              )
+                            : tg.multiProgress(remaining, picked.length, need),
                     onSelectTarget: (cardId) => {
                         const card = allCandidates.find(
                             (item) =>
@@ -1269,8 +1284,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                 pendingCard: source,
                 abilityId,
                 discardedHandIds,
-                message:
-                    'Glissez un séide empilé vers le champ, ou ouvrez ×N pour choisir dans la grille.',
+                message: tg.stackPlayHint,
                 onSelectTarget: (stackedId) => {
                     const stackedCard = findTargetCard(
                         G,
@@ -1375,10 +1389,10 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                         selectableCardIds: selectable.flatMap(cardTargetIds),
                         deck: [],
                         discard: [...discard],
-                        title: 'Défausse',
+                        title: tg.discardPileTitle,
                         subtitle: take
-                            ? 'Choisissez une carte à prendre dans votre main.'
-                            : 'Choisissez une carte à placer sur le dessus de votre pioche.',
+                            ? tg.chooseTakeToHand
+                            : tg.choosePutOnDeck,
                     });
                 };
                 if (needsCost && !chosenTargetId) {
@@ -1460,20 +1474,20 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                                 : undefined,
                         title:
                             from === 'DEAD_PILE'
-                                ? 'Pile de mort'
+                                ? tg.deadPileTitle
                                 : from === 'DECK'
-                                  ? 'Pioche'
+                                  ? tg.drawDeckTitle
                                   : from === 'DISCARD'
-                                    ? 'Défausse'
-                                    : 'Pioche ou défausse',
+                                    ? tg.discardPileTitle
+                                    : tg.deckOrDiscardTitle,
                         subtitle:
                             from === 'DEAD_PILE'
-                                ? 'Choisissez un personnage à jouer depuis votre pile de mort.'
+                                ? tg.chooseDeadPileCharacter
                                 : from === 'DISCARD'
-                                  ? 'Choisissez une carte jouable dans votre défausse.'
+                                  ? tg.choosePlayableDiscard
                                   : from === 'DECK'
-                                    ? 'Choisissez une carte jouable dans votre pioche.'
-                                    : 'Choisissez une carte jouable dans votre pioche ou votre défausse.',
+                                    ? tg.choosePlayableDeck
+                                    : tg.choosePlayableDeckOrDiscardFull,
                     });
                     queueMicrotask(() => {
                         siteStartBridgeRef.current = false;
@@ -1702,7 +1716,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                 startTargeting({
                     kind: 'DESIGNATION',
                     targetableCardIds: candidates.flatMap(cardTargetIds),
-                    message: 'Choisissez la carte à jouer dans votre main.',
+                    message: tg.chooseCardToPlayHand,
                     onSelectTarget: (cardId) => {
                         stopTargeting();
                         setHoveredCard(null);
@@ -1737,9 +1751,9 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                         from === 'DECK' ? [] : myZones?.discard || [],
                     title:
                         from === 'DISCARD'
-                            ? 'Votre défausse'
-                            : 'Pioche ou défausse',
-                    subtitle: 'Choisissez la carte à jouer.',
+                            ? tg.yourDiscard
+                            : tg.deckOrDiscardTitle,
+                    subtitle: tg.chooseCardToPlay,
                 });
                 return;
             }
@@ -2014,7 +2028,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         startTargeting({
             kind: 'DESIGNATION',
             targetableCardIds: candidates.flatMap(cardTargetIds),
-            message: 'Défaussez une possession ou une situation.',
+            message: tg.discardPossessionOrCondition,
             onSelectTarget: (cardId) => {
                 stopTargeting();
                 setHoveredCard(null);
@@ -2044,7 +2058,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         startTargeting({
             kind: 'DESIGNATION',
             targetableCardIds: candidates.flatMap(cardTargetIds),
-            message: 'Défaussez un compagnon dissocié pour empêcher.',
+            message: tg.discardUnboundPrevent,
             onSelectTarget: (cardId) => {
                 stopTargeting();
                 setHoveredCard(null);
@@ -2074,7 +2088,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         startTargeting({
             kind: 'DESIGNATION',
             targetableCardIds: candidates.flatMap(cardTargetIds),
-            message: 'Défaussez une situation en jeu.',
+            message: tg.discardConditionInPlay,
             onSelectTarget: (cardId) => {
                 stopTargeting();
                 setHoveredCard(null);
@@ -2224,9 +2238,8 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                         selectableCardIds: selectable.flatMap(cardTargetIds),
                         deck: [],
                         discard: [...discard],
-                        title: 'Défausse',
-                        subtitle:
-                            'Choisissez une carte à prendre dans votre main.',
+                        title: tg.discardPileTitle,
+                        subtitle: tg.chooseTakeToHand,
                     });
                     return;
                 }
@@ -2259,13 +2272,13 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                     discard: from === 'DECK' ? [] : pool.discard,
                     title:
                         from === 'DECK'
-                            ? 'Pioche'
+                            ? tg.drawDeckTitle
                             : from === 'DISCARD'
-                              ? 'Défausse'
+                              ? tg.discardPileTitle
                               : undefined,
                     subtitle:
                         from === 'DECK'
-                            ? 'Choisissez une possession jouable dans votre pioche.'
+                            ? tg.choosePlayablePossessionDeck
                             : undefined,
                 });
                 return;
@@ -2397,8 +2410,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         setOpenOutOfPlayZone(null);
         setStackOverlay({
             title: 'Falls of Rauros',
-            subtitle:
-                'Placez une carte de votre pile de mort hors jeu (retirée du jeu).',
+            subtitle: tg.deadPileRemoveSubtitle,
             cards: candidates,
             selectableCardIds: candidates.map(
                 (c) => c.instanceId || c.id
@@ -2407,7 +2419,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                 moves.resolveDeadPileRemovalChoice?.(cardId);
             },
         });
-    }, [G.pendingDeadPileRemoval, me.deadPile, myId, moves]);
+    }, [G.pendingDeadPileRemoval, me.deadPile, myId, moves, tg]);
 
     const deadPileRemovalKeyRef = useRef<string | null>(null);
     useEffect(() => {
@@ -2470,13 +2482,13 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         if (zone === 'HAND') {
             return {
                 title: iAmSubject
-                    ? 'Votre main est révélée'
-                    : 'Main adverse révélée',
+                    ? tg.yourHandRevealed
+                    : tg.revealedOpponentHand,
                 subtitle: iAmViewer
                     ? mayDiscardOne
-                        ? 'Cliquez une carte pour la défausser, ou validez sans défausser dans le toaster.'
-                        : 'Consultez les cartes puis validez dans le toaster.'
-                    : 'L’adversaire consulte votre main…',
+                        ? tg.revealHandMayDiscard
+                        : tg.revealHandConsult
+                    : tg.revealHandOpponentWaiting,
                 cards,
                 mayDiscardOne,
                 selectableCardIds: mayDiscardOne
@@ -2487,14 +2499,13 @@ export const GameBoard: React.FC<GameBoardProps> = ({
             };
         }
         return {
-            title: 'Cartes révélées',
-            subtitle:
-                'Cartes du dessus de la pioche adverse. Validez dans le toaster pour appliquer menaces / jetons et mélanger.',
+            title: tg.revealedCards,
+            subtitle: tg.revealTopDeck,
             cards,
             mayDiscardOne: false,
             selectableCardIds: undefined,
         };
-    }, [G.pendingReveal, G.players, myId]);
+    }, [G.pendingReveal, G.players, myId, tg]);
 
     /** Défausse main pour un choix forcé (Pelennor Flat…). */
     const forcedHandDiscardKeyRef = useRef<string | null>(null);
@@ -2788,8 +2799,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                         kind: 'SITE_ATTACH',
                         targetableCardIds: siteIds,
                         pendingCard: card,
-                        message:
-                            'Choisissez un site pour y jouer cette carte.',
+                        message: tg.playOnSite,
                         onSelectTarget: (siteId) =>
                             finishAttach(siteId, costTargetId),
                     });
@@ -2812,13 +2822,13 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                     const preselectedSite = targetId as string;
                     moves.beginPendingPlay?.(
                         index,
-                        'Affaiblissez un séide pour jouer cette carte.'
+                        tg.exertMinionToPlay
                     );
                     startTargeting({
                         kind: 'DESIGNATION',
                         targetableCardIds: costIds,
                         message:
-                            'Affaiblissez un séide pour jouer cette carte.',
+                            tg.exertMinionToPlay,
                         onSelectTarget: (costId) =>
                             finishAttach(preselectedSite, costId),
                     });
@@ -2834,12 +2844,12 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                 // Drop ailleurs → halo coût, puis site.
                 moves.beginPendingPlay?.(
                     index,
-                    'Affaiblissez un séide, puis choisissez un site.'
+                    tg.exertMinionThenSite
                 );
                 startTargeting({
                     kind: 'DESIGNATION',
                     targetableCardIds: costIds,
-                    message: 'Affaiblissez un séide pour jouer cette carte.',
+                    message: tg.exertMinionToPlay,
                     onSelectTarget: (costId) => startSitePick(costId),
                 });
                 return;
@@ -3001,16 +3011,16 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                     moves.beginPendingPlay?.(
                         index,
                         abilityNeedsSiteExchange(eventAbility)
-                            ? 'Choisissez un de vos sites du chemin à échanger.'
-                            : 'Choisissez un site de la région actuelle à remplacer.'
+                            ? tg.exchangePathSite
+                            : tg.replaceRegionSite
                     );
                     startTargeting({
                         kind: 'SITE_ATTACH',
                         targetableCardIds: pathIds,
                         pendingCard: card,
                         message: abilityNeedsSiteExchange(eventAbility)
-                            ? 'Choisissez un de vos sites du chemin à échanger.'
-                            : 'Choisissez un site de la région actuelle à remplacer.',
+                            ? tg.exchangePathSite
+                            : tg.replaceRegionSite,
                         onSelectTarget: (pathSiteId) => {
                             openDeckPicker(pathSiteId);
                         },
@@ -3054,7 +3064,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                     const pool = getDeckOrDiscardBrowsePool(G, myId);
                     moves.beginPendingPlay?.(
                         index,
-                        'Parcourez votre pioche et votre défausse, puis choisissez une carte jouable.'
+                        tg.browseDeckDiscardPlayable
                     );
                     setDeckDiscardPick({
                         handIndex: index,
@@ -3342,8 +3352,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                             startTargeting({
                                 kind: 'DESIGNATION',
                                 targetableCardIds: costIds,
-                                message:
-                                    'Affaiblissez un personnage pour jouer cette carte.',
+                                message: tg.exertCharacterToPlay,
                                 onSelectTarget: (costId) => {
                                     stopTargeting();
                                     moves.playCard?.(index, costId);
@@ -3597,12 +3606,12 @@ export const GameBoard: React.FC<GameBoardProps> = ({
             onConfirm: () => moves.confirmSanctuaryHeals?.(),
             confirmLabel:
                 remaining === SANCTUARY_HEAL_LIMIT
-                    ? 'Ne rien soigner'
-                    : 'Valider les soins',
+                    ? tg.healNothing
+                    : tg.validateHeals,
             message:
                 remaining === SANCTUARY_HEAL_LIMIT
-                    ? 'Sanctuaire : cliquez un compagnon pour soigner 1 blessure (jusqu’à 5).'
-                    : `Sanctuaire : encore ${remaining} soin(s). Cliquez un compagnon ou validez.`,
+                    ? tg.sanctuaryStart
+                    : tg.sanctuaryRemaining(remaining),
             onSelectTarget: (cardId) => {
                 moves.assignSanctuaryHeal?.(cardId);
             },
@@ -3661,8 +3670,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
             startTargeting({
                 kind: 'ARCHERY',
                 targetableCardIds: validTargets,
-                message:
-                    "Tir d'archerie : Cliquez sur un compagnon pour lui assigner une blessure.",
+                message: tg.archeryFp,
                 onSelectTarget: (cardId) => {
                     if (moves.assignArcheryWound) {
                         moves.assignArcheryWound(cardId);
@@ -3694,8 +3702,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
             startTargeting({
                 kind: 'ARCHERY',
                 targetableCardIds: validTargets,
-                message:
-                    "Tir d'archerie : Cliquez sur un séide pour lui assigner une blessure.",
+                message: tg.archeryShadow,
                 onSelectTarget: (cardId) => {
                     if (moves.assignArcheryWound) {
                         moves.assignArcheryWound(cardId);
@@ -3764,8 +3771,8 @@ export const GameBoard: React.FC<GameBoardProps> = ({
             targetableCardIds: validTargets,
             message:
                 remaining === 1
-                    ? 'Menaces : cliquez sur un compagnon pour lui assigner 1 blessure.'
-                    : `Menaces : cliquez sur un compagnon pour lui assigner une blessure (${remaining} restantes).`,
+                    ? tg.threatWoundOne
+                    : tg.threatWoundMany(remaining),
             onSelectTarget: (cardId) => {
                 moves.assignThreatWound?.(cardId);
             },
@@ -3826,8 +3833,8 @@ export const GameBoard: React.FC<GameBoardProps> = ({
             targetableCardIds: validTargets,
             message:
                 pending.remaining === 1
-                    ? 'Site : cliquez sur un de vos personnages pour lui assigner 1 blessure.'
-                    : `Site : cliquez sur un de vos personnages (${pending.remaining} blessures restantes).`,
+                    ? tg.siteWoundOne
+                    : tg.siteWoundMany(pending.remaining),
             onSelectTarget: (cardId) => {
                 moves.assignSiteCharacterWound?.(cardId);
             },
@@ -3886,8 +3893,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         startTargeting({
             kind: 'SKIRMISH_SELECT',
             targetableCardIds: targetableCompanionIds,
-            message:
-                'Escarmouche : Cliquez sur un groupe pour résoudre son combat.',
+            message: tg.skirmishSelect,
             onSelectTarget: (companionCardId) => {
                 const chosenSkirmish = G.skirmishes.find(
                     (s) =>
@@ -4286,17 +4292,17 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                     {deckDiscardPick && (
                         <CardZoneOverlay
                             title={
-                                deckDiscardPick.title || 'Pioche ou défausse'
+                                deckDiscardPick.title || tg.deckOrDiscardTitle
                             }
                             subtitle={
                                 deckDiscardPick.subtitle ||
-                                'Choisissez une carte jouable dans la pioche ou la défausse'
+                                tg.choosePlayableDeckOrDiscard
                             }
                             sections={[
                                 ...(deckDiscardPick.deck.length > 0
                                     ? [
                                           {
-                                              title: 'Pioche',
+                                              title: tg.drawDeckTitle,
                                               cards: deckDiscardPick.deck,
                                           },
                                       ]
@@ -4304,7 +4310,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                                 ...(deckDiscardPick.discard.length > 0
                                     ? [
                                           {
-                                              title: 'Défausse',
+                                              title: tg.discardPileTitle,
                                               cards: deckDiscardPick.discard,
                                           },
                                       ]
@@ -4313,7 +4319,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                                 deckDiscardPick.deadPile.length > 0
                                     ? [
                                           {
-                                              title: 'Pile de mort',
+                                              title: tg.deadPileTitle,
                                               cards: deckDiscardPick.deadPile,
                                           },
                                       ]
@@ -4410,8 +4416,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                                                 targetableCardIds: siteIds,
                                                 pendingCard: picked,
                                                 abilityId: activate.abilityId,
-                                                message:
-                                                    'Choisissez un site pour y jouer cette carte.',
+                                                message: tg.playOnSite,
                                                 onSelectTarget: (siteId) => {
                                                     stopTargeting();
                                                     finishActivate([
@@ -4438,8 +4443,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                                                 hosts.flatMap(cardTargetIds),
                                             pendingCard: picked,
                                             abilityId: activate.abilityId,
-                                            message:
-                                                'Choisissez le porteur de cette carte.',
+                                            message: tg.chooseBearer,
                                             onSelectTarget: (hostId) => {
                                                 stopTargeting();
                                                 finishActivate([
