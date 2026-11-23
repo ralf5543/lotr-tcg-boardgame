@@ -10,6 +10,7 @@ import * as S from './styles';
 import { useHoverCard } from '../../../../contexts/HoverCardContext';
 import { usePreferencesOptional } from '../../../../contexts/PreferencesContext';
 import { getCardChrome } from '../../../../i18n/cardChrome';
+import { getUiMessages } from '../../../../i18n/ui';
 import type { CardSignet } from '../../../../game/types';
 import { FormattedText } from '../../../../utils/FormattedText';
 import { KeywordBadge } from '../KeywordBadge';
@@ -294,6 +295,9 @@ export const Card: React.FC<CardProps> = ({
     const prefs = usePreferencesOptional();
     const currentLang = currentLangProp ?? prefs?.cardLanguage ?? 'fr';
     const chrome = getCardChrome(currentLang);
+    const roamingPenaltyTitle = getUiMessages(
+        prefs?.uiLanguage ?? 'fr'
+    ).chrome.roamingPenalty;
     const recoilDown = isWoundRecoilDown(card?.kind, localFaction, isOpponent);
     const cardPickId = card?.instanceId || card?.id;
     const isDesignationPick =
@@ -1027,7 +1031,7 @@ export const Card: React.FC<CardProps> = ({
                         {effectiveMinionSiteNumber}
 
                         {isRoaming && size === 'md' && (
-                            <S.RoamingBadge title="Pénalité d'errance (+2 Crépuscule)">
+                            <S.RoamingBadge title={roamingPenaltyTitle}>
                                 +2
                             </S.RoamingBadge>
                         )}

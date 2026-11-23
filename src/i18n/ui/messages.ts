@@ -1,6 +1,10 @@
 import type { SupportedLanguage } from '../languages';
 import { CHROME_MESSAGES, type ChromeMessages } from './chrome';
 import {
+    DECK_BUILDER_MESSAGES,
+    type DeckBuilderMessages,
+} from './deckBuilder';
+import {
     TARGETING_MESSAGES,
     type TargetingMessages,
 } from './targeting';
@@ -9,6 +13,7 @@ import {
 export type UiMessages = {
     chrome: ChromeMessages;
     targeting: TargetingMessages;
+    deckBuilder: DeckBuilderMessages;
     options: {
         title: string;
         close: string;
@@ -68,7 +73,7 @@ export type UiMessages = {
     };
 };
 
-type UiBase = Omit<UiMessages, 'chrome' | 'targeting'>;
+type UiBase = Omit<UiMessages, 'chrome' | 'targeting' | 'deckBuilder'>;
 
 const fr: UiBase = {
     options: {
@@ -377,12 +382,13 @@ const es: UiBase = {
 
 function withChrome(
     lang: SupportedLanguage,
-    base: Omit<UiMessages, 'chrome' | 'targeting'>
+    base: Omit<UiMessages, 'chrome' | 'targeting' | 'deckBuilder'>
 ): UiMessages {
     return {
         ...base,
         chrome: CHROME_MESSAGES[lang],
         targeting: TARGETING_MESSAGES[lang],
+        deckBuilder: DECK_BUILDER_MESSAGES[lang],
     };
 }
 

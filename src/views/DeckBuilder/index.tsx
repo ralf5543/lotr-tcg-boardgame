@@ -17,9 +17,9 @@ import { validateDeck } from '../../decks/validateDeck';
 import { startingCompanionTwilightCost } from '../../decks/validateDeck';
 import {
     type AddTarget,
+    type CatalogCamp,
     type CatalogFilter,
     type CatalogFilterKey,
-    addTargetLabel,
     campForAddTarget,
     cardOrThrow,
     catalogCards,
@@ -27,16 +27,18 @@ import {
     countIds,
     displaySubtitle,
     displayTitle,
-    filterDimensionLabel,
     isSiteCard,
     labelForFilterValue,
     CATALOG_CAMP_OPTIONS,
 } from '../../decks/cardMeta';
 import { useHoverCard } from '../../contexts/HoverCardContext';
+import { usePreferencesOptional } from '../../contexts/PreferencesContext';
 import { useImageSrcFallback } from '../../utils/useImageSrcFallback';
 import { Card } from '../GameBoard/components/Card';
 import { SiteCard } from '../GameBoard/components/SiteCard';
 import * as S from './styles';
+import { useUiMessages } from '../../i18n/ui/useUiMessages';
+import { localizeGameTerms } from '../../i18n/terms';
 
 function goToBoard(matchId?: string) {
     const url = new URL(window.location.href);
@@ -62,18 +64,6 @@ function cloneDraft(d: DeckConfig): DeckConfig {
         freePeople: [...d.freePeople],
         shadow: [...d.shadow],
         siteIds: [...d.siteIds],
-    };
-}
-
-function makeFilter(
-    key: CatalogFilterKey,
-    value: string
-): CatalogFilter {
-    return {
-        id: `${key}:${value}`,
-        key,
-        value,
-        label: `${filterDimensionLabel(key)} : ${labelForFilterValue(key, value)}`,
     };
 }
 
@@ -113,6 +103,7 @@ function CardLine({
     canAddCopy?: boolean;
     suffix?: string;
 }) {
+    const db = useUiMessages().deckBuilder;
     const { setHoveredCard } = useHoverCard();
     const { src, onError } = useImageSrcFallback(
         card.imageUrl,
@@ -208,7 +199,7 @@ function CardLine({
             onMouseLeave={() => {
                 if (!menuOpen) setHoveredCard(null);
             }}
-            title={hasMenu ? 'Gérer les exemplaires' : undefined}
+            title={hasMenu ? db.manageCopies : undefined}
         >
             {src ? (
                 site ? (
@@ -256,7 +247,7 @@ function CardLine({
                                     setMenuOpen(false);
                                 }}
                             >
-                                + Ajouter un exemplaire
+                                {db.addCopy}
                             </S.CardMenuBtn>
                         )}
                         {onRemoveCopy && (
@@ -268,7 +259,7 @@ function CardLine({
                                     setMenuOpen(false);
                                 }}
                             >
-                                − Retirer un exemplaire
+                                {db.removeCopy}
                             </S.CardMenuBtn>
                         )}
                     </S.CardMenu>,
@@ -288,11 +279,28 @@ const FILTER_KEYS: CatalogFilterKey[] = [
 ];
 
 export const DeckBuilder: React.FC = () => {
+    const db = useUiMessages().deckBuilder;
+    const uiLanguage = usePreferencesOptional()?.uiLanguage ?? 'fr';
+    const makeFilter = (key: CatalogFilterKey, value: string): CatalogFilter => ({
+        id: `${key}:${value}`,
+        key,
+        value,
+        label: `${db.filterDim[key]} : ${
+            key === 'camp'
+                ? db.camp[value as CatalogCamp]
+                : labelForFilterValue(key, value)
+        }`,
+    });
     const [decks, setDecks] = useState<DeckConfig[]>([]);
     const [selectedId, setSelectedId] = useState('');
     const [query, setQuery] = useState('');
-    const [filters, setFilters] = useState<CatalogFilter[]>([
-        makeFilter('camp', 'FREE_PEOPLE'),
+    const [filters, setFilters] = useState<CatalogFilter[]>(() => [
+        {
+            id: 'camp:FREE_PEOPLE',
+            key: 'camp',
+            value: 'FREE_PEOPLE',
+            label: '',
+        },
     ]);
     const [filterDim, setFilterDim] = useState<CatalogFilterKey>('culture');
     const [filterValue, setFilterValue] = useState('');
@@ -305,10 +313,23 @@ export const DeckBuilder: React.FC = () => {
     const [seatDecks, setSeatDecks] = useState(() => getSelectedDeckIds());
     const { hoveredData, setHoveredCard } = useHoverCard();
 
+    useEffect(() => {
+        setFilters((prev) =>
+            prev.map((f) => ({
+                ...f,
+                label: `${db.filterDim[f.key]} : ${
+                    f.key === 'camp'
+                        ? db.camp[f.value as CatalogCamp]
+                        : labelForFilterValue(f.key, f.value)
+                }`,
+            }))
+        );
+    }, [db]);
+
     const refreshSeatDecks = () => setSeatDecks(getSelectedDeckIds());
 
     const deckNameById = (id: string) =>
-        decks.find((d) => d.id === id)?.name || 'Deck manquant';
+        decks.find((d) => d.id === id)?.name || db.missingDeck;
 
     const refreshList = async (): Promise<DeckConfig[]> => {
         const list = await listDecks();
@@ -335,7 +356,7 @@ export const DeckBuilder: React.FC = () => {
                 setLoadError(
                     err instanceof Error
                         ? err.message
-                        : 'Impossible de charger les decks.'
+                        : db.errors.loadDecks
                 );
             } finally {
                 if (!cancelled) setLoading(false);
@@ -413,10 +434,10 @@ export const DeckBuilder: React.FC = () => {
         return (
             <S.Root data-deck-builder-root>
                 <S.TopBar>
-                    <S.Title>Création de deck</S.Title>
+                    <S.Title>{db.title}</S.Title>
                 </S.TopBar>
                 <S.Main>
-                    <S.IssueLine>Chargement des decks…</S.IssueLine>
+                    <S.IssueLine>{db.loading}</S.IssueLine>
                 </S.Main>
             </S.Root>
         );
@@ -426,9 +447,9 @@ export const DeckBuilder: React.FC = () => {
         return (
             <S.Root data-deck-builder-root>
                 <S.TopBar>
-                    <S.Title>Création de deck</S.Title>
+                    <S.Title>{db.title}</S.Title>
                     <S.Button type="button" onClick={() => goToBoard()}>
-                        Retour partie
+                        {db.backToGame}
                     </S.Button>
                 </S.TopBar>
                 <S.Main>
@@ -442,7 +463,7 @@ export const DeckBuilder: React.FC = () => {
         return (
             <S.Root data-deck-builder-root>
                 <S.TopBar>
-                    <S.Title>Création de deck</S.Title>
+                    <S.Title>{db.title}</S.Title>
                     <S.Button
                         type="button"
                         onClick={async () => {
@@ -451,10 +472,10 @@ export const DeckBuilder: React.FC = () => {
                             selectDeck(created.id, list);
                         }}
                     >
-                        Nouveau deck
+                        {db.newDeck}
                     </S.Button>
                     <S.Button type="button" onClick={() => goToBoard()}>
-                        Retour partie
+                        {db.backToGame}
                     </S.Button>
                 </S.TopBar>
             </S.Root>
@@ -526,7 +547,7 @@ export const DeckBuilder: React.FC = () => {
             window.alert(
                 err instanceof Error
                     ? err.message
-                    : 'Sauvegarde impossible (Vite allumé ?).'
+                    : db.errors.save
             );
         } finally {
             setBusy(false);
@@ -541,7 +562,7 @@ export const DeckBuilder: React.FC = () => {
             selectDeck(created.id, list);
         } catch (err) {
             window.alert(
-                err instanceof Error ? err.message : 'Création impossible.'
+                err instanceof Error ? err.message : db.errors.create
             );
         } finally {
             setBusy(false);
@@ -556,7 +577,7 @@ export const DeckBuilder: React.FC = () => {
             if (copy) selectDeck(copy.id, list);
         } catch (err) {
             window.alert(
-                err instanceof Error ? err.message : 'Duplication impossible.'
+                err instanceof Error ? err.message : db.errors.duplicate
             );
         } finally {
             setBusy(false);
@@ -564,7 +585,7 @@ export const DeckBuilder: React.FC = () => {
     };
 
     const handleDelete = async () => {
-        if (!window.confirm(`Supprimer « ${draft.name} » ?`)) return;
+        if (!window.confirm(db.deleteConfirm(draft.name))) return;
         setBusy(true);
         try {
             await deleteDeck(draft.id);
@@ -573,7 +594,7 @@ export const DeckBuilder: React.FC = () => {
             else setDraft(null);
         } catch (err) {
             window.alert(
-                err instanceof Error ? err.message : 'Suppression impossible.'
+                err instanceof Error ? err.message : db.errors.delete
             );
         } finally {
             setBusy(false);
@@ -592,7 +613,7 @@ export const DeckBuilder: React.FC = () => {
             window.alert(
                 err instanceof Error
                     ? err.message
-                    : 'Impossible d’attribuer ce deck.'
+                    : db.errors.assign
             );
         } finally {
             setBusy(false);
@@ -613,7 +634,7 @@ export const DeckBuilder: React.FC = () => {
             window.alert(
                 err instanceof Error
                     ? err.message
-                    : 'Impossible de créer la partie (serveur allumé ?).'
+                    : db.errors.startMatch
             );
             setBusy(false);
         }
@@ -634,7 +655,7 @@ export const DeckBuilder: React.FC = () => {
             window.alert(
                 err instanceof Error
                     ? err.message
-                    : 'Impossible de lancer la partie contre le BOT.'
+                    : db.errors.startBot
             );
             setBusy(false);
         }
@@ -652,14 +673,14 @@ export const DeckBuilder: React.FC = () => {
     return (
         <S.Root data-deck-builder-root>
             <S.TopBar>
-                <S.Title>Création de deck</S.Title>
+                <S.Title>{db.title}</S.Title>
                 <S.Button
                     type="button"
                     $compact
                     disabled={busy}
                     onClick={handleNew}
                 >
-                    Nouveau
+                    {db.newShort}
                 </S.Button>
                 <S.Button
                     type="button"
@@ -667,7 +688,7 @@ export const DeckBuilder: React.FC = () => {
                     disabled={busy}
                     onClick={handleDuplicate}
                 >
-                    Dupliquer
+                    {db.duplicate}
                 </S.Button>
                 <S.Button
                     type="button"
@@ -675,10 +696,10 @@ export const DeckBuilder: React.FC = () => {
                     disabled={busy}
                     onClick={handleDelete}
                 >
-                    Supprimer
+                    {db.delete}
                 </S.Button>
                 <S.Button type="button" disabled={busy} onClick={handleSave}>
-                    Sauvegarder
+                    {db.save}
                 </S.Button>
                 <S.Button
                     type="button"
@@ -686,7 +707,7 @@ export const DeckBuilder: React.FC = () => {
                     disabled={busy}
                     onClick={() => playAs('0')}
                 >
-                    Jouer (joueur 0)
+                    {db.playAs0}
                 </S.Button>
                 <S.Button
                     type="button"
@@ -694,7 +715,7 @@ export const DeckBuilder: React.FC = () => {
                     disabled={busy}
                     onClick={() => playAs('1')}
                 >
-                    Jouer (joueur 1)
+                    {db.playAs1}
                 </S.Button>
                 <S.Button
                     type="button"
@@ -702,25 +723,25 @@ export const DeckBuilder: React.FC = () => {
                     disabled={busy}
                     onClick={playVsBot}
                 >
-                    Affronter un BOT
+                    {db.playVsBot}
                 </S.Button>
                 <S.Button type="button" onClick={() => goToBoard()}>
-                    Retour partie
+                    {db.backToGame}
                 </S.Button>
             </S.TopBar>
 
             <S.Body>
             <S.Side>
-                <S.SideLabel>Decks</S.SideLabel>
+                <S.SideLabel>{db.decks}</S.SideLabel>
                 <S.SeatSummary>
                     <S.SeatRow>
-                        <S.SeatRole>Toi</S.SeatRole>
+                        <S.SeatRole>{db.you}</S.SeatRole>
                         <S.SeatDeckName title={deckNameById(seatDecks['0'])}>
                             {deckNameById(seatDecks['0'])}
                         </S.SeatDeckName>
                     </S.SeatRow>
                     <S.SeatRow>
-                        <S.SeatRole>BOT</S.SeatRole>
+                        <S.SeatRole>{db.bot}</S.SeatRole>
                         <S.SeatDeckName title={deckNameById(seatDecks['1'])}>
                             {deckNameById(seatDecks['1'])}
                         </S.SeatDeckName>
@@ -732,7 +753,7 @@ export const DeckBuilder: React.FC = () => {
                             disabled={busy || !draft}
                             onClick={() => assignSeat('0')}
                         >
-                            Ce deck → toi
+                            {db.assignYou}
                         </S.Button>
                         <S.Button
                             type="button"
@@ -740,7 +761,7 @@ export const DeckBuilder: React.FC = () => {
                             disabled={busy || !draft}
                             onClick={() => assignSeat('1')}
                         >
-                            Ce deck → BOT
+                            {db.assignBot}
                         </S.Button>
                     </S.SeatActions>
                 </S.SeatSummary>
@@ -751,8 +772,8 @@ export const DeckBuilder: React.FC = () => {
                             d.id === selectedId && draft ? draft : d;
                         const v = validateDeck(source);
                         const roles = [
-                            d.id === seatDecks['0'] ? 'toi' : null,
-                            d.id === seatDecks['1'] ? 'BOT' : null,
+                            d.id === seatDecks['0'] ? db.youLower : null,
+                            d.id === seatDecks['1'] ? db.bot : null,
                         ].filter(Boolean);
                         return (
                             <S.DeckItem
@@ -762,11 +783,14 @@ export const DeckBuilder: React.FC = () => {
                             >
                                 <S.DeckName>{d.name}</S.DeckName>
                                 <S.DeckMeta>
-                                    {v.ok ? 'Jouable' : 'Incomplet'} ·{' '}
-                                    {source.freePeople.length +
-                                        source.startingCompanionIds.length}
-                                    /{source.shadow.length} ·{' '}
-                                    {source.siteIds.length} sites
+                                    {v.ok ? db.playable : db.incomplete} ·{' '}
+                                    {db.deckMeta(
+                                        source.freePeople.length +
+                                            source.startingCompanionIds
+                                                .length,
+                                        source.shadow.length,
+                                        source.siteIds.length
+                                    )}
                                     {roles.length > 0
                                         ? ` · ${roles.join(' · ')}`
                                         : ''}
@@ -786,19 +810,22 @@ export const DeckBuilder: React.FC = () => {
                         }
                     />
                     <S.Badge $ok={Boolean(validation?.ok)}>
-                        {validation?.ok ? 'Jouable' : 'Non jouable'}
+                        {validation?.ok ? db.playable : db.notPlayable}
                     </S.Badge>
                     <S.Stats>
-                        Départ {startingCost}/4 · Peuples Libres {fpTotal} ·
-                        Ombre {draft.shadow.length} · Aventure{' '}
-                        {draft.siteIds.length}/9
+                        {db.stats(
+                            startingCost,
+                            fpTotal,
+                            draft.shadow.length,
+                            draft.siteIds.length
+                        )}
                     </S.Stats>
                 </S.EditorHeader>
 
                 <S.TargetBanner>
-                    Prochaine carte du catalogue →{' '}
+                    {db.nextCardTo}{' '}
                     <S.TargetBannerStrong>
-                        {addTargetLabel(addTarget)}
+                        {db.target[addTarget]}
                     </S.TargetBannerStrong>
                 </S.TargetBanner>
 
@@ -820,14 +847,14 @@ export const DeckBuilder: React.FC = () => {
                             }
                         >
                             <S.ColumnTitle>
-                                Compagnie de départ
+                                {db.startingFellowship}
                             </S.ColumnTitle>
                             <S.ColumnAddHint
                                 $active={
                                     addTarget === 'startingCompanionIds'
                                 }
                             >
-                                + Ajouter
+                                {db.addHint}
                             </S.ColumnAddHint>
                         </S.ColumnHeader>
                         <S.SlotBlock>
@@ -838,7 +865,7 @@ export const DeckBuilder: React.FC = () => {
                                     chooseAddTarget('ringBearerId')
                                 }
                             >
-                                Porteur
+                                {db.ringBearer}
                             </S.SlotLabel>
                             {rb ? (
                                 <CardLine
@@ -855,7 +882,7 @@ export const DeckBuilder: React.FC = () => {
                                     chooseAddTarget('oneRingId')
                                 }
                             >
-                                Anneau Unique
+                                {db.oneRing}
                             </S.SlotLabel>
                             {ring ? (
                                 <CardLine
@@ -874,7 +901,7 @@ export const DeckBuilder: React.FC = () => {
                                     chooseAddTarget('startingCompanionIds')
                                 }
                             >
-                                Compagnie ({startingCost}/4)
+                                {db.fellowshipCount(startingCost)}
                             </S.SlotLabel>
                             {[...startCounts.entries()].map(([id, n]) => {
                                 const c = cardOrThrow(id);
@@ -886,14 +913,14 @@ export const DeckBuilder: React.FC = () => {
                                 const printed = Number(c.twilightCost) || 0;
                                 const costHint =
                                     unitCost !== printed
-                                        ? `${unitCost} (impr. ${printed})`
+                                        ? db.printedCost(unitCost, printed)
                                         : String(unitCost);
                                 return (
                                     <CardLine
                                         key={id}
                                         card={c}
                                         count={n}
-                                        suffix={`· coût ${costHint}`}
+                                        suffix={db.costSuffix(costHint)}
                                         canAddCopy={n < 4}
                                         onAddCopy={() =>
                                             addCopyToList(
@@ -920,12 +947,12 @@ export const DeckBuilder: React.FC = () => {
                             onClick={() => chooseAddTarget('freePeople')}
                         >
                             <S.ColumnTitle>
-                                Peuples Libres ({draft.freePeople.length})
+                                {db.freePeoples(draft.freePeople.length)}
                             </S.ColumnTitle>
                             <S.ColumnAddHint
                                 $active={addTarget === 'freePeople'}
                             >
-                                + Ajouter
+                                {db.addHint}
                             </S.ColumnAddHint>
                         </S.ColumnHeader>
                         <S.CardList>
@@ -957,12 +984,12 @@ export const DeckBuilder: React.FC = () => {
                             onClick={() => chooseAddTarget('shadow')}
                         >
                             <S.ColumnTitle>
-                                Ombre ({draft.shadow.length})
+                                {db.shadow(draft.shadow.length)}
                             </S.ColumnTitle>
                             <S.ColumnAddHint
                                 $active={addTarget === 'shadow'}
                             >
-                                + Ajouter
+                                {db.addHint}
                             </S.ColumnAddHint>
                         </S.ColumnHeader>
                         <S.CardList>
@@ -994,12 +1021,12 @@ export const DeckBuilder: React.FC = () => {
                             onClick={() => chooseAddTarget('siteIds')}
                         >
                             <S.ColumnTitle>
-                                Aventure ({draft.siteIds.length}/9)
+                                {db.adventure(draft.siteIds.length)}
                             </S.ColumnTitle>
                             <S.ColumnAddHint
                                 $active={addTarget === 'siteIds'}
                             >
-                                + Ajouter
+                                {db.addHint}
                             </S.ColumnAddHint>
                         </S.ColumnHeader>
                         <S.CardList $natural>
@@ -1025,7 +1052,7 @@ export const DeckBuilder: React.FC = () => {
             <S.Catalog>
                 <S.CatalogFilters>
                     <S.SearchInput
-                        placeholder="Rechercher une carte…"
+                        placeholder={db.searchPlaceholder}
                         value={query}
                         onChange={(e) => setQuery(e.target.value)}
                     />
@@ -1038,11 +1065,11 @@ export const DeckBuilder: React.FC = () => {
                                 );
                                 setFilterValue('');
                             }}
-                            aria-label="Type de filtre"
+                            aria-label={db.filterTypeAria}
                         >
                             {FILTER_KEYS.map((key) => (
                                 <option key={key} value={key}>
-                                    {filterDimensionLabel(key)}
+                                    {db.filterDim[key]}
                                 </option>
                             ))}
                         </S.Select>
@@ -1053,15 +1080,14 @@ export const DeckBuilder: React.FC = () => {
                                 setFilterValue(value);
                                 if (value) addFilter(filterDim, value);
                             }}
-                            aria-label="Valeur du filtre"
+                            aria-label={db.filterValueAria}
                         >
-                            <option value="">Ajouter…</option>
+                            <option value="">{db.addFilter}</option>
                             {valueOptions.map((value) => (
                                 <option key={value} value={value}>
                                     {filterDim === 'camp'
-                                        ? CATALOG_CAMP_OPTIONS.find(
-                                              (o) => o.value === value
-                                          )?.label || value
+                                        ? db.camp[value as CatalogCamp] ||
+                                          value
                                         : labelForFilterValue(
                                               filterDim,
                                               value
@@ -1075,7 +1101,7 @@ export const DeckBuilder: React.FC = () => {
                             <S.Chip
                                 key={f.id}
                                 type="button"
-                                title="Retirer ce filtre"
+                                title={db.removeFilter}
                                 onClick={() => removeFilter(f.id)}
                             >
                                 {f.label} ×
@@ -1093,13 +1119,12 @@ export const DeckBuilder: React.FC = () => {
                     ))}
                     {catalog.length > 250 && (
                         <S.DeckMeta style={{ padding: 8 }}>
-                            Affichage limité à 250 — affine la recherche ou
-                            les filtres.
+{db.catalogLimit}
                         </S.DeckMeta>
                     )}
                     {catalog.length === 0 && (
                         <S.DeckMeta style={{ padding: 8 }}>
-                            Aucune carte pour ces filtres.
+                            {db.noCards}
                         </S.DeckMeta>
                     )}
                 </S.CatalogList>
@@ -1116,8 +1141,8 @@ export const DeckBuilder: React.FC = () => {
                             onClick={() => setIssuesOpen((o) => !o)}
                         >
                             {validation.errors.length > 0
-                                ? `${validation.errors.length} problème${validation.errors.length > 1 ? 's' : ''}`
-                                : `${validation.warnings.length} avertissement${validation.warnings.length > 1 ? 's' : ''}`}
+                                ? db.problems(validation.errors.length)
+                                : db.warnings(validation.warnings.length)}
                             {issuesOpen ? ' ▾' : ' ▸'}
                         </S.IssuesFab>
                         {issuesOpen && (
@@ -1127,12 +1152,18 @@ export const DeckBuilder: React.FC = () => {
                                         key={e.code + e.message}
                                         $error
                                     >
-                                        {e.message}
+                                        {localizeGameTerms(
+                                            e.message,
+                                            uiLanguage
+                                        )}
                                     </S.IssueLine>
                                 ))}
                                 {validation.warnings.map((w) => (
                                     <S.IssueLine key={w.code + w.message}>
-                                        {w.message}
+                                        {localizeGameTerms(
+                                            w.message,
+                                            uiLanguage
+                                        )}
                                     </S.IssueLine>
                                 ))}
                             </S.IssuesToaster>

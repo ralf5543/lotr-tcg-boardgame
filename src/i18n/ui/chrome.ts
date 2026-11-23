@@ -215,6 +215,8 @@ export type ChromeMessages = {
         expand: string;
         empty: string;
     };
+    /** Infobulle badge errance (+2 crépuscule). */
+    roamingPenalty: string;
     gameEnd: {
         youWin: string;
         namedWins: (name: string) => string;
@@ -470,6 +472,7 @@ const fr: ChromeMessages = {
         expand: 'Cliquez pour inspecter 🔽',
         empty: 'Aucun compagnon.',
     },
+    roamingPenalty: 'Pénalité d’errance (+2 Crépuscule)',
     gameEnd: {
         youWin: 'Vous remportez la partie',
         namedWins: (name) => `${name} remporte la partie`,
@@ -723,6 +726,7 @@ const en: ChromeMessages = {
         expand: 'Click to inspect 🔽',
         empty: 'No companions.',
     },
+    roamingPenalty: 'Roaming penalty (+2 Twilight)',
     gameEnd: {
         youWin: 'You win the game',
         namedWins: (name) => `${name} wins the game`,
@@ -978,6 +982,7 @@ const de: ChromeMessages = {
         expand: 'Klicken zum Ansehen 🔽',
         empty: 'Keine Gefährten.',
     },
+    roamingPenalty: 'Wanderungsstrafe (+2 Einfluss)',
     gameEnd: {
         youWin: 'Du gewinnst das Spiel',
         namedWins: (name) => `${name} gewinnt das Spiel`,
@@ -1236,6 +1241,7 @@ const it: ChromeMessages = {
         expand: 'Clicca per ispezionare 🔽',
         empty: 'Nessun compagno.',
     },
+    roamingPenalty: 'Penalità di erranza (+2 Crepuscolo)',
     gameEnd: {
         youWin: 'Hai vinto la partita',
         namedWins: (name) => `${name} vince la partita`,
@@ -1494,6 +1500,7 @@ const es: ChromeMessages = {
         expand: 'Haz clic para inspeccionar 🔽',
         empty: 'Ningún compañero.',
     },
+    roamingPenalty: 'Penalización de errante (+2 Crepúsculo)',
     gameEnd: {
         youWin: 'Ganas la partida',
         namedWins: (name) => `${name} gana la partida`,
