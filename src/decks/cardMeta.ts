@@ -1,9 +1,8 @@
 import { CARDS_DATABASE, getCardById } from '../game/cardsData';
-import { TRANSLATIONS } from '../game/translations';
 import type { CardState } from '../game/types';
 import { getCardChrome } from '../i18n/cardChrome';
 import type { SupportedLanguage } from '../i18n/languages';
-import { localizeGameTerms } from '../i18n/terms';
+import { getKeywordLabel } from '../i18n/keywords';
 import { DECK_BUILDER_MESSAGES } from '../i18n/ui/deckBuilder';
 import { isLegalRingBearer, isOneRing } from './validateDeck';
 import { isStandardSiteSet } from './formatRules';
@@ -100,12 +99,7 @@ export function labelForFilterValue(
         return chrome.subtype(value) || value;
     }
     if (key === 'keyword') {
-        const kw =
-            TRANSLATIONS.keyword[
-                value as keyof typeof TRANSLATIONS.keyword
-            ];
-        const frLabel = (kw && 'label' in kw ? kw.label : value) || value;
-        return localizeGameTerms(frLabel, lang);
+        return getKeywordLabel(value, lang);
     }
     return value;
 }

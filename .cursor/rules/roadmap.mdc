@@ -11,7 +11,7 @@ Document **vivant** : précisé, modifié, complété au fur et à mesure. **Lis
 
 ## Mode de travail
 
-1. **Un plan thématique actif** à la fois (détail, credo, étapes) — aujourd’hui : [`.cursor/rules/chat-plan.mdc`](chat-plan.mdc).
+1. **Un plan thématique actif** à la fois (détail, credo, étapes) — **aucun** pour l’instant (Chat figé).
 2. **Cette roadmap** = vision d’ensemble + statut des grands axes.
 3. À la bascule : figer / désactiver le plan courant (`alwaysApply: false`), activer le suivant, mettre à jour le statut ici.
 
@@ -27,9 +27,9 @@ Credo transversal (hérités des plans cartes / sites / jetons) : **mieux vaut i
 
 | | |
 | --- | --- |
-| **Chantier** | Chat + journal |
-| **Plan** | [`chat-plan.mdc`](chat-plan.mdc) |
-| **Statut** | Socle fil + journal `statusMessage` dans le rail |
+| **Chantier** | — |
+| **Plan** | Aucun (choisir le suivant) |
+| **Statut** | Chat / Options / artefacts figés |
 
 ## Grands axes
 
@@ -43,11 +43,11 @@ Statuts : `en cours` · `à faire` · `plus tard` · `fait` · `pause`
 | **Jeu réel / gaps** | **fait** | Decks Fumeurs & Gondor/Uruks + compagnie de départ. Plan figé : [`deck-play-gaps-plan.mdc`](deck-play-gaps-plan.mdc). |
 | **Création de deck** | **fait** | Builder + validation + JSON dans `src/game/decks/`. Plan figé : [`deck-builder-plan.mdc`](deck-builder-plan.mdc). |
 | **Affronter un BOT** | **fait** | Playtest solo Local + BOT siège 1 + heuristiques A–C. Plan figé : [`bot-plan.mdc`](bot-plan.mdc). |
-| **Chat** | **en cours** | Fil partagé journal + chat joueur (boardgame.io). Plan : [`chat-plan.mdc`](chat-plan.mdc). |
+| **Chat** | **fait** | Fil journal + chat ; densité OK. Plan figé : [`chat-plan.mdc`](chat-plan.mdc). |
 | **Gagner / Perdre** | **fait** | Site 9 / corruption / mort Porteur + overlay. Plan : [`win-lose-plan.mdc`](win-lose-plan.mdc) (embellisement plus tard). |
-| **Options** | **fait** | Langues 5× ; chrome + consignes + status/journal structurés. Restent : overlays ciblage GameBoard, messages DEV, `effect.message` papier, bulles AST (repli termes — pas encore grammaire 5×). |
+| **Options** | **fait** | UI 5 langues en l’état (chrome, consignes, status/journal, mots-clés, deck builder). Hors scope : DEV, `effect.message` papier, grammaire AST 5×. |
 | **Écran de bienvenue** | à faire | Avant le plateau boardgame.io (lobby / menu). |
 | **Exceptions de cartes** | à faire | Cartes trop spécifiques — handlers par id, en dernier. Liste : [`card-exceptions.mdc`](card-exceptions.mdc). |
-| **Visuel artefacts** | **en cours** | Calque `{CULTURE}_artifact.webp` sur fond culture (md/lg) ; preset `ARTIFACT_OVERLAYS`. |
+| **Visuel artefacts** | **fait** | Calques culture artefact validés (commit antérieur). |
 
 Axes futurs possibles (non listés ici volontairement) : à ajouter quand ils deviennent concrets.

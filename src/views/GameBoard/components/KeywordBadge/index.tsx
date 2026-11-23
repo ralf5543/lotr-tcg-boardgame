@@ -1,7 +1,8 @@
 import React, { useState, useRef } from 'react';
 import ReactDOM from 'react-dom';
-import { TRANSLATIONS } from '../../../../game/translations';
 import type { CardKeyword } from '../../../../game/types';
+import { getKeywordInfo } from '../../../../i18n/keywords';
+import { usePreferencesOptional } from '../../../../contexts/PreferencesContext';
 import * as S from './styles';
 import { getKeywordIconPath } from '../../../../utils/getKeywordIconPath';
 import { usePulseOnChange } from '../../hooks/usePulseOnChange';
@@ -22,20 +23,13 @@ export const KeywordBadge: React.FC<KeywordBadgeProps> = ({
     const [coords, setCoords] = useState<{ top: number; left: number }>({ top: 0, left: 0 });
     const badgeRef = useRef<HTMLSpanElement>(null);
     const valuePulse = usePulseOnChange(value);
+    const prefs = usePreferencesOptional();
+    const uiLang = prefs?.uiLanguage ?? 'fr';
 
     if (hasError) return null;
 
-    // 1. Obtenir le chemin de l'image via le helper
     const imagePath = getKeywordIconPath(keyword);
-
-    // 2. Extraire la clé de traduction générique (ex: "Damage +1" -> "Damage" ou "Damage +")
-    // Nettoie les chiffres, points et symboles pour trouver la clé de base dans TRANSLATIONS.keyword
-    const baseKeywordKey = keyword
-        .replace(/[0-9.,+]/g, '')
-        .trim();
-
-    // Recherche de la traduction (soit le keyword exact, soit la version nettoyée)
-    const keywordInfo = TRANSLATIONS.keyword[keyword] || TRANSLATIONS.keyword[baseKeywordKey];
+    const keywordInfo = getKeywordInfo(keyword, uiLang);
 
     const handleMouseEnter = () => {
         if (badgeRef.current) {
@@ -61,9 +55,9 @@ export const KeywordBadge: React.FC<KeywordBadgeProps> = ({
                 onMouseEnter={handleMouseEnter}
                 onMouseLeave={handleMouseLeave}
             >
-                <S.BadgeImage 
-                    src={imagePath} 
-                    alt={keyword}
+                <S.BadgeImage
+                    src={imagePath}
+                    alt={keywordInfo?.label || keyword}
                     width={size}
                     height={size}
                     onError={() => setHasError(true)}
@@ -71,13 +65,11 @@ export const KeywordBadge: React.FC<KeywordBadgeProps> = ({
                 {value > 0 && <S.BadgeValue>+{value}</S.BadgeValue>}
             </S.BadgeContainer>
 
-            {/* PORTAL : Injecte le tooltip directement à la racine du DOM (document.body) */}
             {isHovered && keywordInfo && ReactDOM.createPortal(
                 <S.TooltipPortalContainer $top={coords.top} $left={coords.left}>
                     <S.TooltipHeader>
                         <img src={imagePath} alt="" width={16} height={16} />
-                        {/* Affiche le keyword original (ex: "Damage +2") ou le titre traduit */}
-                        <strong>{keywordInfo.label || keyword}</strong>
+                        <strong>{keywordInfo.label}</strong>
                     </S.TooltipHeader>
                     <S.TooltipText>{keywordInfo.description}</S.TooltipText>
                 </S.TooltipPortalContainer>,

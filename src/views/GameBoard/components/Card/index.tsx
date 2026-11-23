@@ -295,9 +295,8 @@ export const Card: React.FC<CardProps> = ({
     const prefs = usePreferencesOptional();
     const currentLang = currentLangProp ?? prefs?.cardLanguage ?? 'fr';
     const chrome = getCardChrome(currentLang);
-    const roamingPenaltyTitle = getUiMessages(
-        prefs?.uiLanguage ?? 'fr'
-    ).chrome.roamingPenalty;
+    const uiChrome = getUiMessages(prefs?.uiLanguage ?? 'fr').chrome;
+    const roamingPenaltyTitle = uiChrome.roamingPenalty;
     const recoilDown = isWoundRecoilDown(card?.kind, localFaction, isOpponent);
     const cardPickId = card?.instanceId || card?.id;
     const isDesignationPick =
@@ -600,7 +599,7 @@ export const Card: React.FC<CardProps> = ({
                 <S.VisualContainer $type={card?.type}>
                     <S.Visual
                         src="interface/lotr_cardback.webp"
-                        alt="Carte masquée"
+                        alt={uiChrome.common.faceDownCard}
                         draggable={false}
                     />
                 </S.VisualContainer>
@@ -1065,8 +1064,10 @@ export const Card: React.FC<CardProps> = ({
                                         >
                                             <S.OrbitalBurdenToken
                                                 src="/interface/tokens/twilight_token.webp"
-                                                alt="Fardeau"
-                                                title={`${burdens} Fardeau(x)`}
+                                                alt={uiChrome.common.burdenToken}
+                                                title={uiChrome.pointsFardeau(
+                                                    burdens
+                                                )}
                                             />
                                         </S.OrbitalBurdenSlot>
                                     );

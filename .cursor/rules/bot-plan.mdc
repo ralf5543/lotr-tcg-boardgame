@@ -1,11 +1,11 @@
 ---
-description: ARCHIVÉ — Plan affronter un BOT (figé ; suite = chat-plan.mdc)
+description: ARCHIVÉ — Plan affronter un BOT (figé ; suite = chat-plan.mdc, aussi figé)
 alwaysApply: false
 ---
 
 # Affronter un BOT (playtest)
 
-> **Plan figé.** Suite : [`chat-plan.mdc`](chat-plan.mdc). Ancien actif après création de deck ([`.cursor/rules/deck-builder-plan.mdc`](deck-builder-plan.mdc)).
+> **Plan figé.** Suite (figée aussi) : [`chat-plan.mdc`](chat-plan.mdc). Ancien actif après création de deck ([`.cursor/rules/deck-builder-plan.mdc`](deck-builder-plan.mdc)).
 
 **Format : Standard (règles modernes).** Voir `.cursor/rules/format-standard.mdc`.
 

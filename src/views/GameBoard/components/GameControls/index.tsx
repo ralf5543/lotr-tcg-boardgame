@@ -27,7 +27,6 @@ import {
     otherPlayerId,
     playerDisplayName,
 } from '../../../../game/logic/playerName';
-import { formatPointsFardeau } from '../../../../game/logic/journal';
 
 /** Libellé court d'un mode de capacité de site « play… » (boutons du toaster). */
 function sitePhaseModeLabel(ability: any, labels: ChromeMessages): string {
@@ -389,7 +388,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
             title: c.toast.chooseFirst,
             body: isAuctionWinner
                 ? c.toast.chooseFirstWin
-                : `${opponentName} choisit qui prend les Peuples Libres…`,
+                : c.toast.chooseFirstWaitNamed(opponentName),
             showPassButton: false,
             type: 'CHOOSING_FIRST',
         };
@@ -398,7 +397,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
             show: true,
             title: c.toast.mulligan,
             body: hasMadeMulliganChoice
-                ? `En attente du choix de ${opponentName}…`
+                ? c.common.waitingFor(opponentName)
                 : c.toast.mulliganBody,
             showPassButton: false,
             type: 'MULLIGAN',
@@ -409,7 +408,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
             title: c.toast.muster,
             body: myMusterState.isDone
                 ? c.common.waitingFor(opponentName)
-                : `Vous avez ${myMusterState.allowedCount} carte(s) avec Rassembleur. Vous pouvez défausser jusqu'à ${myMusterState.allowedCount} carte(s) pour en piocher autant.`,
+                : c.toast.musterBody(myMusterState.allowedCount),
             showPassButton: false,
             type: 'MUSTER',
         };
@@ -1108,7 +1107,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
     const getInstructionText = (): string => {
         if (isBiddingStep) {
             return hasAlreadyBid
-                ? ins.bidRecorded(formatPointsFardeau(currentBid ?? 0))
+                ? ins.bidRecorded(c.pointsFardeau(currentBid ?? 0))
                 : ins.bidChoose;
         }
 

@@ -50,6 +50,10 @@ export type ChromeMessages = {
         twilight: string;
         /** Pluriel si la langue en a un distinct. */
         twilights: string;
+        /** Alt carte face cachée. */
+        faceDownCard: string;
+        /** Alt jeton fardeau. */
+        burdenToken: string;
     };
     toast: {
         actionRequired: string;
@@ -58,10 +62,14 @@ export type ChromeMessages = {
         chooseFirst: string;
         chooseFirstWin: string;
         chooseFirstWait: string;
+        /** Adversaire nomme qui prend les Peuples Libres. */
+        chooseFirstWaitNamed: (name: string) => string;
         mulligan: string;
         mulliganBody: string;
         mulliganWait: string;
         muster: string;
+        /** Consignes muster (Rassembleur). */
+        musterBody: (n: number) => string;
         forcedChoice: string;
         chooseOption: string;
         exert: string;
@@ -273,6 +281,8 @@ const fr: ChromeMessages = {
         twilightPool: 'Crépuscule',
         twilight: 'crépuscule',
         twilights: 'crépuscules',
+        faceDownCard: 'Carte masquée',
+        burdenToken: 'Fardeau',
     },
     toast: {
         actionRequired: 'ACTION REQUISE',
@@ -282,11 +292,15 @@ const fr: ChromeMessages = {
         chooseFirst: 'CHOIX DU PREMIER JOUEUR',
         chooseFirstWin: 'Vous avez gagné l’enchère ! Choisissez votre camp.',
         chooseFirstWait: 'En attente du choix du premier joueur…',
+        chooseFirstWaitNamed: (name) =>
+            `${name} choisit qui prend les Peuples Libres…`,
         mulligan: 'PHASE DE MULLIGAN',
         mulliganBody:
             'Examinez votre main de 8 cartes. Voulez-vous la garder ou faire un Mulligan ?',
         mulliganWait: 'En attente de la décision Mulligan…',
         muster: 'PHASE DE RALLIEMENT (MUSTER)',
+        musterBody: (n) =>
+            `Vous avez ${n} carte${n > 1 ? 's' : ''} avec Rassembleur. Vous pouvez défausser jusqu'à ${n} carte${n > 1 ? 's' : ''} pour en piocher autant.`,
         forcedChoice: 'CHOIX FORCÉ',
         chooseOption: 'Choisissez une option.',
         exert: 'AFFAIBLIR',
@@ -536,6 +550,8 @@ const en: ChromeMessages = {
         twilightPool: 'Twilight',
         twilight: 'twilight',
         twilights: 'twilight',
+        faceDownCard: 'Facedown card',
+        burdenToken: 'Burden',
     },
     toast: {
         actionRequired: 'ACTION REQUIRED',
@@ -545,11 +561,15 @@ const en: ChromeMessages = {
         chooseFirst: 'CHOOSE FIRST PLAYER',
         chooseFirstWin: 'You won the bid! Choose your side.',
         chooseFirstWait: 'Waiting for first player choice…',
+        chooseFirstWaitNamed: (name) =>
+            `${name} is choosing who takes the Free Peoples…`,
         mulligan: 'MULLIGAN',
         mulliganBody:
             'Look at your hand of 8 cards. Keep it or take a mulligan?',
         mulliganWait: 'Waiting for mulligan decision…',
         muster: 'REGROUP (MUSTER)',
+        musterBody: (n) =>
+            `You have ${n} Muster card${n > 1 ? 's' : ''}. You may discard up to ${n} card${n > 1 ? 's' : ''} to draw that many.`,
         forcedChoice: 'FORCED CHOICE',
         chooseOption: 'Choose an option.',
         exert: 'EXERT',
@@ -789,6 +809,8 @@ const de: ChromeMessages = {
         twilightPool: 'Einfluss',
         twilight: 'Einfluss',
         twilights: 'Einfluss',
+        faceDownCard: 'Verdeckte Karte',
+        burdenToken: 'Lastmarke',
     },
     toast: {
         actionRequired: 'AKTION ERFORDERLICH',
@@ -798,11 +820,15 @@ const de: ChromeMessages = {
         chooseFirst: 'ERSTEN SPIELER WÄHLEN',
         chooseFirstWin: 'Du hast das Gebot gewonnen! Wähle deine Seite.',
         chooseFirstWait: 'Warte auf die Wahl des ersten Spielers…',
+        chooseFirstWaitNamed: (name) =>
+            `${name} wählt, wer die Freien Völker übernimmt…`,
         mulligan: 'MULLIGAN',
         mulliganBody:
             'Sieh dir deine 8 Karten an. Behalten oder Mulligan?',
         mulliganWait: 'Warte auf die Mulligan-Entscheidung…',
         muster: 'SAMMELN (MUSTER)',
+        musterBody: (n) =>
+            `Du hast ${n} Muster-Karte${n > 1 ? 'n' : ''}. Du darfst bis zu ${n} Karte${n > 1 ? 'n' : ''} ablegen und ebenso viele ziehen.`,
         forcedChoice: 'ERZWUNGENE WAHL',
         chooseOption: 'Wähle eine Option.',
         exert: 'ERSCHÖPFEN',
@@ -1046,6 +1072,8 @@ const it: ChromeMessages = {
         twilightPool: 'Crepuscolo',
         twilight: 'crepuscolo',
         twilights: 'crepuscolo',
+        faceDownCard: 'Carta coperta',
+        burdenToken: 'Fardello',
     },
     toast: {
         actionRequired: 'AZIONE RICHIESTA',
@@ -1055,11 +1083,15 @@ const it: ChromeMessages = {
         chooseFirst: 'SCELTA DEL PRIMO GIOCATORE',
         chooseFirstWin: 'Hai vinto l’asta! Scegli il tuo schieramento.',
         chooseFirstWait: 'In attesa della scelta del primo giocatore…',
+        chooseFirstWaitNamed: (name) =>
+            `${name} sceglie chi prende i Popoli Liberi…`,
         mulligan: 'MULLIGAN',
         mulliganBody:
             'Guarda la tua mano di 8 carte. Tenerla o fare mulligan?',
         mulliganWait: 'In attesa della decisione sul mulligan…',
         muster: 'RADUNO (MUSTER)',
+        musterBody: (n) =>
+            `Hai ${n} carta${n > 1 ? 'e' : ''} Raduno. Puoi scartare fino a ${n} carta${n > 1 ? 'e' : ''} per pescarne altrettante.`,
         forcedChoice: 'SCELTA OBBLIGATA',
         chooseOption: 'Scegli un’opzione.',
         exert: 'SFINITE',
@@ -1305,6 +1337,8 @@ const es: ChromeMessages = {
         twilightPool: 'Crepúsculo',
         twilight: 'crepúsculo',
         twilights: 'crepúsculo',
+        faceDownCard: 'Carta boca abajo',
+        burdenToken: 'Carga',
     },
     toast: {
         actionRequired: 'ACCIÓN REQUERIDA',
@@ -1314,11 +1348,15 @@ const es: ChromeMessages = {
         chooseFirst: 'ELEGIR PRIMER JUGADOR',
         chooseFirstWin: '¡Ganaste la puja! Elige tu bando.',
         chooseFirstWait: 'Esperando la elección del primer jugador…',
+        chooseFirstWaitNamed: (name) =>
+            `${name} elige quién toma los Pueblos Libres…`,
         mulligan: 'MULLIGAN',
         mulliganBody:
             'Mira tu mano de 8 cartas. ¿La conservas o haces mulligan?',
         mulliganWait: 'Esperando la decisión de mulligan…',
         muster: 'REAGRUPACIÓN (MUSTER)',
+        musterBody: (n) =>
+            `Tienes ${n} carta${n > 1 ? 's' : ''} Recluta. Puedes descartar hasta ${n} carta${n > 1 ? 's' : ''} para robar esa misma cantidad.`,
         forcedChoice: 'ELECCIÓN FORZADA',
         chooseOption: 'Elige una opción.',
         exert: 'AGOTAR',
