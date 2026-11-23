@@ -5,6 +5,11 @@ import type {
     GameState,
     SiteCardState,
 } from '../../types';
+import type { SupportedLanguage } from '../../../i18n/languages';
+import {
+    getDesignationPrompts,
+    localizeWhoLabel,
+} from '../../../i18n/ui/designationPrompts';
 import {
     getEffectiveResistance,
     getEffectiveVitality,
@@ -1783,8 +1788,13 @@ export function abilityNeedsDesignation(
 
 export function formatDesignationPrompt(
     ability: Ability,
-    which: 'cost' | 'effect' | 'auto' = 'auto'
+    which: 'cost' | 'effect' | 'auto' = 'auto',
+    lang: SupportedLanguage = 'fr'
 ): string {
+    const t = getDesignationPrompts(lang);
+    const who = (tokens: string[]) =>
+        localizeWhoLabel(formatAbilityWhoLabel(tokens, true), lang);
+
     const costTarget = ability.cost[0]?.exert?.[0]?.target;
     const discardTarget = ability.cost[0]?.discardFromPlay?.[0]?.target;
     const spotDesignateTarget = ability.cost[0]?.spot?.find(
@@ -1819,7 +1829,7 @@ export function formatDesignationPrompt(
         !Array.isArray(costTarget)
     ) {
         const tokens = spotDesignateTarget.flat();
-        return `Choisissez ${formatAbilityWhoLabel(tokens, true)}.`;
+        return t.chooseWho(who(tokens));
     }
 
     if (
@@ -1827,7 +1837,7 @@ export function formatDesignationPrompt(
         removeTokensCost &&
         removeTokensCost.from !== 'SELF'
     ) {
-        return 'Choisissez une carte dont retirer un jeton.';
+        return t.removeTokenCard;
     }
 
     const costNeed = getCostDesignationCount(ability);
@@ -1836,11 +1846,11 @@ export function formatDesignationPrompt(
         costNeed > 1 &&
         Array.isArray(costTarget)
     ) {
-        return `Choisissez ${costNeed} personnages à affaiblir.`;
+        return t.exertCharacters(costNeed);
     }
 
     if (useEffect && effectTarget === 'SKIRMISHING') {
-        return 'Choisissez un personnage au combat.';
+        return t.skirmishingCharacter;
     }
     if (
         useEffect &&
@@ -1848,7 +1858,7 @@ export function formatDesignationPrompt(
             (item) => item.type === 'REINFORCE_CULTURE_TOKEN'
         )
     ) {
-        return 'Choisissez une carte à renforcer.';
+        return t.reinforceCard;
     }
     if (
         useEffect &&
@@ -1857,13 +1867,13 @@ export function formatDesignationPrompt(
                 item.type === 'STACK_ON_SELF' && item.from === 'HAND'
         )
     ) {
-        return 'Choisissez une carte de votre main à empiler.';
+        return t.stackFromHand;
     }
     if (
         useEffect &&
         (ability.effects || []).some((item) => item.type === 'PLAY_FROM_HAND')
     ) {
-        return 'Choisissez la carte à jouer dans votre main.';
+        return t.playFromHand;
     }
     const target = useEffect
         ? Array.isArray(effectTarget)
@@ -1876,20 +1886,18 @@ export function formatDesignationPrompt(
             : Array.isArray(effectTarget)
               ? effectTarget
               : null;
-    if (!target) return 'Choisissez une cible.';
+    if (!target) return t.chooseTarget;
     // DNF « Gollum or Sméagol »
     if (
         target.length > 1 &&
         target.every((branch) => Array.isArray(branch))
     ) {
-        const parts = target.map((branch) =>
-            formatAbilityWhoLabel(branch.flat(), true)
-        );
-        return `Choisissez ${parts.join(' ou ')}.`;
+        const parts = target.map((branch) => who(branch.flat()));
+        return t.chooseWhoOr(parts);
     }
     const tokens = target.flat();
     if (tokens.includes('PIPEWEED')) {
-        return 'Choisissez une herbe à pipe.';
+        return t.pipeweed;
     }
     const signetToken = tokens.find((token) =>
         token.toUpperCase().startsWith('SIGNET_')
@@ -1898,7 +1906,7 @@ export function formatDesignationPrompt(
         const signet = signetToken.replace(/^SIGNET_/i, '');
         const label =
             signet.charAt(0) + signet.slice(1).toLowerCase();
-        return `Choisissez un compagnon au sceau ${label}.`;
+        return t.signetCompanion(label);
     }
     const healMulti = (ability.effects || []).some(
         (item) =>
@@ -1911,9 +1919,7 @@ export function formatDesignationPrompt(
         const onePer = (ability.effects || []).some(
             (item) => item.type === 'HEAL' && item.onePerCulture
         );
-        return onePer
-            ? 'Choisissez un compagnon blessé de chaque culture.'
-            : 'Choisissez les compagnons à soigner.';
+        return onePer ? t.woundedPerCulture : t.healCompanions;
     }
     const discardMulti = (ability.effects || []).find(
         (item) =>
@@ -1924,11 +1930,11 @@ export function formatDesignationPrompt(
     if (discardMulti && discardMulti.type === 'DISCARD' && useEffect) {
         const n = discardMulti.count || 1;
         if (tokens.includes('CONDITION')) {
-            return `Choisissez ${n} situation${n > 1 ? 's' : ''} à défausser (autant que possible).`;
+            return t.discardConditions(n);
         }
-        return `Choisissez ${n} cible${n > 1 ? 's' : ''} à défausser (autant que possible).`;
+        return t.discardTargets(n);
     }
-    return `Choisissez ${formatAbilityWhoLabel(tokens, true)}.`;
+    return t.chooseWho(who(tokens));
 }
 
 export function isDesignationTargetId(

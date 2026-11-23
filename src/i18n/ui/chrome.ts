@@ -999,22 +999,22 @@ const de: ChromeMessages = {
 const it: ChromeMessages = {
     phases: {
         setup: 'Preparazione',
-        fellowship: 'Fase di Compagnia',
-        shadow: 'Fase Ombra',
+        fellowship: 'Fase della Compagnia',
+        shadow: 'Fase dell’Ombra',
         maneuver: 'Fase di Manovra',
-        archery: 'Fase di Tiro',
+        archery: 'Fase degli Arcieri',
         assignment: 'Fase di Assegnazione',
         skirmish: 'Fase di Schermaglia',
-        regroup: 'Fase di Raduno',
+        regroup: 'Fase di Raccolta',
         short: {
             setup: 'Preparazione',
             fellowship: 'Compagnia',
             shadow: 'Ombra',
             maneuver: 'Manovra',
-            archery: 'Tiro',
+            archery: 'Arcieri',
             assignment: 'Assegnazione',
             skirmish: 'Schermaglia',
-            regroup: 'Raduno',
+            regroup: 'Raccolta',
         },
     },
     banner: {

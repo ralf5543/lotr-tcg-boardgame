@@ -23,7 +23,6 @@ import { SitesPicker } from './components/SitePicker';
 import { GameControls } from './components/GameControls';
 import { useUiMessages } from '../../i18n/ui/useUiMessages';
 import { usePreferencesOptional } from '../../contexts/PreferencesContext';
-import { localizeGameTerms } from '../../i18n/terms';
 import {
     canAttachToCharacter,
     attachesToSite,
@@ -276,8 +275,9 @@ const PendingPlayOnDrag: React.FC<{
                         ? tg.exchangePathSite
                         : abilityReplaceSiteEffect(ability)?.scope === 'REGION'
                           ? tg.replaceRegionSite
-                          : localizeGameTerms(
-                                formatDesignationPrompt(ability),
+                          : formatDesignationPrompt(
+                                ability,
+                                'auto',
                                 uiLanguage
                             )
                     : tg.chooseTarget
@@ -375,8 +375,9 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                         )
                       : getDesignationCandidates(G, source, ability);
             if (candidates.length === 0) return false;
-            const prompt = localizeGameTerms(
-                formatDesignationPrompt(ability, which),
+            const prompt = formatDesignationPrompt(
+                ability,
+                which,
                 uiLanguage
             );
             if (source.type === 'EVENT' && typeof handIndex === 'number') {
@@ -1005,8 +1006,9 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                     selectedCardIds: picked,
                     message:
                         picked.length === 0
-                            ? localizeGameTerms(
-                                  formatDesignationPrompt(ability, 'cost'),
+                            ? formatDesignationPrompt(
+                                  ability,
+                                  'cost',
                                   uiLanguage
                               )
                             : tg.multiProgress(remaining, picked.length, need),
