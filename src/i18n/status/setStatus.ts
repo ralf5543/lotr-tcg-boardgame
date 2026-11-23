@@ -1,4 +1,6 @@
 import type { GameState } from '../../game/types';
+import { formatJournalNotice } from '../journal';
+import type { JournalKey } from '../journal/types';
 import { formatStatusNotice } from './format';
 import type { StatusKey, StatusParams } from './types';
 
@@ -24,4 +26,25 @@ export function clearStatus(G: GameState, fallback = ''): void {
 export function setRawStatus(G: GameState, message: string): void {
     G.statusNotice = null;
     G.statusMessage = message;
+}
+
+/**
+ * Bandeau = plusieurs faits journal (chaque client formate dans sa langue).
+ */
+export function setJournalJoinStatus(
+    G: GameState,
+    entries: Array<{ key: JournalKey; params?: StatusParams }>
+): void {
+    G.statusNotice = {
+        journalJoin: entries.map((e) => ({
+            key: e.key,
+            params: e.params,
+        })),
+    };
+    G.statusMessage = entries
+        .map(
+            (e) =>
+                formatJournalNotice('fr', e.key, e.params || {}).named
+        )
+        .join(' ');
 }

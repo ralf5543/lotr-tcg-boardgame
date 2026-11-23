@@ -1393,10 +1393,17 @@ export function applyAbilityEffect(
                     effects: o.effects,
                 })),
             };
-            setRawStatus(G, effect.message ||
-                (chooserId === fpId
-                    ? 'Les Peuples Libres doivent choisir une option.'
-                    : 'L’Ombre doit choisir une option.'));
+            if (effect.message) {
+                setRawStatus(G, effect.message);
+            } else {
+                setStatus(
+                    G,
+                    chooserId === fpId
+                        ? 'FP_MUST_CHOOSE_OPTION'
+                        : 'SHADOW_MUST_CHOOSE_OPTION',
+                    effect.title ? { title: effect.title } : {}
+                );
+            }
             continue;
         }
 

@@ -1,10 +1,12 @@
 import type { CardState, SiteCardState, GameState } from '../../types';
+import type { StatusKey } from '../../../i18n/status';
 import { canAddThreats } from '../../logic/threats';
 import { isFollowerTransferForbidden } from '../../logic/sites';
 
 export interface AidValidationResult {
     valid: boolean;
-    reason?: string;
+    reasonKey?: StatusKey;
+    reasonParams?: Record<string, string | number>;
 }
 
 export function canTransferAid(
@@ -14,47 +16,39 @@ export function canTransferAid(
     playerID: string
 ): AidValidationResult {
     if (!follower || follower.type !== 'FOLLOWER') {
-        return { valid: false, reason: "La carte n'est pas un Follower." };
+        return { valid: false, reasonKey: 'AID_NOT_FOLLOWER' };
     }
 
     if (isFollowerTransferForbidden(G)) {
-        return {
-            valid: false,
-            reason: 'Les suivants ne peuvent pas être transférés sur ce site.',
-        };
+        return { valid: false, reasonKey: 'AID_SITE_FORBIDDEN' };
     }
 
     if (!follower.aidCost) {
-        return {
-            valid: false,
-            reason: "Ce Follower ne possède pas de coût d'Aide (Aid).",
-        };
+        return { valid: false, reasonKey: 'AID_NO_COST' };
     }
 
     const fpPlayerId = G.fpPlayerId || '0';
     const isFP = playerID === fpPlayerId;
 
-    // 1. Vérification du coût (Twilight, Threat, Burden)
     const { type, amount } = follower.aidCost;
 
     if (type === 'TWILIGHT' && !isFP) {
-        // Un joueur Shadow doit payer du Twilight depuis la réserve
         if ((G.twilightPool || 0) < amount) {
             return {
                 valid: false,
-                reason: `Crépuscule insuffisant (${G.twilightPool || 0}/${amount}).`,
+                reasonKey: 'AID_TWILIGHT_SHORT',
+                reasonParams: {
+                    have: G.twilightPool || 0,
+                    need: amount,
+                },
             };
         }
     }
 
     if (type === 'THREAT' && !canAddThreats(G)) {
-        return {
-            valid: false,
-            reason: 'Le nombre de menaces atteint déjà la limite (compagnons en jeu).',
-        };
+        return { valid: false, reasonKey: 'AID_THREATS_AT_LIMIT' };
     }
 
-    // 2. Validation du type de cible pour un Follower
     const isTargetValid =
         follower.kind === 'FREE_PEOPLE'
             ? targetCard.type === 'COMPANION'
@@ -63,10 +57,10 @@ export function canTransferAid(
     if (!isTargetValid) {
         return {
             valid: false,
-            reason:
+            reasonKey:
                 follower.kind === 'FREE_PEOPLE'
-                    ? 'Un Suivant des Peuples Libres doit être attaché à un Compagnon.'
-                    : "Un Suivant de l'Ombre doit être attaché à un Séide.",
+                    ? 'AID_TARGET_COMPANION'
+                    : 'AID_TARGET_MINION',
         };
     }
 

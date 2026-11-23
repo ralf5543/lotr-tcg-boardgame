@@ -1,7 +1,7 @@
 // src/game/engine/moves/regroupMoves.ts
 
 import type { LotrMoveContext } from '../types';
-import { setRawStatus, setStatus } from '../../i18n/status';
+import { setStatus } from '../../i18n/status';
 import { drawCardsForPlayer } from '../../utils/drawCards';
 import type { GameState } from '../types';
 import { exitStartOf } from '../logic/phaseEntry';
@@ -19,7 +19,7 @@ import { displayTitle } from '../../decks/cardMeta';
 import {
     appendActorJournalNotice,
     appendSideRolesJournal,
-    formatSideRolesStatus,
+    setSideRolesStatus,
 } from '../logic/journal';
 
 // Helper pour renvoyer les Suivants en zone de support à la vraie fin de tour
@@ -232,11 +232,9 @@ export const confirmHandRefill = ({ G, events, playerID }: LotrMoveContext) => {
         }
 
         appendSideRolesJournal(G, nextFpPlayerId, {
-            prefix: 'Nouveau tour !',
+            prefixKey: 'newTurn',
         });
-        setRawStatus(G, formatSideRolesStatus(G, nextFpPlayerId, {
-            prefix: 'Nouveau tour !',
-        }));
+        setSideRolesStatus(G, nextFpPlayerId, 'newTurn');
 
         events?.endTurn?.({ next: nextFpPlayerId });
         // Sanctuaire + capacités « début de compagnie » (ne pas sauter vers fellowship)

@@ -1,5 +1,5 @@
 import type { Ctx } from 'boardgame.io';
-import { setRawStatus } from '../../i18n/status';
+import { setJournalJoinStatus } from '../../i18n/status';
 import type { GameState, CardState, SkirmishState } from '../types';
 import {
     getEffectiveStrength,
@@ -23,10 +23,7 @@ import {
     tryOpenWinsSkirmish,
 } from '../engine/responseWindow';
 import { clearExpiredTempKeywords } from '../engine/abilities/applyAbilityEffect';
-import {
-    formatJournalNotice,
-    type JournalKey,
-} from '../../i18n/journal';
+import type { JournalKey } from '../../i18n/journal';
 import {
     appendJournalNotice,
     formatPointsFardeau,
@@ -280,16 +277,7 @@ export const resolveSkirmish = (G: GameState, _ctx?: Ctx) => {
         appendJournalNotice(G, key, params);
     }
     if (!G.responseWindow?.isOpen && journalPending.length > 0) {
-        // Bandeau live : FR (repli termes côté client si langue ≠ FR).
-        setRawStatus(
-            G,
-            journalPending
-                .map(
-                    ({ key, params }) =>
-                        formatJournalNotice('fr', key, params).named
-                )
-                .join(' ')
-        );
+        setJournalJoinStatus(G, journalPending);
     }
     if (tryOpenCharacterDies(G) === 'WAITING') return;
     if (tryOpenWinsSkirmish(G) === 'WAITING') return;

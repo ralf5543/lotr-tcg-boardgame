@@ -1,5 +1,5 @@
 import type { LotrMoveContext } from '../types';
-import { setRawStatus, setStatus } from '../../i18n/status';
+import { setStatus } from '../../i18n/status';
 import { canTransferAid } from '../engine/validations/canTransferAid';
 import { findTargetCard } from '../../utils/cardUtils';
 import { hasActionableStartOfPhaseCards } from '../logic/hasActionableStartOfPhaseCards';
@@ -78,7 +78,9 @@ export const transferAid = (
 
     const validation = canTransferAid(follower, targetCard, G, playerID);
     if (!validation.valid) {
-        setRawStatus(G, `Transfert Aid impossible : ${validation.reason}`);
+        if (validation.reasonKey) {
+            setStatus(G, validation.reasonKey, validation.reasonParams || {});
+        }
         return 'INVALID_MOVE';
     }
 

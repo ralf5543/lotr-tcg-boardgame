@@ -164,6 +164,17 @@ export type StatusKey =
     | 'REVEAL_MAY_DISCARD'
     | 'REVEAL_OPPONENT_HAND'
     | 'REVEAL_YOUR_HAND_WAIT'
+    | 'SIDE_ROLES'
+    | 'SHADOW_MUST_CHOOSE_OPTION'
+    | 'AID_NOT_FOLLOWER'
+    | 'AID_SITE_FORBIDDEN'
+    | 'AID_NO_COST'
+    | 'AID_TWILIGHT_SHORT'
+    | 'AID_THREATS_AT_LIMIT'
+    | 'AID_TARGET_COMPANION'
+    | 'AID_TARGET_MINION'
+    | 'SIDE_ROLES_NEW_TURN'
+    | 'SIDE_ROLES_PLACE_SITE_ONE'
     | 'GENERIC';
 
 export type StatusParams = Record<
@@ -172,6 +183,15 @@ export type StatusParams = Record<
 >;
 
 export type StatusNotice = {
-    key: StatusKey;
+    /** Clé catalogue — absente si `journalJoin` seul. */
+    key?: StatusKey;
     params?: StatusParams;
+    /**
+     * Miroir bandeau = plusieurs faits journal formatés localement
+     * (ex. résolution d’escarmouche).
+     */
+    journalJoin?: Array<{
+        key: string;
+        params?: StatusParams;
+    }>;
 };

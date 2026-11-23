@@ -56,7 +56,7 @@ import {
     appendPhaseJournal,
     appendSideRolesJournal,
     formatPointsFardeau,
-    formatSideRolesStatus,
+    setSideRolesStatus,
 } from './logic/journal';
 import { displayFullName } from '../decks/cardMeta';
 import {
@@ -512,12 +512,7 @@ export const LotrGame: Game<GameState> = {
                     G.setupState.step = 'AWAITING_SITE';
                     G.awaitingSiteSelection = true;
                     appendSideRolesJournal(G, G.fpPlayerId || '0');
-                    setRawStatus(
-                        G,
-                        formatSideRolesStatus(G, G.fpPlayerId || '0', {
-                            suffix: 'Posez le site 1.',
-                        })
-                    );
+                    setSideRolesStatus(G, G.fpPlayerId || '0', 'placeSiteOne');
                 },
 
                 selectStartingSite: (

@@ -304,29 +304,39 @@ function catalogFor(lang: SupportedLanguage): Record<JournalKey, Template> {
                     named: `${p.player} ha decidido avanzar de nuevo.`,
                 },
             })[lang],
-        SIDE_FREE_PEOPLES: (p) =>
-            ({
+        SIDE_FREE_PEOPLES: (p) => {
+            const prefixes = {
+                fr: 'Nouveau tour ! ',
+                en: 'New turn! ',
+                de: 'Neuer Zug! ',
+                it: 'Nuovo turno! ',
+                es: '¡Nuevo turno! ',
+            };
+            const prefix =
+                p.prefixKey === 'newTurn' ? prefixes[lang] : '';
+            return {
                 fr: {
-                    vous: `${p.prefix || ''}Vous jouez les Peuples Libres.`.trim(),
-                    named: `${p.prefix || ''}${p.player} joue les Peuples Libres.`.trim(),
+                    vous: `${prefix}Vous jouez les Peuples Libres.`,
+                    named: `${prefix}${p.player} joue les Peuples Libres.`,
                 },
                 en: {
-                    vous: `${p.prefix || ''}You play Free Peoples.`.trim(),
-                    named: `${p.prefix || ''}${p.player} plays Free Peoples.`.trim(),
+                    vous: `${prefix}You play Free Peoples.`,
+                    named: `${prefix}${p.player} plays Free Peoples.`,
                 },
                 de: {
-                    vous: `${p.prefix || ''}Du spielst die Freien Völker.`.trim(),
-                    named: `${p.prefix || ''}${p.player} spielt die Freien Völker.`.trim(),
+                    vous: `${prefix}Du spielst die Freien Völker.`,
+                    named: `${prefix}${p.player} spielt die Freien Völker.`,
                 },
                 it: {
-                    vous: `${p.prefix || ''}Giochi i Popoli Liberi.`.trim(),
-                    named: `${p.prefix || ''}${p.player} gioca i Popoli Liberi.`.trim(),
+                    vous: `${prefix}Giochi i Popoli Liberi.`,
+                    named: `${prefix}${p.player} gioca i Popoli Liberi.`,
                 },
                 es: {
-                    vous: `${p.prefix || ''}Juegas Pueblos Libres.`.trim(),
-                    named: `${p.prefix || ''}${p.player} juega Pueblos Libres.`.trim(),
+                    vous: `${prefix}Juegas Pueblos Libres.`,
+                    named: `${prefix}${p.player} juega Pueblos Libres.`,
                 },
-            })[lang],
+            }[lang];
+        },
         SIDE_SHADOW: (p) =>
             ({
                 fr: {

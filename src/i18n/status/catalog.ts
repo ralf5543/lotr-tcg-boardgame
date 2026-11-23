@@ -234,10 +234,34 @@ const fr: Record<StatusKey, Template> = {
     TRANSFER_NO_LOSER: 'Aucun perdant pour le transfert.',
     TRANSFER_NO_CLASS_SKIRMISH: 'Aucun personnage n’escarmouche la classe indiquée.',
     TRANSFER_NO_TARGET: 'Aucune cible pour le transfert.',
-    FP_MUST_CHOOSE_OPTION: (p) => `${p.title} : les Peuples Libres doivent choisir une option.`,
+    FP_MUST_CHOOSE_OPTION: (p) =>
+        p.title
+            ? `${p.title} : les Peuples Libres doivent choisir une option.`
+            : 'Les Peuples Libres doivent choisir une option.',
     REVEAL_MAY_DISCARD: 'Cartes révélées : cliquez-en une pour la défausser, ou validez sans défausser.',
     REVEAL_OPPONENT_HAND: 'Main adverse révélée : consultez les cartes puis validez.',
     REVEAL_YOUR_HAND_WAIT: 'Votre main est révélée : l’adversaire consulte…',
+    SIDE_ROLES: (p) =>
+        `${p.fp} joue les Peuples Libres. ${p.shadow} joue l’Ombre.`,
+    SHADOW_MUST_CHOOSE_OPTION: 'L’Ombre doit choisir une option.',
+    AID_NOT_FOLLOWER:
+        'Transfert Aid impossible : la carte n’est pas un Suivant.',
+    AID_SITE_FORBIDDEN:
+        'Transfert Aid impossible : les suivants ne peuvent pas être transférés sur ce site.',
+    AID_NO_COST:
+        'Transfert Aid impossible : ce Suivant n’a pas de coût d’Aide.',
+    AID_TWILIGHT_SHORT: (p) =>
+        `Transfert Aid impossible : crépuscule insuffisant (${p.have}/${p.need}).`,
+    AID_THREATS_AT_LIMIT:
+        'Transfert Aid impossible : le nombre de menaces atteint déjà la limite (compagnons en jeu).',
+    AID_TARGET_COMPANION:
+        'Transfert Aid impossible : un Suivant des Peuples Libres doit être attaché à un Compagnon.',
+    AID_TARGET_MINION:
+        'Transfert Aid impossible : un Suivant de l’Ombre doit être attaché à un Séide.',
+    SIDE_ROLES_NEW_TURN: (p) =>
+        `Nouveau tour ! ${p.fp} joue les Peuples Libres. ${p.shadow} joue l’Ombre.`,
+    SIDE_ROLES_PLACE_SITE_ONE: (p) =>
+        `${p.fp} joue les Peuples Libres. ${p.shadow} joue l’Ombre. Posez le site 1.`,
     GENERIC: (p) => String(p.text ?? ''),
 };
 
@@ -463,10 +487,34 @@ const en: Record<StatusKey, Template> = {
     TRANSFER_NO_LOSER: 'No loser for the transfer.',
     TRANSFER_NO_CLASS_SKIRMISH: 'No character is skirmishing the indicated class.',
     TRANSFER_NO_TARGET: 'No target for the transfer.',
-    FP_MUST_CHOOSE_OPTION: (p) => `${p.title}: Free Peoples must choose an option.`,
+    FP_MUST_CHOOSE_OPTION: (p) =>
+        p.title
+            ? `${p.title}: Free Peoples must choose an option.`
+            : 'Free Peoples must choose an option.',
     REVEAL_MAY_DISCARD: 'Revealed cards: click one to discard, or confirm without discarding.',
     REVEAL_OPPONENT_HAND: 'Opponent’s hand revealed: review the cards then confirm.',
     REVEAL_YOUR_HAND_WAIT: 'Your hand is revealed: the opponent is reviewing…',
+    SIDE_ROLES: (p) =>
+        `${p.fp} plays Free Peoples. ${p.shadow} plays Shadow.`,
+    SHADOW_MUST_CHOOSE_OPTION: 'Shadow must choose an option.',
+    AID_NOT_FOLLOWER:
+        'Aid transfer impossible: the card is not a Follower.',
+    AID_SITE_FORBIDDEN:
+        'Aid transfer impossible: followers cannot be transferred at this site.',
+    AID_NO_COST:
+        'Aid transfer impossible: this Follower has no Aid cost.',
+    AID_TWILIGHT_SHORT: (p) =>
+        `Aid transfer impossible: not enough Twilight (${p.have}/${p.need}).`,
+    AID_THREATS_AT_LIMIT:
+        'Aid transfer impossible: threats already at the limit (companions in play).',
+    AID_TARGET_COMPANION:
+        'Aid transfer impossible: a Free Peoples Follower must attach to a Companion.',
+    AID_TARGET_MINION:
+        'Aid transfer impossible: a Shadow Follower must attach to a Minion.',
+    SIDE_ROLES_NEW_TURN: (p) =>
+        `New turn! ${p.fp} plays Free Peoples. ${p.shadow} plays Shadow.`,
+    SIDE_ROLES_PLACE_SITE_ONE: (p) =>
+        `${p.fp} plays Free Peoples. ${p.shadow} plays Shadow. Place site 1.`,
     GENERIC: (p) => String(p.text ?? ''),
 };
 
@@ -695,10 +743,34 @@ const de: Record<StatusKey, Template> = {
     TRANSFER_NO_LOSER: 'Kein Verlierer für den Transfer.',
     TRANSFER_NO_CLASS_SKIRMISH: 'Kein Charakter kämpft gegen die angegebene Klasse.',
     TRANSFER_NO_TARGET: 'Kein Ziel für den Transfer.',
-    FP_MUST_CHOOSE_OPTION: (p) => `${p.title}: Freie Völker müssen eine Option wählen.`,
+    FP_MUST_CHOOSE_OPTION: (p) =>
+        p.title
+            ? `${p.title}: Freie Völker müssen eine Option wählen.`
+            : 'Freie Völker müssen eine Option wählen.',
     REVEAL_MAY_DISCARD: 'Aufgedeckte Karten: Klicke eine zum Ablegen, oder bestätige ohne Ablage.',
     REVEAL_OPPONENT_HAND: 'Gegnerische Hand aufgedeckt: Sieh die Karten an und bestätige.',
     REVEAL_YOUR_HAND_WAIT: 'Deine Hand ist aufgedeckt: der Gegner prüft…',
+    SIDE_ROLES: (p) =>
+        `${p.fp} spielt die Freien Völker. ${p.shadow} spielt Schatten.`,
+    SHADOW_MUST_CHOOSE_OPTION: 'Schatten muss eine Option wählen.',
+    AID_NOT_FOLLOWER:
+        'Aid-Transfer unmöglich: die Karte ist kein Gefährte.',
+    AID_SITE_FORBIDDEN:
+        'Aid-Transfer unmöglich: Gefährten können an diesem Ort nicht transferiert werden.',
+    AID_NO_COST:
+        'Aid-Transfer unmöglich: dieser Gefährte hat keine Aid-Kosten.',
+    AID_TWILIGHT_SHORT: (p) =>
+        `Aid-Transfer unmöglich: nicht genug Einfluss (${p.have}/${p.need}).`,
+    AID_THREATS_AT_LIMIT:
+        'Aid-Transfer unmöglich: Bedrohungen bereits am Limit (Gefährten im Spiel).',
+    AID_TARGET_COMPANION:
+        'Aid-Transfer unmöglich: ein Freie-Völker-Gefährte muss an einen Gefährten angelegt werden.',
+    AID_TARGET_MINION:
+        'Aid-Transfer unmöglich: ein Schatten-Gefährte muss an einen Diener angelegt werden.',
+    SIDE_ROLES_NEW_TURN: (p) =>
+        `Neuer Zug! ${p.fp} spielt die Freien Völker. ${p.shadow} spielt Schatten.`,
+    SIDE_ROLES_PLACE_SITE_ONE: (p) =>
+        `${p.fp} spielt die Freien Völker. ${p.shadow} spielt Schatten. Lege Ort 1.`,
     GENERIC: (p) => String(p.text ?? ''),
 };
 
@@ -927,10 +999,34 @@ const it: Record<StatusKey, Template> = {
     TRANSFER_NO_LOSER: 'Nessun perdente per il trasferimento.',
     TRANSFER_NO_CLASS_SKIRMISH: 'Nessun personaggio schermaglia la classe indicata.',
     TRANSFER_NO_TARGET: 'Nessun bersaglio per il trasferimento.',
-    FP_MUST_CHOOSE_OPTION: (p) => `${p.title}: i Popoli Liberi devono scegliere un’opzione.`,
+    FP_MUST_CHOOSE_OPTION: (p) =>
+        p.title
+            ? `${p.title}: i Popoli Liberi devono scegliere un’opzione.`
+            : 'I Popoli Liberi devono scegliere un’opzione.',
     REVEAL_MAY_DISCARD: 'Carte rivelate: cliccane una per scartarla, o conferma senza scartare.',
     REVEAL_OPPONENT_HAND: 'Mano avversaria rivelata: consulta le carte poi conferma.',
     REVEAL_YOUR_HAND_WAIT: 'La tua mano è rivelata: l’avversario consulta…',
+    SIDE_ROLES: (p) =>
+        `${p.fp} gioca i Popoli Liberi. ${p.shadow} gioca Ombra.`,
+    SHADOW_MUST_CHOOSE_OPTION: 'L’Ombra deve scegliere un’opzione.',
+    AID_NOT_FOLLOWER:
+        'Trasferimento Aid impossibile: la carta non è un Seguace.',
+    AID_SITE_FORBIDDEN:
+        'Trasferimento Aid impossibile: i seguaci non possono essere trasferiti su questo sito.',
+    AID_NO_COST:
+        'Trasferimento Aid impossibile: questo Seguace non ha un costo Aid.',
+    AID_TWILIGHT_SHORT: (p) =>
+        `Trasferimento Aid impossibile: crepuscolo insufficiente (${p.have}/${p.need}).`,
+    AID_THREATS_AT_LIMIT:
+        'Trasferimento Aid impossibile: le minacce sono già al limite (compagni in gioco).',
+    AID_TARGET_COMPANION:
+        'Trasferimento Aid impossibile: un Seguace dei Popoli Liberi deve essere attaccato a un Compagno.',
+    AID_TARGET_MINION:
+        'Trasferimento Aid impossibile: un Seguace dell’Ombra deve essere attaccato a un Servitore.',
+    SIDE_ROLES_NEW_TURN: (p) =>
+        `Nuovo turno! ${p.fp} gioca i Popoli Liberi. ${p.shadow} gioca Ombra.`,
+    SIDE_ROLES_PLACE_SITE_ONE: (p) =>
+        `${p.fp} gioca i Popoli Liberi. ${p.shadow} gioca Ombra. Piazza il sito 1.`,
     GENERIC: (p) => String(p.text ?? ''),
 };
 
@@ -1159,10 +1255,34 @@ const es: Record<StatusKey, Template> = {
     TRANSFER_NO_LOSER: 'Ningún perdedor para el traslado.',
     TRANSFER_NO_CLASS_SKIRMISH: 'Ningún personaje combate la clase indicada.',
     TRANSFER_NO_TARGET: 'Ningún objetivo para el traslado.',
-    FP_MUST_CHOOSE_OPTION: (p) => `${p.title}: los Pueblos Libres deben elegir una opción.`,
+    FP_MUST_CHOOSE_OPTION: (p) =>
+        p.title
+            ? `${p.title}: los Pueblos Libres deben elegir una opción.`
+            : 'Los Pueblos Libres deben elegir una opción.',
     REVEAL_MAY_DISCARD: 'Cartas reveladas: haz clic en una para descartarla, o valida sin descartar.',
     REVEAL_OPPONENT_HAND: 'Mano rival revelada: consulta las cartas y valida.',
     REVEAL_YOUR_HAND_WAIT: 'Tu mano está revelada: el rival consulta…',
+    SIDE_ROLES: (p) =>
+        `${p.fp} juega Pueblos Libres. ${p.shadow} juega Sombra.`,
+    SHADOW_MUST_CHOOSE_OPTION: 'La Sombra debe elegir una opción.',
+    AID_NOT_FOLLOWER:
+        'Traslado Aid imposible: la carta no es un Seguidor.',
+    AID_SITE_FORBIDDEN:
+        'Traslado Aid imposible: los seguidores no pueden trasladarse en este sitio.',
+    AID_NO_COST:
+        'Traslado Aid imposible: este Seguidor no tiene coste Aid.',
+    AID_TWILIGHT_SHORT: (p) =>
+        `Traslado Aid imposible: crepúsculo insuficiente (${p.have}/${p.need}).`,
+    AID_THREATS_AT_LIMIT:
+        'Traslado Aid imposible: las amenazas ya están al límite (compañeros en juego).',
+    AID_TARGET_COMPANION:
+        'Traslado Aid imposible: un Seguidor de Pueblos Libres debe adjuntarse a un Compañero.',
+    AID_TARGET_MINION:
+        'Traslado Aid imposible: un Seguidor de Sombra debe adjuntarse a un Esbirro.',
+    SIDE_ROLES_NEW_TURN: (p) =>
+        `¡Nuevo turno! ${p.fp} juega Pueblos Libres. ${p.shadow} juega Sombra.`,
+    SIDE_ROLES_PLACE_SITE_ONE: (p) =>
+        `${p.fp} juega Pueblos Libres. ${p.shadow} juega Sombra. Coloca el sitio 1.`,
     GENERIC: (p) => String(p.text ?? ''),
 };
 

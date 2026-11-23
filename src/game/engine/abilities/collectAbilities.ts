@@ -7,7 +7,7 @@ import {
 } from './resolveCostTarget';
 import { getCurrentSiteIndex } from '../../logic/sites';
 import type { SupportedLanguage } from '../../../i18n/languages';
-import { localizeTwilightWords } from '../../../i18n/terms';
+import { localizeGameTerms } from '../../../i18n/terms';
 
 export function abilityMatchesPhase(ability: Ability, rawPhase: string): boolean {
     const currentPhase = (rawPhase || '').toUpperCase();
@@ -1423,8 +1423,9 @@ export function formatAbilityLabelParts(
     uiLang: SupportedLanguage = 'fr'
 ): { cost: string; effect: string } {
     const finish = (costLabel: string, effectLabel: string) => ({
-        cost: localizeTwilightWords(costLabel, uiLang),
-        effect: localizeTwilightWords(effectLabel, uiLang),
+        // Repli termes (pas une grammaire complète) tant que l’AST n’est pas 5×.
+        cost: localizeGameTerms(costLabel, uiLang),
+        effect: localizeGameTerms(effectLabel, uiLang),
     });
 
     // Préférer la clause FR papier (`textFr`) ; sinon génération depuis le modèle.

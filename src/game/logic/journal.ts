@@ -1,3 +1,4 @@
+import { setStatus } from '../../i18n/status';
 import {
     catalogCardId,
     displayFullName,
@@ -214,19 +215,16 @@ export function formatPointsFardeau(count: number): string {
 export function appendSideRolesJournal(
     G: GameState,
     fpPlayerId: string,
-    options?: { prefix?: string }
+    options?: { prefixKey?: 'newTurn' }
 ): void {
     const fpId = String(fpPlayerId);
     const shadowId = otherPlayerId(fpId);
     const fpName = playerDisplayName(G, fpId);
     const shadowName = playerDisplayName(G, shadowId);
-    const prefix = options?.prefix?.trim()
-        ? `${options.prefix.trim()} `
-        : '';
 
     appendActorJournalNotice(G, fpId, 'SIDE_FREE_PEOPLES', {
         player: fpName,
-        prefix,
+        ...(options?.prefixKey ? { prefixKey: options.prefixKey } : {}),
     });
     appendActorJournalNotice(G, shadowId, 'SIDE_SHADOW', {
         player: shadowName,
@@ -248,6 +246,27 @@ export function formatSideRolesStatus(
         ? ` ${options.suffix.trim()}`
         : '';
     return `${prefix}${playerDisplayName(G, fpId)} joue les Peuples Libres. ${playerDisplayName(G, shadowId)} joue l’Ombre.${suffix}`;
+}
+
+/** Pose le bandeau rôles (5 langues). */
+export function setSideRolesStatus(
+    G: GameState,
+    fpPlayerId: string,
+    variant: 'plain' | 'newTurn' | 'placeSiteOne' = 'plain'
+): void {
+    const fpId = String(fpPlayerId);
+    const shadowId = otherPlayerId(fpId);
+    const params = {
+        fp: playerDisplayName(G, fpId),
+        shadow: playerDisplayName(G, shadowId),
+    };
+    const key =
+        variant === 'newTurn'
+            ? 'SIDE_ROLES_NEW_TURN'
+            : variant === 'placeSiteOne'
+              ? 'SIDE_ROLES_PLACE_SITE_ONE'
+              : 'SIDE_ROLES';
+    setStatus(G, key, params);
 }
 
 /** `startOfFellowship` / `fellowship` → clé FELLOWSHIP + libellé FR. */
