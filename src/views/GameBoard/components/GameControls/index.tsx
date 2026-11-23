@@ -14,6 +14,7 @@ import {
     formatStatusNotice,
     formatStoredStatus,
 } from '../../../../i18n/status';
+import { localizeGameTerms } from '../../../../i18n/terms';
 import { findTargetCard } from '../../../../utils/cardUtils';
 import { getAbilityToastClause } from '../../../../utils/i18n';
 import { FormattedText } from '../../../../utils/FormattedText';
@@ -448,11 +449,20 @@ export const GameControls: React.FC<GameControlsProps> = ({
         toastConfig = {
             show: true,
             title:
-                G.pendingForcedChoice?.title ||
-                c.toast.forcedChoice,
+                !G.pendingForcedChoice?.title ||
+                G.pendingForcedChoice.title === 'CHOIX FORCÉ'
+                    ? c.toast.forcedChoice
+                    : G.pendingForcedChoice.title,
             body:
-                G.pendingForcedChoice?.message ||
-                G.statusMessage ||
+                formatStoredStatus(
+                    uiLanguage,
+                    G.statusNotice,
+                    G.statusMessage
+                ) ||
+                localizeGameTerms(
+                    G.pendingForcedChoice?.message || '',
+                    uiLanguage
+                ) ||
                 c.toast.chooseOption,
             showPassButton: false,
             type: 'FORCED_CHOICE',

@@ -1387,7 +1387,7 @@ export function applyAbilityEffect(
                 message:
                     effect.message ||
                     G.statusMessage ||
-                    'Choisissez une option pour résoudre cet effet.',
+                    '',
                 options: legalOptions.map((o) => ({
                     label: o.label,
                     effects: o.effects,
