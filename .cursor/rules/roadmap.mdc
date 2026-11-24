@@ -46,7 +46,7 @@ Statuts : `en cours` · `à faire` · `plus tard` · `fait` · `pause`
 | **Chat** | **fait** | Fil journal + chat ; densité OK. Plan figé : [`chat-plan.mdc`](chat-plan.mdc). |
 | **Gagner / Perdre** | **fait** | Site 9 / corruption / mort Porteur + overlay. Plan : [`win-lose-plan.mdc`](win-lose-plan.mdc) (embellisement plus tard). |
 | **Options** | **fait** | UI 5 langues en l’état (chrome, consignes, status/journal, mots-clés, deck builder). Hors scope : DEV, `effect.message` papier, grammaire AST 5×. |
-| **Écran de bienvenue** | à faire | Avant le plateau boardgame.io (lobby / menu). |
+| **Écran de bienvenue** | **en cours** | Accueil classique (hors scale) : menu provisoire → decks / options / partie. |
 | **Exceptions de cartes** | à faire | Cartes trop spécifiques — handlers par id, en dernier. Liste : [`card-exceptions.mdc`](card-exceptions.mdc). |
 | **Visuel artefacts** | **fait** | Calques culture artefact validés (commit antérieur). |
 

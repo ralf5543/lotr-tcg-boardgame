@@ -7,6 +7,7 @@ import { isBotMatchFromUrl } from './game/bot';
 import { SoloBotMatch } from './game/bot/SoloBotMatch';
 import { GameBoard } from './views/GameBoard';
 import { DeckBuilder } from './views/DeckBuilder';
+import { Welcome } from './views/Welcome';
 import { HoverCardProvider } from './contexts/HoverCardProvider';
 import { CustomAssetCursor } from './views/GameBoard/components/CustomCursor';
 import { DragProvider } from './contexts/DragProvider';
@@ -35,29 +36,58 @@ const DESIGN_HEIGHT = 1080;
 
 const syncChannel = new BroadcastChannel('lotr_match_sync');
 
+type AppScreen = 'welcome' | 'decks' | 'play';
+
+function resolveScreen(search: string): {
+    screen: AppScreen;
+    myPlayerId: string;
+    currentMatchId: string;
+    isBotMatch: boolean;
+} {
+    const searchParams = new URLSearchParams(search);
+    const bot = isBotMatchFromUrl(search);
+    const view = searchParams.get('view') || '';
+    const myPlayerId = bot ? '0' : searchParams.get('player') || '0';
+    const currentMatchId = searchParams.get('match') || 'default';
+
+    if (view === 'decks') {
+        return { screen: 'decks', myPlayerId, currentMatchId, isBotMatch: bot };
+    }
+
+    // Partie explicite, BOT, ou deep-link playtest (?player= / ?match=).
+    const wantsPlay =
+        view === 'play' ||
+        bot ||
+        searchParams.has('player') ||
+        searchParams.has('match');
+
+    if (wantsPlay) {
+        return { screen: 'play', myPlayerId, currentMatchId, isBotMatch: bot };
+    }
+
+    return {
+        screen: 'welcome',
+        myPlayerId,
+        currentMatchId,
+        isBotMatch: false,
+    };
+}
+
 function App() {
     const [scale, setScale] = useState(1);
     const containerRef = useRef<HTMLDivElement>(null);
 
-    const [{ myPlayerId, currentMatchId, view, isBotMatch }] = useState(() => {
-        const searchParams = new URLSearchParams(window.location.search);
-        const bot = isBotMatchFromUrl(window.location.search);
-        return {
-            myPlayerId: bot ? '0' : searchParams.get('player') || '0',
-            currentMatchId: searchParams.get('match') || 'default',
-            view: searchParams.get('view') || '',
-            isBotMatch: bot,
-        };
-    });
+    const [{ screen, myPlayerId, currentMatchId, isBotMatch }] = useState(() =>
+        resolveScreen(window.location.search)
+    );
 
-    // Écran decks : curseur système (pas le curseur custom du plateau).
+    // Accueil / decks : curseur système (pas le curseur custom du plateau).
     useEffect(() => {
-        if (view !== 'decks') return;
+        if (screen === 'play') return;
         document.body.classList.add('native-cursor');
         return () => document.body.classList.remove('native-cursor');
-    }, [view]);
+    }, [screen]);
 
-    // GESTION GLOBALE DES SONS DE CLIC SUR TOUS LES BOUTONS
     useEffect(() => {
         const handleGlobalClick = (event: MouseEvent) => {
             const target = event.target as HTMLElement | null;
@@ -78,6 +108,7 @@ function App() {
         const handleSync = (event: MessageEvent) => {
             if (event.data?.type === 'NEW_MATCH') {
                 const url = new URL(window.location.href);
+                url.searchParams.set('view', 'play');
                 url.searchParams.set('match', event.data.matchId);
                 url.searchParams.delete('bot');
                 window.location.href = url.toString();
@@ -89,6 +120,8 @@ function App() {
     }, []);
 
     useEffect(() => {
+        if (screen === 'welcome') return;
+
         const handleResize = () => {
             if (!containerRef.current) return;
 
@@ -101,9 +134,19 @@ function App() {
         window.addEventListener('resize', handleResize);
         handleResize();
         return () => window.removeEventListener('resize', handleResize);
-    }, []);
+    }, [screen]);
 
-    if (view === 'decks') {
+    if (screen === 'welcome') {
+        return (
+            <PreferencesProvider>
+                <ScreenViewport>
+                    <Welcome />
+                </ScreenViewport>
+            </PreferencesProvider>
+        );
+    }
+
+    if (screen === 'decks') {
         return (
             <PreferencesProvider>
                 <ScreenViewport>
@@ -155,8 +198,6 @@ function App() {
 }
 
 export default App;
-
-// --- STYLES ---
 
 const ScreenViewport = styled.div`
     width: 100vw;

@@ -42,9 +42,16 @@ import { formatDeckIssue } from '../../i18n/ui/deckValidation';
 
 function goToBoard(matchId?: string) {
     const url = new URL(window.location.href);
-    url.searchParams.delete('view');
     url.searchParams.delete('bot');
-    if (matchId) url.searchParams.set('match', matchId);
+    url.searchParams.set('view', 'play');
+    if (matchId) {
+        url.searchParams.set('match', matchId);
+    } else if (!url.searchParams.has('match')) {
+        url.searchParams.set('match', 'default');
+    }
+    if (!url.searchParams.has('player')) {
+        url.searchParams.set('player', '0');
+    }
     window.location.href = url.toString();
 }
 

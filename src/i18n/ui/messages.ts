@@ -71,6 +71,13 @@ export type UiMessages = {
         sites: string;
         options: string;
     };
+    welcome: {
+        menuAria: string;
+        collection: string;
+        play: string;
+        tutorial: string;
+        soon: string;
+    };
 };
 
 type UiBase = Omit<UiMessages, 'chrome' | 'targeting' | 'deckBuilder'>;
@@ -125,7 +132,7 @@ const fr: UiBase = {
             soon: 'bientôt',
         },
         quit: 'Quitter le jeu',
-        quitPrompt: 'Quitter ? (pas d’écran d’accueil pour l’instant)',
+        quitPrompt: 'Quitter la partie et revenir à l’accueil ?',
         cancel: 'Annuler',
         confirm: 'Confirmer',
     },
@@ -133,6 +140,13 @@ const fr: UiBase = {
         hand: 'Main',
         sites: 'Sites',
         options: 'Options',
+    },
+    welcome: {
+        menuAria: 'Menu principal',
+        collection: 'Ma collection',
+        play: 'Lancer une partie',
+        tutorial: 'Tutoriel',
+        soon: 'Bientôt',
     },
 };
 
@@ -186,7 +200,7 @@ const en: UiBase = {
             soon: 'coming soon',
         },
         quit: 'Quit game',
-        quitPrompt: 'Quit? (no home screen yet)',
+        quitPrompt: 'Leave the match and return to home?',
         cancel: 'Cancel',
         confirm: 'Confirm',
     },
@@ -194,6 +208,13 @@ const en: UiBase = {
         hand: 'Hand',
         sites: 'Sites',
         options: 'Options',
+    },
+    welcome: {
+        menuAria: 'Main menu',
+        collection: 'My collection',
+        play: 'Start a game',
+        tutorial: 'Tutorial',
+        soon: 'Coming soon',
     },
 };
 
@@ -247,7 +268,7 @@ const de: UiBase = {
             soon: 'demnächst',
         },
         quit: 'Spiel beenden',
-        quitPrompt: 'Beenden? (noch kein Startbildschirm)',
+        quitPrompt: 'Partie verlassen und zum Startbildschirm?',
         cancel: 'Abbrechen',
         confirm: 'Bestätigen',
     },
@@ -255,6 +276,13 @@ const de: UiBase = {
         hand: 'Hand',
         sites: 'Orte',
         options: 'Optionen',
+    },
+    welcome: {
+        menuAria: 'Hauptmenü',
+        collection: 'Meine Sammlung',
+        play: 'Partie starten',
+        tutorial: 'Tutorial',
+        soon: 'Demnächst',
     },
 };
 
@@ -308,7 +336,7 @@ const it: UiBase = {
             soon: 'presto',
         },
         quit: 'Esci dal gioco',
-        quitPrompt: 'Uscire? (nessuna schermata iniziale per ora)',
+        quitPrompt: 'Lasciare la partita e tornare al menu?',
         cancel: 'Annulla',
         confirm: 'Conferma',
     },
@@ -316,6 +344,13 @@ const it: UiBase = {
         hand: 'Mano',
         sites: 'Siti',
         options: 'Opzioni',
+    },
+    welcome: {
+        menuAria: 'Menu principale',
+        collection: 'La mia collezione',
+        play: 'Avvia una partita',
+        tutorial: 'Tutorial',
+        soon: 'Presto',
     },
 };
 
@@ -369,7 +404,7 @@ const es: UiBase = {
             soon: 'pronto',
         },
         quit: 'Salir del juego',
-        quitPrompt: '¿Salir? (aún no hay pantalla de inicio)',
+        quitPrompt: '¿Dejar la partida y volver al inicio?',
         cancel: 'Cancelar',
         confirm: 'Confirmar',
     },
@@ -377,6 +412,13 @@ const es: UiBase = {
         hand: 'Mano',
         sites: 'Sitios',
         options: 'Opciones',
+    },
+    welcome: {
+        menuAria: 'Menú principal',
+        collection: 'Mi colección',
+        play: 'Empezar una partida',
+        tutorial: 'Tutorial',
+        soon: 'Pronto',
     },
 };
 
