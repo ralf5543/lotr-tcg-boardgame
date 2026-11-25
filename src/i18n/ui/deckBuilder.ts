@@ -66,6 +66,7 @@ export type DeckBuilderMessages = {
         delete: string;
         assign: string;
         startMatch: string;
+        serverFull: string;
         startBot: string;
     };
 };
@@ -152,6 +153,8 @@ const fr: DeckBuilderMessages = {
         delete: 'Suppression impossible.',
         assign: 'Impossible d’attribuer ce deck.',
         startMatch: 'Impossible de créer la partie (serveur allumé ?).',
+        serverFull:
+            'Serveur plein : trop de parties en cours. Réessaie plus tard.',
         startBot: 'Impossible de lancer la partie contre le BOT.',
     },
 };
@@ -237,6 +240,7 @@ const en: DeckBuilderMessages = {
         delete: 'Could not delete.',
         assign: 'Could not assign this deck.',
         startMatch: 'Could not start the match (is the server running?).',
+        serverFull: 'Server full: too many active matches. Try again later.',
         startBot: 'Could not start a match against the BOT.',
     },
 };
@@ -322,6 +326,8 @@ const de: DeckBuilderMessages = {
         delete: 'Löschen fehlgeschlagen.',
         assign: 'Deck konnte nicht zugewiesen werden.',
         startMatch: 'Partie konnte nicht erstellt werden (Server an?).',
+        serverFull:
+            'Server voll: zu viele laufende Partien. Bitte später erneut versuchen.',
         startBot: 'Partie gegen BOT konnte nicht gestartet werden.',
     },
 };
@@ -407,6 +413,8 @@ const it: DeckBuilderMessages = {
         delete: 'Eliminazione impossibile.',
         assign: 'Impossibile assegnare questo mazzo.',
         startMatch: 'Impossibile creare la partita (server acceso?).',
+        serverFull:
+            'Server pieno: troppe partite attive. Riprova più tardi.',
         startBot: 'Impossibile avviare la partita contro il BOT.',
     },
 };
@@ -492,6 +500,8 @@ const es: DeckBuilderMessages = {
         delete: 'Eliminación imposible.',
         assign: 'No se pudo asignar este mazo.',
         startMatch: 'No se pudo crear la partida (¿servidor encendido?).',
+        serverFull:
+            'Servidor lleno: demasiadas partidas activas. Inténtalo más tarde.',
         startBot: 'No se pudo lanzar la partida contra el BOT.',
     },
 };

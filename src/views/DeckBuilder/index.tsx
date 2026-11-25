@@ -11,7 +11,10 @@ import {
     listDecks,
     saveDeck,
 } from '../../decks/deckStorage';
-import { createMatchWithSelectedDecks } from '../../decks/startMatch';
+import {
+    createMatchWithSelectedDecks,
+    MatchCreateError,
+} from '../../decks/startMatch';
 import { prepareBotMatch } from '../../decks/startBotMatch';
 import { validateDeck } from '../../decks/validateDeck';
 import { startingCompanionTwilightCost } from '../../decks/validateDeck';
@@ -638,11 +641,13 @@ export const DeckBuilder: React.FC = () => {
             goToBoard(matchID);
         } catch (err) {
             console.error(err);
-            window.alert(
-                err instanceof Error
-                    ? err.message
-                    : db.errors.startMatch
-            );
+            const message =
+                err instanceof MatchCreateError && err.code === 'SERVER_FULL'
+                    ? db.errors.serverFull
+                    : err instanceof Error
+                      ? err.message
+                      : db.errors.startMatch;
+            window.alert(message);
             setBusy(false);
         }
     };

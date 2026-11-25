@@ -47,6 +47,7 @@ Statuts : `en cours` · `à faire` · `plus tard` · `fait` · `pause`
 | **Gagner / Perdre** | **fait** | Site 9 / corruption / mort Porteur + overlay. Plan : [`win-lose-plan.mdc`](win-lose-plan.mdc) (embellisement plus tard). |
 | **Options** | **fait** | UI 5 langues en l’état (chrome, consignes, status/journal, mots-clés, deck builder). Hors scope : DEV, `effect.message` papier, grammaire AST 5×. |
 | **Écran de bienvenue** | **en cours** | Accueil classique (hors scale) : menu provisoire → decks / options / partie. |
+| **Jeu en ligne** | **plus tard** | Phase 1 code posée (SocketIO prod, CORS, plafond) ; déploiement VPS à faire. Vision : [`online-play-plan.mdc`](online-play-plan.mdc). |
 | **Exceptions de cartes** | à faire | Cartes trop spécifiques — handlers par id, en dernier. Liste : [`card-exceptions.mdc`](card-exceptions.mdc). |
 | **Visuel artefacts** | **fait** | Calques culture artefact validés (commit antérieur). |
 

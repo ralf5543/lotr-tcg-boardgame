@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import { Client } from 'boardgame.io/react';
-import { Local, SocketIO } from 'boardgame.io/multiplayer';
+import { SocketIO } from 'boardgame.io/multiplayer';
 import { LotrGame } from './game';
 import { isBotMatchFromUrl } from './game/bot';
 import { SoloBotMatch } from './game/bot/SoloBotMatch';
@@ -16,18 +16,16 @@ import { TargetingProvider } from './contexts/TargetingContext';
 import { audioService } from './services/audioService';
 import { initFullscreenEscapeLock } from './utils/fullscreen';
 import { PreferencesProvider } from './contexts/PreferencesProvider';
+import { getGameServerUrl } from './config/gameServer';
 
 initFullscreenEscapeLock();
 
-const humanMultiplayer = import.meta.env.DEV
-    ? SocketIO({ server: `http://${window.location.hostname}:8000` })
-    : Local();
-
+/** Multi humain : toujours SocketIO (Local = uniquement le mode BOT). */
 const LotrClient = Client({
     game: LotrGame,
     board: GameBoard,
     numPlayers: 2,
-    multiplayer: humanMultiplayer,
+    multiplayer: SocketIO({ server: getGameServerUrl() }),
     debug: false,
 });
 

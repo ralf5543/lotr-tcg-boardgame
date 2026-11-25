@@ -1,0 +1,18 @@
+[Unit]
+Description=LOTR TCG boardgame.io server
+After=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/var/www/lotr-tcg
+Environment=NODE_ENV=production
+Environment=PORT=8000
+Environment=MAX_ACTIVE_MATCHES=20
+Environment=CORS_ORIGINS=https://lotr-tcg-online.raphael-bigot.info
+ExecStart=/usr/bin/npm run server
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
