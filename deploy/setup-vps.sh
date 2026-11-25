@@ -61,7 +61,11 @@ systemctl restart lotr-game
 systemctl --no-pager --full status lotr-game || true
 
 echo "==> nginx…"
-cp "$APP_DIR/deploy/nginx-lotr.conf" /etc/nginx/sites-available/lotr-tcg
+# Attention : après Certbot, ne plus écraser ce fichier (sinon perte du HTTPS).
+# Mises à jour quotidiennes : npm run deploy:prod (depuis le Mac).
+if [[ ! -f /etc/nginx/sites-available/lotr-tcg ]]; then
+  cp "$APP_DIR/deploy/nginx-lotr.conf" /etc/nginx/sites-available/lotr-tcg
+fi
 ln -sfn /etc/nginx/sites-available/lotr-tcg /etc/nginx/sites-enabled/lotr-tcg
 rm -f /etc/nginx/sites-enabled/default
 nginx -t
@@ -73,3 +77,4 @@ certbot --nginx -d "$DOMAIN" --non-interactive --agree-tos --register-unsafely-w
 echo "==> OK — https://$DOMAIN"
 echo "Process jeu : systemctl status lotr-game"
 echo "Logs :        journalctl -u lotr-game -f"
+echo "Updates :     sur ton Mac → npm run deploy:prod (après git push)"

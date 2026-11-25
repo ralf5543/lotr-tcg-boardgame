@@ -70,6 +70,24 @@ npm run build
 npm run preview
 ```
 
+### Mise à jour du site en ligne (VPS)
+
+Après un `git push` sur `main`, depuis **ton Mac** (racine du repo) :
+
+```bash
+npm run deploy:prod
+```
+
+Ça se connecte en SSH au VPS, fait `git pull`, rebuild le front (`vite build`), et redémarre le process de jeu. **Nginx / HTTPS ne sont pas touchés** (évite de casser Let’s Encrypt).
+
+Options :
+
+```bash
+DEPLOY_SSH=root@77.42.74.133 npm run deploy:prod
+```
+
+Première install / certificat SSL : voir `deploy/setup-vps.sh` (une fois). Ne pas recopier `deploy/nginx-lotr.conf` à la main après Certbot.
+
 ---
 
 ## Données de cartes
