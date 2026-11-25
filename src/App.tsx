@@ -204,7 +204,7 @@ const ScreenViewport = styled.div`
     align-items: center;
     justify-content: center;
     overflow: hidden;
-    background-color: #0d0e12;
+    background-color: black;
 `;
 
 const ScaledView = styled.div<{ $scale: number }>`
