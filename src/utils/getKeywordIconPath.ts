@@ -22,6 +22,9 @@ const KEYWORD_ICON_ALIAS: Record<string, string> = {
     'TOIL_1': 'TOIL',
     'TOIL_2': 'TOIL',
     'TOIL_3': 'TOIL',
+    // Pas d’asset dédié — l’Anneau Unique sert d’icône Porteur.
+    'RING_BEARER': 'ONE-RING',
+    'RING-BEARER': 'ONE-RING',
 };
 
 export const getKeywordIconPath = (keyword: string): string => {

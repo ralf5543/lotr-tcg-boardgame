@@ -1136,12 +1136,14 @@ export const Card: React.FC<CardProps> = ({
                         setIsAbilityMenuOpen((open) => !open);
                     }}
                 >
-                    <img
-                        src={`/interface/icons/icon_culture_${card.culture}.webp`}
-                        alt={card.culture}
-                        draggable={false}
-                        width="17px"
-                    />
+                    {card.culture ? (
+                        <img
+                            src={`/interface/icons/icon_culture_${card.culture}.webp`}
+                            alt={card.culture}
+                            draggable={false}
+                            width="17px"
+                        />
+                    ) : null}
                 </S.AbilityButton>
             )}
 

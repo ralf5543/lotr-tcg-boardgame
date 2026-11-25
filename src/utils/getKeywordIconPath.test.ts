@@ -19,6 +19,12 @@ describe('getKeywordIconPath', () => {
         );
     });
 
+    it('alias RING-BEARER → ONE-RING.webp (pas d’asset dédié)', () => {
+        expect(getKeywordIconPath('RING-BEARER')).toBe(
+            '/interface/pictos/ONE-RING.webp'
+        );
+    });
+
     it('reçoit « AMBUSH 1 » depuis getEffectiveKeywords, pas « AMBUSH +1 »', () => {
         const keywords = getEffectiveKeywords(
             createMinion({ keywords: ['AMBUSH 1'] })

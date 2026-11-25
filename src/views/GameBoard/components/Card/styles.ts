@@ -5,7 +5,7 @@ import {
 } from '../../styles/valuePulse';
 
 export interface CardContainerProps {
-    $culture: string;
+    $culture?: string;
     $type: string;
     $race?: string;
     $subtype?: string;
@@ -189,9 +189,15 @@ export const CardContainer = styled.div<CardContainerProps>`
             border-radius: 8px 8px 49px 49px;
             border: 6px solid transparent;
             outline: 1px solid black;
-            background-image: ${`url(interface/cultures_backgrounds/background_${props.$culture}.webp)`};
-            background-size: auto;
-            background-repeat: repeat;
+            ${props.$culture
+                ? css`
+                      background-image: url(interface/cultures_backgrounds/background_${props.$culture}.webp);
+                      background-size: auto;
+                      background-repeat: repeat;
+                  `
+                : css`
+                      background-color: #2a2a2a;
+                  `}
             filter: drop-shadow(2px 3px 4px rgba(0, 0, 0, 1));
 
             &::before {
@@ -1457,7 +1463,9 @@ export const AbilityButton = styled.button<{
     line-height: 1;
     cursor: pointer;
     background-image: ${(props) =>
-        `url(interface/icons/icon_signet_${props.$culture}.webp)`};
+        props.$culture
+            ? `url(interface/icons/icon_signet_${props.$culture}.webp)`
+            : 'none'};
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
