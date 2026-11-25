@@ -12,6 +12,7 @@
     "preview": "vite preview",
     "server": "tsx server.ts",
     "convert": "tsx scripts/convert/index.ts",
+    "fix:image-urls": "tsx scripts/fix-card-image-urls.ts",
     "audit:deck": "tsx scripts/audit-deck.ts",
     "deploy:prod": "bash deploy/update-prod.sh"
   },

@@ -9,6 +9,11 @@ export const OUTPUT_SITES_PATH = path.join(
     process.cwd(),
     'src/data/sites.json'
 );
+/** Scans carte / site — extension réelle résolue à la conversion. */
+export const CARD_VISUALS_DIR = path.join(
+    process.cwd(),
+    'public/cards_visuals'
+);
 
 export const FEMALE_TITLES = new Set([
     'Galadriel',

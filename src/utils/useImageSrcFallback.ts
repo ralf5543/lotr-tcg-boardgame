@@ -1,9 +1,11 @@
 import { useState } from 'react';
 
 /**
- * Chaîne de repli pour les visuels carte / site.
- * Beaucoup de scans n’existent qu’en .png alors que le JSON pointe en .jpg :
+ * Chaîne de repli pour les visuels carte / site (filet de sécurité).
+ * Les imageUrl devraient déjà pointer la bonne extension (convert /
+ * `scripts/fix-card-image-urls.ts`). Si un fichier manque encore :
  * .jpg → .png → .webp → (optionnel) image de secours.
+ * Chaque échec produit un 404 réseau — d’où l’intérêt de corriger les données.
  */
 export function useImageSrcFallback(
     imageUrl: string | undefined,

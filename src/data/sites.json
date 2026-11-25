@@ -10249,7 +10249,7 @@
       "REGROUP"
     ],
     "twilightCost": 0,
-    "imageUrl": "/cards_visuals/o_17_145.jpg",
+    "imageUrl": "/cards_visuals/o_17_145.png",
     "i18n": {
       "en": {
         "title": "Dol Guldur",
@@ -10303,7 +10303,7 @@
       }
     ],
     "twilightCost": 3,
-    "imageUrl": "/cards_visuals/o_17_146.jpg",
+    "imageUrl": "/cards_visuals/o_17_146.png",
     "i18n": {
       "en": {
         "title": "Falls of Rauros",
@@ -10357,7 +10357,7 @@
       }
     ],
     "twilightCost": 3,
-    "imageUrl": "/cards_visuals/o_17_147.jpg",
+    "imageUrl": "/cards_visuals/o_17_147.png",
     "i18n": {
       "en": {
         "title": "Imladris",
@@ -10419,7 +10419,7 @@
       }
     ],
     "twilightCost": 1,
-    "imageUrl": "/cards_visuals/o_17_148.jpg",
+    "imageUrl": "/cards_visuals/o_17_148.png",
     "i18n": {
       "en": {
         "title": "Nurn",
@@ -10478,7 +10478,7 @@
       }
     ],
     "twilightCost": 1,
-    "imageUrl": "/cards_visuals/o_18_134.jpg",
+    "imageUrl": "/cards_visuals/o_18_134.png",
     "i18n": {
       "en": {
         "title": "Doorway to Doom",
@@ -10530,7 +10530,7 @@
       }
     ],
     "twilightCost": 2,
-    "imageUrl": "/cards_visuals/o_18_135.jpg",
+    "imageUrl": "/cards_visuals/o_18_135.png",
     "i18n": {
       "en": {
         "title": "Foot of Mount Doom",
@@ -10589,7 +10589,7 @@
       }
     ],
     "twilightCost": 2,
-    "imageUrl": "/cards_visuals/o_18_136.jpg",
+    "imageUrl": "/cards_visuals/o_18_136.png",
     "i18n": {
       "en": {
         "title": "Mithlond",
@@ -10646,7 +10646,7 @@
       }
     ],
     "twilightCost": 1,
-    "imageUrl": "/cards_visuals/o_18_137.jpg",
+    "imageUrl": "/cards_visuals/o_18_137.png",
     "i18n": {
       "en": {
         "title": "Morannon Plains",
@@ -10681,7 +10681,7 @@
       "RIVER"
     ],
     "twilightCost": 4,
-    "imageUrl": "/cards_visuals/o_18_138.jpg",
+    "imageUrl": "/cards_visuals/o_18_138.png",
     "i18n": {
       "en": {
         "title": "Sirannon Ruins",
@@ -10736,7 +10736,7 @@
       }
     ],
     "twilightCost": 1,
-    "imageUrl": "/cards_visuals/o_18_139.jpg",
+    "imageUrl": "/cards_visuals/o_18_139.png",
     "i18n": {
       "en": {
         "title": "Steward's Tomb",
@@ -10788,7 +10788,7 @@
       }
     ],
     "twilightCost": 0,
-    "imageUrl": "/cards_visuals/o_18_140.jpg",
+    "imageUrl": "/cards_visuals/o_18_140.png",
     "i18n": {
       "en": {
         "title": "Streets of Bree",

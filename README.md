@@ -107,6 +107,12 @@ npm run convert
 
 L’ancien `node ../scripts/convert/index.ts` (lancé depuis `src/`) ne marche plus : les chemins du script sont relatifs à la racine.
 
+Les `imageUrl` pointent l’extension **réelle** du scan (`webp` / `jpg` / `png`, webp préféré s’il existe). Après ajout de visuels sans tout reconvertir :
+
+```bash
+npm run fix:image-urls
+```
+
 ---
 
 ## Conformité aux règles

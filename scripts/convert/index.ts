@@ -7,6 +7,7 @@ import {
     FEMALE_TITLES,
     SHADOW_CULTURES,
 } from './constants.ts';
+import { resolveCardVisualUrl } from './resolveCardVisualUrl.ts';
 import {
     parseCsvContent,
     mapCulture,
@@ -187,7 +188,7 @@ async function convert() {
         const isFemale = FEMALE_TITLES.has(titleVO) ? true : undefined;
         const rawImageCode = (data['Image'] || '').trim();
         const imageUrl = rawImageCode
-            ? `/cards_visuals/o_${rawImageCode}.jpg`
+            ? resolveCardVisualUrl(rawImageCode)
             : undefined;
 
         const { subtype, phases, actionPhases } = parseClassAndPhases(

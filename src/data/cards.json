@@ -5589,7 +5589,7 @@
     "twilightCost": 0,
     "strength": 1,
     "vitality": 1,
-    "imageUrl": "/cards_visuals/o_01_001.jpg",
+    "imageUrl": "/cards_visuals/o_01_001.webp",
     "i18n": {
       "en": {
         "title": "The One Ring",
@@ -6914,7 +6914,7 @@
     ],
     "twilightCost": 0,
     "vitality": 2,
-    "imageUrl": "/cards_visuals/o_04_001.jpg",
+    "imageUrl": "/cards_visuals/o_04_001.webp",
     "i18n": {
       "en": {
         "title": "The One Ring",
@@ -12559,7 +12559,7 @@
     ],
     "twilightCost": 0,
     "strength": 1,
-    "imageUrl": "/cards_visuals/o_01_002.jpg",
+    "imageUrl": "/cards_visuals/o_01_002.webp",
     "i18n": {
       "en": {
         "title": "The One Ring",
@@ -144450,7 +144450,7 @@
     "strength": 11,
     "vitality": 4,
     "minionSiteNumber": 2,
-    "imageUrl": "/cards_visuals/o_16_001.jpg",
+    "imageUrl": "/cards_visuals/o_16_001.png",
     "i18n": {
       "en": {
         "title": "Barrow-wight Stalker",
@@ -144495,7 +144495,7 @@
     "strength": 8,
     "vitality": 2,
     "minionSiteNumber": 3,
-    "imageUrl": "/cards_visuals/o_16_002.jpg",
+    "imageUrl": "/cards_visuals/o_16_002.png",
     "i18n": {
       "en": {
         "title": "Candle Corpses",
@@ -144540,7 +144540,7 @@
     "strength": 4,
     "vitality": 2,
     "minionSiteNumber": 3,
-    "imageUrl": "/cards_visuals/o_16_003.jpg",
+    "imageUrl": "/cards_visuals/o_16_003.png",
     "i18n": {
       "en": {
         "title": "Covetous Wisp",
@@ -144585,7 +144585,7 @@
     "strength": 4,
     "vitality": 2,
     "minionSiteNumber": 3,
-    "imageUrl": "/cards_visuals/o_16_004.jpg",
+    "imageUrl": "/cards_visuals/o_16_004.png",
     "i18n": {
       "en": {
         "title": "Dead Faces",
@@ -144630,7 +144630,7 @@
     "strength": 14,
     "vitality": 3,
     "minionSiteNumber": 2,
-    "imageUrl": "/cards_visuals/o_16_005.jpg",
+    "imageUrl": "/cards_visuals/o_16_005.png",
     "i18n": {
       "en": {
         "title": "Spirit of Dread",
@@ -144675,7 +144675,7 @@
     "strength": 9,
     "vitality": 3,
     "minionSiteNumber": 2,
-    "imageUrl": "/cards_visuals/o_16_006.jpg",
+    "imageUrl": "/cards_visuals/o_16_006.png",
     "i18n": {
       "en": {
         "title": "Undead of Angmar",
@@ -144719,7 +144719,7 @@
     ],
     "culture": "DWARVEN",
     "twilightCost": 2,
-    "imageUrl": "/cards_visuals/o_17_001.jpg",
+    "imageUrl": "/cards_visuals/o_17_001.png",
     "i18n": {
       "en": {
         "title": "Armor of Khazâd",
@@ -144770,7 +144770,7 @@
     ],
     "culture": "DWARVEN",
     "twilightCost": 4,
-    "imageUrl": "/cards_visuals/o_17_002.jpg",
+    "imageUrl": "/cards_visuals/o_17_002.png",
     "i18n": {
       "en": {
         "title": "Balin Avenged",
@@ -144806,7 +144806,7 @@
     ],
     "culture": "DWARVEN",
     "twilightCost": 1,
-    "imageUrl": "/cards_visuals/o_17_003.jpg",
+    "imageUrl": "/cards_visuals/o_17_003.png",
     "i18n": {
       "en": {
         "title": "Dwarven Stratagem",
@@ -144850,7 +144850,7 @@
     ],
     "culture": "DWARVEN",
     "twilightCost": 0,
-    "imageUrl": "/cards_visuals/o_17_004.jpg",
+    "imageUrl": "/cards_visuals/o_17_004.png",
     "i18n": {
       "en": {
         "title": "Ring of Artifice",
@@ -144891,7 +144891,7 @@
     ],
     "culture": "DWARVEN",
     "twilightCost": 1,
-    "imageUrl": "/cards_visuals/o_17_005.jpg",
+    "imageUrl": "/cards_visuals/o_17_005.png",
     "i18n": {
       "en": {
         "title": "Axe-work",
@@ -144936,7 +144936,7 @@
     "strength": 6,
     "vitality": 3,
     "resistance": 6,
-    "imageUrl": "/cards_visuals/o_17_006.jpg",
+    "imageUrl": "/cards_visuals/o_17_006.png",
     "i18n": {
       "en": {
         "title": "Thorin III",
@@ -145017,7 +145017,7 @@
     "strength": 6,
     "vitality": 3,
     "resistance": 6,
-    "imageUrl": "/cards_visuals/o_17_007.jpg",
+    "imageUrl": "/cards_visuals/o_17_007.png",
     "i18n": {
       "en": {
         "title": "Elven Guardian",
@@ -145058,7 +145058,7 @@
     ],
     "culture": "ELVEN",
     "twilightCost": 3,
-    "imageUrl": "/cards_visuals/o_17_008.jpg",
+    "imageUrl": "/cards_visuals/o_17_008.png",
     "i18n": {
       "en": {
         "title": "Hearth and Hall",
@@ -145099,7 +145099,7 @@
     ],
     "culture": "ELVEN",
     "twilightCost": 2,
-    "imageUrl": "/cards_visuals/o_17_009.jpg",
+    "imageUrl": "/cards_visuals/o_17_009.png",
     "i18n": {
       "en": {
         "title": "Lothlórien Guides",
@@ -145165,7 +145165,7 @@
     ],
     "culture": "ELVEN",
     "twilightCost": 2,
-    "imageUrl": "/cards_visuals/o_17_010.jpg",
+    "imageUrl": "/cards_visuals/o_17_010.png",
     "i18n": {
       "en": {
         "title": "Namárië",
@@ -145210,7 +145210,7 @@
     "strength": 6,
     "vitality": 3,
     "resistance": 6,
-    "imageUrl": "/cards_visuals/o_17_011.jpg",
+    "imageUrl": "/cards_visuals/o_17_011.png",
     "i18n": {
       "en": {
         "title": "Orophin",
@@ -145256,7 +145256,7 @@
     "strength": 6,
     "vitality": 3,
     "resistance": 6,
-    "imageUrl": "/cards_visuals/o_17_012.jpg",
+    "imageUrl": "/cards_visuals/o_17_012.png",
     "i18n": {
       "en": {
         "title": "Rúmil",
@@ -145310,7 +145310,7 @@
     ],
     "culture": "ELVEN",
     "twilightCost": 5,
-    "imageUrl": "/cards_visuals/o_17_013.jpg",
+    "imageUrl": "/cards_visuals/o_17_013.png",
     "i18n": {
       "en": {
         "title": "The World Ahead",
@@ -145346,7 +145346,7 @@
     ],
     "culture": "ELVEN",
     "twilightCost": 1,
-    "imageUrl": "/cards_visuals/o_17_014.jpg",
+    "imageUrl": "/cards_visuals/o_17_014.png",
     "i18n": {
       "en": {
         "title": "Weapons of Lothlórien",
@@ -145390,7 +145390,7 @@
     ],
     "culture": "GANDALF",
     "twilightCost": 1,
-    "imageUrl": "/cards_visuals/o_17_015.jpg",
+    "imageUrl": "/cards_visuals/o_17_015.png",
     "i18n": {
       "en": {
         "title": "A New Light",
@@ -145432,7 +145432,7 @@
     "strength": 4,
     "vitality": 3,
     "resistance": 6,
-    "imageUrl": "/cards_visuals/o_17_016.jpg",
+    "imageUrl": "/cards_visuals/o_17_016.png",
     "i18n": {
       "en": {
         "title": "Barliman Butterbur",
@@ -145522,7 +145522,7 @@
     "strength": 7,
     "vitality": 4,
     "resistance": 7,
-    "imageUrl": "/cards_visuals/o_17_017.jpg",
+    "imageUrl": "/cards_visuals/o_17_017.png",
     "i18n": {
       "en": {
         "title": "Gandalf",
@@ -145566,7 +145566,7 @@
     "culture": "GANDALF",
     "twilightCost": 2,
     "strength": 2,
-    "imageUrl": "/cards_visuals/o_17_018.jpg",
+    "imageUrl": "/cards_visuals/o_17_018.png",
     "i18n": {
       "en": {
         "title": "Glamdring",
@@ -145608,7 +145608,7 @@
     ],
     "culture": "GANDALF",
     "twilightCost": 1,
-    "imageUrl": "/cards_visuals/o_17_019.jpg",
+    "imageUrl": "/cards_visuals/o_17_019.png",
     "i18n": {
       "en": {
         "title": "Guidance of the Istari",
@@ -145655,7 +145655,7 @@
     "twilightCost": 1,
     "strength": 1,
     "resistance": 1,
-    "imageUrl": "/cards_visuals/o_17_020.jpg",
+    "imageUrl": "/cards_visuals/o_17_020.png",
     "i18n": {
       "en": {
         "title": "Gwaihir",
@@ -145764,7 +145764,7 @@
     ],
     "culture": "GANDALF",
     "twilightCost": 2,
-    "imageUrl": "/cards_visuals/o_17_021.jpg",
+    "imageUrl": "/cards_visuals/o_17_021.png",
     "i18n": {
       "en": {
         "title": "Long-stemmed Pipe",
@@ -145853,7 +145853,7 @@
     ],
     "culture": "GANDALF",
     "twilightCost": 3,
-    "imageUrl": "/cards_visuals/o_17_022.jpg",
+    "imageUrl": "/cards_visuals/o_17_022.png",
     "i18n": {
       "en": {
         "title": "Meneldor",
@@ -145896,7 +145896,7 @@
     ],
     "culture": "GANDALF",
     "twilightCost": 1,
-    "imageUrl": "/cards_visuals/o_17_023.jpg",
+    "imageUrl": "/cards_visuals/o_17_023.png",
     "i18n": {
       "en": {
         "title": "Scintillating Bird",
@@ -145939,7 +145939,7 @@
     "strength": 1,
     "vitality": 1,
     "resistance": 1,
-    "imageUrl": "/cards_visuals/o_17_024.jpg",
+    "imageUrl": "/cards_visuals/o_17_024.png",
     "i18n": {
       "en": {
         "title": "Shadowfax",
@@ -145981,7 +145981,7 @@
     ],
     "culture": "GANDALF",
     "twilightCost": 2,
-    "imageUrl": "/cards_visuals/o_17_025.jpg",
+    "imageUrl": "/cards_visuals/o_17_025.png",
     "i18n": {
       "en": {
         "title": "The Sap is in the Bough",
@@ -146023,7 +146023,7 @@
     "strength": 7,
     "vitality": 4,
     "resistance": 6,
-    "imageUrl": "/cards_visuals/o_17_026.jpg",
+    "imageUrl": "/cards_visuals/o_17_026.png",
     "i18n": {
       "en": {
         "title": "Woodland Onod",
@@ -146072,7 +146072,7 @@
     "twilightCost": 3,
     "strength": 2,
     "vitality": 1,
-    "imageUrl": "/cards_visuals/o_17_027.jpg",
+    "imageUrl": "/cards_visuals/o_17_027.png",
     "i18n": {
       "en": {
         "title": "Andúril",
@@ -146154,7 +146154,7 @@
     "strength": 7,
     "vitality": 3,
     "resistance": 6,
-    "imageUrl": "/cards_visuals/o_17_028.jpg",
+    "imageUrl": "/cards_visuals/o_17_028.png",
     "i18n": {
       "en": {
         "title": "Faramir",
@@ -146195,7 +146195,7 @@
     ],
     "culture": "GONDOR",
     "twilightCost": 1,
-    "imageUrl": "/cards_visuals/o_17_029.jpg",
+    "imageUrl": "/cards_visuals/o_17_029.png",
     "i18n": {
       "en": {
         "title": "Faramir's Bow",
@@ -146242,7 +146242,7 @@
     "strength": 6,
     "vitality": 3,
     "resistance": 6,
-    "imageUrl": "/cards_visuals/o_17_030.jpg",
+    "imageUrl": "/cards_visuals/o_17_030.png",
     "i18n": {
       "en": {
         "title": "Madril",
@@ -146286,7 +146286,7 @@
     "culture": "GONDOR",
     "twilightCost": 3,
     "strength": 3,
-    "imageUrl": "/cards_visuals/o_17_031.jpg",
+    "imageUrl": "/cards_visuals/o_17_031.png",
     "i18n": {
       "en": {
         "title": "Narsil",
@@ -146329,7 +146329,7 @@
     ],
     "culture": "GONDOR",
     "twilightCost": 1,
-    "imageUrl": "/cards_visuals/o_17_032.jpg",
+    "imageUrl": "/cards_visuals/o_17_032.png",
     "i18n": {
       "en": {
         "title": "Nimble Attack",
@@ -146375,7 +146375,7 @@
     "strength": 6,
     "vitality": 3,
     "resistance": 5,
-    "imageUrl": "/cards_visuals/o_17_033.jpg",
+    "imageUrl": "/cards_visuals/o_17_033.png",
     "i18n": {
       "en": {
         "title": "Ranger of the White Tree",
@@ -146414,7 +146414,7 @@
     ],
     "culture": "GONDOR",
     "twilightCost": 1,
-    "imageUrl": "/cards_visuals/o_17_034.jpg",
+    "imageUrl": "/cards_visuals/o_17_034.png",
     "i18n": {
       "en": {
         "title": "Spirit of the White Tree",
@@ -146586,7 +146586,7 @@
     ],
     "culture": "GONDOR",
     "twilightCost": 2,
-    "imageUrl": "/cards_visuals/o_17_035.jpg",
+    "imageUrl": "/cards_visuals/o_17_035.png",
     "i18n": {
       "en": {
         "title": "Soldier's Cache",
@@ -146647,7 +146647,7 @@
     ],
     "culture": "GONDOR",
     "twilightCost": 2,
-    "imageUrl": "/cards_visuals/o_17_036.jpg",
+    "imageUrl": "/cards_visuals/o_17_036.png",
     "i18n": {
       "en": {
         "title": "Throne of Minas Tirith",
@@ -146719,7 +146719,7 @@
     "strength": 8,
     "vitality": 4,
     "minionSiteNumber": 4,
-    "imageUrl": "/cards_visuals/o_17_037.jpg",
+    "imageUrl": "/cards_visuals/o_17_037.png",
     "i18n": {
       "en": {
         "title": "Saruman",
@@ -146761,7 +146761,7 @@
     "culture": "ISENGARD",
     "twilightCost": 1,
     "strength": 2,
-    "imageUrl": "/cards_visuals/o_17_038.jpg",
+    "imageUrl": "/cards_visuals/o_17_038.png",
     "i18n": {
       "en": {
         "title": "Saruman",
@@ -146874,7 +146874,7 @@
     ],
     "culture": "ISENGARD",
     "twilightCost": 2,
-    "imageUrl": "/cards_visuals/o_17_039.jpg",
+    "imageUrl": "/cards_visuals/o_17_039.png",
     "i18n": {
       "en": {
         "title": "Throne of Isengard",
@@ -146920,7 +146920,7 @@
     "culture": "MEN",
     "twilightCost": 3,
     "strength": 3,
-    "imageUrl": "/cards_visuals/o_17_040.jpg",
+    "imageUrl": "/cards_visuals/o_17_040.png",
     "i18n": {
       "en": {
         "title": "Beast of War",
@@ -146959,7 +146959,7 @@
     "subtype": "SUPPORT-AREA",
     "culture": "MEN",
     "twilightCost": 2,
-    "imageUrl": "/cards_visuals/o_17_041.jpg",
+    "imageUrl": "/cards_visuals/o_17_041.png",
     "i18n": {
       "en": {
         "title": "Ceremonial Armor",
@@ -147001,7 +147001,7 @@
     "strength": 8,
     "vitality": 2,
     "minionSiteNumber": 4,
-    "imageUrl": "/cards_visuals/o_17_042.jpg",
+    "imageUrl": "/cards_visuals/o_17_042.png",
     "i18n": {
       "en": {
         "title": "Easterling Dispatcher",
@@ -147043,7 +147043,7 @@
     "strength": 15,
     "vitality": 3,
     "minionSiteNumber": 4,
-    "imageUrl": "/cards_visuals/o_17_043.jpg",
+    "imageUrl": "/cards_visuals/o_17_043.png",
     "i18n": {
       "en": {
         "title": "Easterling Sneak",
@@ -147089,7 +147089,7 @@
     "culture": "MEN",
     "twilightCost": 1,
     "strength": 1,
-    "imageUrl": "/cards_visuals/o_17_044.jpg",
+    "imageUrl": "/cards_visuals/o_17_044.png",
     "i18n": {
       "en": {
         "title": "Gríma's Dagger",
@@ -147130,7 +147130,7 @@
     ],
     "culture": "MEN",
     "twilightCost": 1,
-    "imageUrl": "/cards_visuals/o_17_045.jpg",
+    "imageUrl": "/cards_visuals/o_17_045.png",
     "i18n": {
       "en": {
         "title": "In the Wild Men's Wake",
@@ -147171,7 +147171,7 @@
     ],
     "culture": "MEN",
     "twilightCost": 0,
-    "imageUrl": "/cards_visuals/o_17_046.jpg",
+    "imageUrl": "/cards_visuals/o_17_046.png",
     "i18n": {
       "en": {
         "title": "Pandemonium",
@@ -147217,7 +147217,7 @@
     "culture": "MEN",
     "twilightCost": 1,
     "strength": 2,
-    "imageUrl": "/cards_visuals/o_17_047.jpg",
+    "imageUrl": "/cards_visuals/o_17_047.png",
     "i18n": {
       "en": {
         "title": "Primitive Brand",
@@ -147295,7 +147295,7 @@
     "strength": 8,
     "vitality": 4,
     "minionSiteNumber": 4,
-    "imageUrl": "/cards_visuals/o_17_048.jpg",
+    "imageUrl": "/cards_visuals/o_17_048.png",
     "i18n": {
       "en": {
         "title": "Saruman",
@@ -147342,7 +147342,7 @@
     "strength": 17,
     "vitality": 4,
     "minionSiteNumber": 4,
-    "imageUrl": "/cards_visuals/o_17_049.jpg",
+    "imageUrl": "/cards_visuals/o_17_049.png",
     "i18n": {
       "en": {
         "title": "Stampeding Chief",
@@ -147384,7 +147384,7 @@
     "strength": 7,
     "vitality": 1,
     "minionSiteNumber": 4,
-    "imageUrl": "/cards_visuals/o_17_050.jpg",
+    "imageUrl": "/cards_visuals/o_17_050.png",
     "i18n": {
       "en": {
         "title": "Stampeding Hillsman",
@@ -147441,7 +147441,7 @@
     "strength": 13,
     "vitality": 3,
     "minionSiteNumber": 4,
-    "imageUrl": "/cards_visuals/o_17_051.jpg",
+    "imageUrl": "/cards_visuals/o_17_051.png",
     "i18n": {
       "en": {
         "title": "Stampeding Madman",
@@ -147498,7 +147498,7 @@
     "strength": 13,
     "vitality": 3,
     "minionSiteNumber": 4,
-    "imageUrl": "/cards_visuals/o_17_052.jpg",
+    "imageUrl": "/cards_visuals/o_17_052.png",
     "i18n": {
       "en": {
         "title": "Stampeding Ransacker",
@@ -147540,7 +147540,7 @@
     "strength": 8,
     "vitality": 2,
     "minionSiteNumber": 4,
-    "imageUrl": "/cards_visuals/o_17_053.jpg",
+    "imageUrl": "/cards_visuals/o_17_053.png",
     "i18n": {
       "en": {
         "title": "Stampeding Savage",
@@ -147585,7 +147585,7 @@
     "strength": 11,
     "vitality": 2,
     "minionSiteNumber": 4,
-    "imageUrl": "/cards_visuals/o_17_054.jpg",
+    "imageUrl": "/cards_visuals/o_17_054.png",
     "i18n": {
       "en": {
         "title": "Stampeding Shepherd",
@@ -147627,7 +147627,7 @@
     "strength": 8,
     "vitality": 2,
     "minionSiteNumber": 4,
-    "imageUrl": "/cards_visuals/o_17_055.jpg",
+    "imageUrl": "/cards_visuals/o_17_055.png",
     "i18n": {
       "en": {
         "title": "Sunland Guard",
@@ -147669,7 +147669,7 @@
     "strength": 10,
     "vitality": 2,
     "minionSiteNumber": 4,
-    "imageUrl": "/cards_visuals/o_17_056.jpg",
+    "imageUrl": "/cards_visuals/o_17_056.png",
     "i18n": {
       "en": {
         "title": "Sunland Scout",
@@ -147711,7 +147711,7 @@
     "strength": 6,
     "vitality": 1,
     "minionSiteNumber": 4,
-    "imageUrl": "/cards_visuals/o_17_057.jpg",
+    "imageUrl": "/cards_visuals/o_17_057.png",
     "i18n": {
       "en": {
         "title": "Sunland Skirmisher",
@@ -147753,7 +147753,7 @@
     "strength": 14,
     "vitality": 3,
     "minionSiteNumber": 4,
-    "imageUrl": "/cards_visuals/o_17_058.jpg",
+    "imageUrl": "/cards_visuals/o_17_058.png",
     "i18n": {
       "en": {
         "title": "Sunland Sneak",
@@ -147795,7 +147795,7 @@
     "strength": 9,
     "vitality": 2,
     "minionSiteNumber": 4,
-    "imageUrl": "/cards_visuals/o_17_059.jpg",
+    "imageUrl": "/cards_visuals/o_17_059.png",
     "i18n": {
       "en": {
         "title": "Sunland Trooper",
@@ -147837,7 +147837,7 @@
     "strength": 8,
     "vitality": 2,
     "minionSiteNumber": 4,
-    "imageUrl": "/cards_visuals/o_17_060.jpg",
+    "imageUrl": "/cards_visuals/o_17_060.png",
     "i18n": {
       "en": {
         "title": "Sunland Warrior",
@@ -147894,7 +147894,7 @@
     "strength": 13,
     "vitality": 3,
     "minionSiteNumber": 4,
-    "imageUrl": "/cards_visuals/o_17_061.jpg",
+    "imageUrl": "/cards_visuals/o_17_061.png",
     "i18n": {
       "en": {
         "title": "Sunland Weaponmaster",
@@ -147936,7 +147936,7 @@
     "strength": 10,
     "vitality": 2,
     "minionSiteNumber": 4,
-    "imageUrl": "/cards_visuals/o_17_062.jpg",
+    "imageUrl": "/cards_visuals/o_17_062.png",
     "i18n": {
       "en": {
         "title": "Vengeful Savage",
@@ -147978,7 +147978,7 @@
     "strength": 6,
     "vitality": 2,
     "minionSiteNumber": 4,
-    "imageUrl": "/cards_visuals/o_17_063.jpg",
+    "imageUrl": "/cards_visuals/o_17_063.png",
     "i18n": {
       "en": {
         "title": "Vengeful Wild Man",
@@ -148020,7 +148020,7 @@
     "strength": 15,
     "vitality": 4,
     "minionSiteNumber": 4,
-    "imageUrl": "/cards_visuals/o_17_064.jpg",
+    "imageUrl": "/cards_visuals/o_17_064.png",
     "i18n": {
       "en": {
         "title": "Vengeful Pillager",
@@ -148062,7 +148062,7 @@
     "strength": 15,
     "vitality": 3,
     "minionSiteNumber": 4,
-    "imageUrl": "/cards_visuals/o_17_065.jpg",
+    "imageUrl": "/cards_visuals/o_17_065.png",
     "i18n": {
       "en": {
         "title": "Vengeful Primitive",
@@ -148139,7 +148139,7 @@
     ],
     "culture": "MEN",
     "twilightCost": 2,
-    "imageUrl": "/cards_visuals/o_17_066.jpg",
+    "imageUrl": "/cards_visuals/o_17_066.png",
     "i18n": {
       "en": {
         "title": "Wildman's Oath",
@@ -148194,7 +148194,7 @@
     ],
     "culture": "ORC",
     "twilightCost": 2,
-    "imageUrl": "/cards_visuals/o_17_067.jpg",
+    "imageUrl": "/cards_visuals/o_17_067.png",
     "i18n": {
       "en": {
         "title": "A Defiled Charge",
@@ -148283,7 +148283,7 @@
     ],
     "culture": "ORC",
     "twilightCost": 0,
-    "imageUrl": "/cards_visuals/o_17_068.jpg",
+    "imageUrl": "/cards_visuals/o_17_068.png",
     "i18n": {
       "en": {
         "title": "Chaotic Clash",
@@ -148322,7 +148322,7 @@
     "subtype": "SUPPORT-AREA",
     "culture": "ORC",
     "twilightCost": 2,
-    "imageUrl": "/cards_visuals/o_17_069.jpg",
+    "imageUrl": "/cards_visuals/o_17_069.png",
     "i18n": {
       "en": {
         "title": "Cry and Panic",
@@ -148363,7 +148363,7 @@
     ],
     "culture": "ORC",
     "twilightCost": 1,
-    "imageUrl": "/cards_visuals/o_17_070.jpg",
+    "imageUrl": "/cards_visuals/o_17_070.png",
     "i18n": {
       "en": {
         "title": "Feral Ride",
@@ -148408,7 +148408,7 @@
     "strength": 11,
     "vitality": 3,
     "minionSiteNumber": 4,
-    "imageUrl": "/cards_visuals/o_17_071.jpg",
+    "imageUrl": "/cards_visuals/o_17_071.png",
     "i18n": {
       "en": {
         "title": "Grishnákh",
@@ -148446,7 +148446,7 @@
     "strength": 8,
     "vitality": 2,
     "minionSiteNumber": 4,
-    "imageUrl": "/cards_visuals/o_17_072.jpg",
+    "imageUrl": "/cards_visuals/o_17_072.png",
     "i18n": {
       "en": {
         "title": "Orkish Assassin",
@@ -148488,7 +148488,7 @@
     "strength": 17,
     "vitality": 2,
     "minionSiteNumber": 4,
-    "imageUrl": "/cards_visuals/o_17_073.jpg",
+    "imageUrl": "/cards_visuals/o_17_073.png",
     "i18n": {
       "en": {
         "title": "Orkish Berserker",
@@ -148530,7 +148530,7 @@
     "strength": 8,
     "vitality": 2,
     "minionSiteNumber": 4,
-    "imageUrl": "/cards_visuals/o_17_074.jpg",
+    "imageUrl": "/cards_visuals/o_17_074.png",
     "i18n": {
       "en": {
         "title": "Orkish Cavalry",
@@ -148572,7 +148572,7 @@
     "strength": 9,
     "vitality": 2,
     "minionSiteNumber": 4,
-    "imageUrl": "/cards_visuals/o_17_075.jpg",
+    "imageUrl": "/cards_visuals/o_17_075.png",
     "i18n": {
       "en": {
         "title": "Orkish Dreg",
@@ -148629,7 +148629,7 @@
     "strength": 18,
     "vitality": 4,
     "minionSiteNumber": 4,
-    "imageUrl": "/cards_visuals/o_17_076.jpg",
+    "imageUrl": "/cards_visuals/o_17_076.png",
     "i18n": {
       "en": {
         "title": "Orkish Fiend",
@@ -148671,7 +148671,7 @@
     "strength": 9,
     "vitality": 2,
     "minionSiteNumber": 4,
-    "imageUrl": "/cards_visuals/o_17_077.jpg",
+    "imageUrl": "/cards_visuals/o_17_077.png",
     "i18n": {
       "en": {
         "title": "Orkish Flanker",
@@ -148713,7 +148713,7 @@
     "strength": 7,
     "vitality": 2,
     "minionSiteNumber": 4,
-    "imageUrl": "/cards_visuals/o_17_078.jpg",
+    "imageUrl": "/cards_visuals/o_17_078.png",
     "i18n": {
       "en": {
         "title": "Orkish Footman",
@@ -148755,7 +148755,7 @@
     "strength": 10,
     "vitality": 2,
     "minionSiteNumber": 4,
-    "imageUrl": "/cards_visuals/o_17_079.jpg",
+    "imageUrl": "/cards_visuals/o_17_079.png",
     "i18n": {
       "en": {
         "title": "Orkish Invader",
@@ -148797,7 +148797,7 @@
     "strength": 4,
     "vitality": 2,
     "minionSiteNumber": 4,
-    "imageUrl": "/cards_visuals/o_17_080.jpg",
+    "imageUrl": "/cards_visuals/o_17_080.png",
     "i18n": {
       "en": {
         "title": "Orkish Lackey",
@@ -148839,7 +148839,7 @@
     "strength": 6,
     "vitality": 2,
     "minionSiteNumber": 4,
-    "imageUrl": "/cards_visuals/o_17_081.jpg",
+    "imageUrl": "/cards_visuals/o_17_081.png",
     "i18n": {
       "en": {
         "title": "Orkish Marauder",
@@ -148881,7 +148881,7 @@
     "strength": 6,
     "vitality": 1,
     "minionSiteNumber": 4,
-    "imageUrl": "/cards_visuals/o_17_082.jpg",
+    "imageUrl": "/cards_visuals/o_17_082.png",
     "i18n": {
       "en": {
         "title": "Orkish Rider",
@@ -148923,7 +148923,7 @@
     "strength": 8,
     "vitality": 2,
     "minionSiteNumber": 4,
-    "imageUrl": "/cards_visuals/o_17_083.jpg",
+    "imageUrl": "/cards_visuals/o_17_083.png",
     "i18n": {
       "en": {
         "title": "Orkish Runner",
@@ -148965,7 +148965,7 @@
     "strength": 8,
     "vitality": 2,
     "minionSiteNumber": 4,
-    "imageUrl": "/cards_visuals/o_17_084.jpg",
+    "imageUrl": "/cards_visuals/o_17_084.png",
     "i18n": {
       "en": {
         "title": "Orkish Scout",
@@ -149007,7 +149007,7 @@
     "strength": 7,
     "vitality": 2,
     "minionSiteNumber": 4,
-    "imageUrl": "/cards_visuals/o_17_085.jpg",
+    "imageUrl": "/cards_visuals/o_17_085.png",
     "i18n": {
       "en": {
         "title": "Orkish Traveler",
@@ -149049,7 +149049,7 @@
     "strength": 7,
     "vitality": 4,
     "minionSiteNumber": 4,
-    "imageUrl": "/cards_visuals/o_17_086.jpg",
+    "imageUrl": "/cards_visuals/o_17_086.png",
     "i18n": {
       "en": {
         "title": "Orkish Veteran",
@@ -149127,7 +149127,7 @@
     "strength": 8,
     "vitality": 2,
     "minionSiteNumber": 4,
-    "imageUrl": "/cards_visuals/o_17_087.jpg",
+    "imageUrl": "/cards_visuals/o_17_087.png",
     "i18n": {
       "en": {
         "title": "Orkish Warg-master",
@@ -149197,7 +149197,7 @@
     "strength": 14,
     "vitality": 2,
     "minionSiteNumber": 4,
-    "imageUrl": "/cards_visuals/o_17_088.jpg",
+    "imageUrl": "/cards_visuals/o_17_088.png",
     "i18n": {
       "en": {
         "title": "Orkish Warrior",
@@ -149252,7 +149252,7 @@
     "twilightCost": 3,
     "strength": 2,
     "vitality": 2,
-    "imageUrl": "/cards_visuals/o_17_089.jpg",
+    "imageUrl": "/cards_visuals/o_17_089.png",
     "i18n": {
       "en": {
         "title": "Relentless Warg",
@@ -149298,7 +149298,7 @@
     "culture": "ORC",
     "twilightCost": 1,
     "strength": 2,
-    "imageUrl": "/cards_visuals/o_17_090.jpg",
+    "imageUrl": "/cards_visuals/o_17_090.png",
     "i18n": {
       "en": {
         "title": "Rider's Gear",
@@ -149353,7 +149353,7 @@
     "twilightCost": 2,
     "strength": 2,
     "vitality": 1,
-    "imageUrl": "/cards_visuals/o_17_091.jpg",
+    "imageUrl": "/cards_visuals/o_17_091.png",
     "i18n": {
       "en": {
         "title": "Threatening Warg",
@@ -149405,7 +149405,7 @@
     "twilightCost": 3,
     "strength": 4,
     "vitality": 2,
-    "imageUrl": "/cards_visuals/o_17_092.jpg",
+    "imageUrl": "/cards_visuals/o_17_092.png",
     "i18n": {
       "en": {
         "title": "Vicious Warg",
@@ -149450,7 +149450,7 @@
     "strength": 8,
     "vitality": 4,
     "resistance": 6,
-    "imageUrl": "/cards_visuals/o_17_093.jpg",
+    "imageUrl": "/cards_visuals/o_17_093.png",
     "i18n": {
       "en": {
         "title": "Aragorn",
@@ -149490,7 +149490,7 @@
     "subtype": "SUPPORT-AREA",
     "culture": "ROHAN",
     "twilightCost": 2,
-    "imageUrl": "/cards_visuals/o_17_094.jpg",
+    "imageUrl": "/cards_visuals/o_17_094.png",
     "i18n": {
       "en": {
         "title": "Dispatched With Haste",
@@ -149535,7 +149535,7 @@
     "strength": 7,
     "vitality": 3,
     "resistance": 7,
-    "imageUrl": "/cards_visuals/o_17_095.jpg",
+    "imageUrl": "/cards_visuals/o_17_095.png",
     "i18n": {
       "en": {
         "title": "Éomer",
@@ -149579,7 +149579,7 @@
     "strength": 6,
     "vitality": 3,
     "resistance": 7,
-    "imageUrl": "/cards_visuals/o_17_096.jpg",
+    "imageUrl": "/cards_visuals/o_17_096.png",
     "i18n": {
       "en": {
         "title": "Éowyn",
@@ -149657,7 +149657,7 @@
     ],
     "culture": "ROHAN",
     "twilightCost": 3,
-    "imageUrl": "/cards_visuals/o_17_097.jpg",
+    "imageUrl": "/cards_visuals/o_17_097.png",
     "i18n": {
       "en": {
         "title": "For Death and Glory",
@@ -149760,7 +149760,7 @@
     ],
     "culture": "ROHAN",
     "twilightCost": 2,
-    "imageUrl": "/cards_visuals/o_17_098.jpg",
+    "imageUrl": "/cards_visuals/o_17_098.png",
     "i18n": {
       "en": {
         "title": "Throne of the Golden Hall",
@@ -149797,7 +149797,7 @@
     "strength": 6,
     "vitality": 3,
     "resistance": 6,
-    "imageUrl": "/cards_visuals/o_17_099.jpg",
+    "imageUrl": "/cards_visuals/o_17_099.png",
     "i18n": {
       "en": {
         "title": "Háma",
@@ -149852,7 +149852,7 @@
     ],
     "culture": "ROHAN",
     "twilightCost": 1,
-    "imageUrl": "/cards_visuals/o_17_100.jpg",
+    "imageUrl": "/cards_visuals/o_17_100.png",
     "i18n": {
       "en": {
         "title": "Into the Caves",
@@ -149894,7 +149894,7 @@
     "strength": 5,
     "vitality": 3,
     "resistance": 5,
-    "imageUrl": "/cards_visuals/o_17_101.jpg",
+    "imageUrl": "/cards_visuals/o_17_101.png",
     "i18n": {
       "en": {
         "title": "Soldier of Rohan",
@@ -149936,7 +149936,7 @@
     "strength": 7,
     "vitality": 3,
     "resistance": 7,
-    "imageUrl": "/cards_visuals/o_17_102.jpg",
+    "imageUrl": "/cards_visuals/o_17_102.png",
     "i18n": {
       "en": {
         "title": "Théoden",
@@ -149978,7 +149978,7 @@
     ],
     "culture": "ROHAN",
     "twilightCost": 1,
-    "imageUrl": "/cards_visuals/o_17_103.jpg",
+    "imageUrl": "/cards_visuals/o_17_103.png",
     "i18n": {
       "en": {
         "title": "Where Now The Horse",
@@ -150020,7 +150020,7 @@
     "strength": 7,
     "vitality": 3,
     "resistance": 6,
-    "imageUrl": "/cards_visuals/o_17_104.jpg",
+    "imageUrl": "/cards_visuals/o_17_104.png",
     "i18n": {
       "en": {
         "title": "Warrior of Rohan",
@@ -150073,7 +150073,7 @@
     ],
     "culture": "SAURON",
     "twilightCost": 2,
-    "imageUrl": "/cards_visuals/o_17_105.jpg",
+    "imageUrl": "/cards_visuals/o_17_105.png",
     "i18n": {
       "en": {
         "title": "Throne of the Dark Lord",
@@ -150169,7 +150169,7 @@
     ],
     "culture": "SHIRE",
     "twilightCost": 1,
-    "imageUrl": "/cards_visuals/o_17_106.jpg",
+    "imageUrl": "/cards_visuals/o_17_106.png",
     "i18n": {
       "en": {
         "title": "Halfling Leaf",
@@ -150211,7 +150211,7 @@
     "strength": 3,
     "vitality": 4,
     "resistance": 8,
-    "imageUrl": "/cards_visuals/o_17_107.jpg",
+    "imageUrl": "/cards_visuals/o_17_107.png",
     "i18n": {
       "en": {
         "title": "Merry",
@@ -150337,7 +150337,7 @@
     ],
     "culture": "SHIRE",
     "twilightCost": 1,
-    "imageUrl": "/cards_visuals/o_17_108.jpg",
+    "imageUrl": "/cards_visuals/o_17_108.png",
     "i18n": {
       "en": {
         "title": "Hornblower Leaf",
@@ -150379,7 +150379,7 @@
     "strength": 3,
     "vitality": 4,
     "resistance": 8,
-    "imageUrl": "/cards_visuals/o_17_109.jpg",
+    "imageUrl": "/cards_visuals/o_17_109.png",
     "i18n": {
       "en": {
         "title": "Pippin",
@@ -150437,7 +150437,7 @@
     ],
     "culture": "SHIRE",
     "twilightCost": 1,
-    "imageUrl": "/cards_visuals/o_17_110.jpg",
+    "imageUrl": "/cards_visuals/o_17_110.png",
     "i18n": {
       "en": {
         "title": "Southfarthing Leaf",
@@ -150488,7 +150488,7 @@
     ],
     "culture": "SHIRE",
     "twilightCost": 1,
-    "imageUrl": "/cards_visuals/o_17_111.jpg",
+    "imageUrl": "/cards_visuals/o_17_111.png",
     "i18n": {
       "en": {
         "title": "Southlinch Leaf",
@@ -150534,7 +150534,7 @@
     "culture": "URUK-HAI",
     "twilightCost": 1,
     "strength": 1,
-    "imageUrl": "/cards_visuals/o_17_112.jpg",
+    "imageUrl": "/cards_visuals/o_17_112.png",
     "i18n": {
       "en": {
         "title": "Blade of the White Hand",
@@ -150573,7 +150573,7 @@
     "subtype": "SUPPORT-AREA",
     "culture": "URUK-HAI",
     "twilightCost": 2,
-    "imageUrl": "/cards_visuals/o_17_113.jpg",
+    "imageUrl": "/cards_visuals/o_17_113.png",
     "i18n": {
       "en": {
         "title": "Deathly Roar",
@@ -150614,7 +150614,7 @@
     ],
     "culture": "URUK-HAI",
     "twilightCost": 2,
-    "imageUrl": "/cards_visuals/o_17_114.jpg",
+    "imageUrl": "/cards_visuals/o_17_114.png",
     "i18n": {
       "en": {
         "title": "Land Had Changed",
@@ -150656,7 +150656,7 @@
     "strength": 8,
     "vitality": 4,
     "minionSiteNumber": 4,
-    "imageUrl": "/cards_visuals/o_17_115.jpg",
+    "imageUrl": "/cards_visuals/o_17_115.png",
     "i18n": {
       "en": {
         "title": "Saruman",
@@ -150699,7 +150699,7 @@
     "strength": 8,
     "vitality": 4,
     "minionSiteNumber": 4,
-    "imageUrl": "/cards_visuals/o_17_116.jpg",
+    "imageUrl": "/cards_visuals/o_17_116.png",
     "i18n": {
       "en": {
         "title": "Saruman",
@@ -150747,7 +150747,7 @@
     "twilightCost": 0,
     "strength": 1,
     "vitality": 1,
-    "imageUrl": "/cards_visuals/o_17_117.jpg",
+    "imageUrl": "/cards_visuals/o_17_117.png",
     "i18n": {
       "en": {
         "title": "Spear of the White Hand",
@@ -150801,7 +150801,7 @@
     ],
     "culture": "URUK-HAI",
     "twilightCost": 2,
-    "imageUrl": "/cards_visuals/o_17_118.jpg",
+    "imageUrl": "/cards_visuals/o_17_118.png",
     "i18n": {
       "en": {
         "title": "Vile Pit",
@@ -150846,7 +150846,7 @@
     "strength": 13,
     "vitality": 1,
     "minionSiteNumber": 5,
-    "imageUrl": "/cards_visuals/o_17_119.jpg",
+    "imageUrl": "/cards_visuals/o_17_119.png",
     "i18n": {
       "en": {
         "title": "White Hand Aggressor",
@@ -150891,7 +150891,7 @@
     "strength": 8,
     "vitality": 2,
     "minionSiteNumber": 5,
-    "imageUrl": "/cards_visuals/o_17_120.jpg",
+    "imageUrl": "/cards_visuals/o_17_120.png",
     "i18n": {
       "en": {
         "title": "White Hand Attacker",
@@ -150936,7 +150936,7 @@
     "strength": 10,
     "vitality": 2,
     "minionSiteNumber": 5,
-    "imageUrl": "/cards_visuals/o_17_121.jpg",
+    "imageUrl": "/cards_visuals/o_17_121.png",
     "i18n": {
       "en": {
         "title": "White Hand Berserker",
@@ -150978,7 +150978,7 @@
     "strength": 5,
     "vitality": 2,
     "minionSiteNumber": 5,
-    "imageUrl": "/cards_visuals/o_17_122.jpg",
+    "imageUrl": "/cards_visuals/o_17_122.png",
     "i18n": {
       "en": {
         "title": "White Hand Butcher",
@@ -151023,7 +151023,7 @@
     "strength": 12,
     "vitality": 3,
     "minionSiteNumber": 5,
-    "imageUrl": "/cards_visuals/o_17_123.jpg",
+    "imageUrl": "/cards_visuals/o_17_123.png",
     "i18n": {
       "en": {
         "title": "White Hand Captain",
@@ -151068,7 +151068,7 @@
     "strength": 10,
     "vitality": 3,
     "minionSiteNumber": 5,
-    "imageUrl": "/cards_visuals/o_17_124.jpg",
+    "imageUrl": "/cards_visuals/o_17_124.png",
     "i18n": {
       "en": {
         "title": "White Hand Destroyer",
@@ -151113,7 +151113,7 @@
     "strength": 8,
     "vitality": 2,
     "minionSiteNumber": 5,
-    "imageUrl": "/cards_visuals/o_17_125.jpg",
+    "imageUrl": "/cards_visuals/o_17_125.png",
     "i18n": {
       "en": {
         "title": "White Hand Enforcer",
@@ -151198,7 +151198,7 @@
     "strength": 9,
     "vitality": 3,
     "minionSiteNumber": 5,
-    "imageUrl": "/cards_visuals/o_17_126.jpg",
+    "imageUrl": "/cards_visuals/o_17_126.png",
     "i18n": {
       "en": {
         "title": "White Hand Guard",
@@ -151243,7 +151243,7 @@
     "strength": 9,
     "vitality": 2,
     "minionSiteNumber": 5,
-    "imageUrl": "/cards_visuals/o_17_127.jpg",
+    "imageUrl": "/cards_visuals/o_17_127.png",
     "i18n": {
       "en": {
         "title": "White Hand Intruder",
@@ -151288,7 +151288,7 @@
     "strength": 8,
     "vitality": 2,
     "minionSiteNumber": 5,
-    "imageUrl": "/cards_visuals/o_17_128.jpg",
+    "imageUrl": "/cards_visuals/o_17_128.png",
     "i18n": {
       "en": {
         "title": "White Hand Invader",
@@ -151338,7 +151338,7 @@
     "strength": 17,
     "vitality": 3,
     "minionSiteNumber": 5,
-    "imageUrl": "/cards_visuals/o_17_129.jpg",
+    "imageUrl": "/cards_visuals/o_17_129.png",
     "i18n": {
       "en": {
         "title": "White Hand Legion",
@@ -151384,7 +151384,7 @@
     "strength": 5,
     "vitality": 3,
     "minionSiteNumber": 5,
-    "imageUrl": "/cards_visuals/o_17_130.jpg",
+    "imageUrl": "/cards_visuals/o_17_130.png",
     "i18n": {
       "en": {
         "title": "White Hand Scout",
@@ -151429,7 +151429,7 @@
     "strength": 6,
     "vitality": 2,
     "minionSiteNumber": 5,
-    "imageUrl": "/cards_visuals/o_17_131.jpg",
+    "imageUrl": "/cards_visuals/o_17_131.png",
     "i18n": {
       "en": {
         "title": "White Hand Slayer",
@@ -151475,7 +151475,7 @@
     "strength": 9,
     "vitality": 2,
     "minionSiteNumber": 5,
-    "imageUrl": "/cards_visuals/o_17_132.jpg",
+    "imageUrl": "/cards_visuals/o_17_132.png",
     "i18n": {
       "en": {
         "title": "White Hand Taskmaster",
@@ -151520,7 +151520,7 @@
     "strength": 9,
     "vitality": 2,
     "minionSiteNumber": 5,
-    "imageUrl": "/cards_visuals/o_17_133.jpg",
+    "imageUrl": "/cards_visuals/o_17_133.png",
     "i18n": {
       "en": {
         "title": "White Hand Trooper",
@@ -151565,7 +151565,7 @@
     "strength": 8,
     "vitality": 3,
     "minionSiteNumber": 5,
-    "imageUrl": "/cards_visuals/o_17_134.jpg",
+    "imageUrl": "/cards_visuals/o_17_134.png",
     "i18n": {
       "en": {
         "title": "White Hand Vanquisher",
@@ -151610,7 +151610,7 @@
     "strength": 7,
     "vitality": 2,
     "minionSiteNumber": 5,
-    "imageUrl": "/cards_visuals/o_17_135.jpg",
+    "imageUrl": "/cards_visuals/o_17_135.png",
     "i18n": {
       "en": {
         "title": "White Hand Veteran",
@@ -151656,7 +151656,7 @@
     "strength": 6,
     "vitality": 2,
     "minionSiteNumber": 5,
-    "imageUrl": "/cards_visuals/o_17_136.jpg",
+    "imageUrl": "/cards_visuals/o_17_136.png",
     "i18n": {
       "en": {
         "title": "White Hand Warrior",
@@ -151697,7 +151697,7 @@
     ],
     "culture": "URUK-HAI",
     "twilightCost": 2,
-    "imageUrl": "/cards_visuals/o_17_137.jpg",
+    "imageUrl": "/cards_visuals/o_17_137.png",
     "i18n": {
       "en": {
         "title": "You Do Not Know Fear",
@@ -151736,7 +151736,7 @@
     "subtype": "SUPPORT-AREA",
     "culture": "URUK-HAI",
     "twilightCost": 1,
-    "imageUrl": "/cards_visuals/o_17_138.jpg",
+    "imageUrl": "/cards_visuals/o_17_138.png",
     "i18n": {
       "en": {
         "title": "You Do Not Know Pain",
@@ -151781,7 +151781,7 @@
     "strength": 10,
     "vitality": 3,
     "minionSiteNumber": 3,
-    "imageUrl": "/cards_visuals/o_17_139.jpg",
+    "imageUrl": "/cards_visuals/o_17_139.png",
     "i18n": {
       "en": {
         "title": "Úlairë Cantëa",
@@ -151898,7 +151898,7 @@
     "strength": 11,
     "vitality": 4,
     "minionSiteNumber": 3,
-    "imageUrl": "/cards_visuals/o_17_140.jpg",
+    "imageUrl": "/cards_visuals/o_17_140.png",
     "i18n": {
       "en": {
         "title": "Úlairë Enquëa",
@@ -151944,7 +151944,7 @@
     "strength": 9,
     "vitality": 2,
     "minionSiteNumber": 3,
-    "imageUrl": "/cards_visuals/o_17_141.jpg",
+    "imageUrl": "/cards_visuals/o_17_141.png",
     "i18n": {
       "en": {
         "title": "Úlairë Otsëa",
@@ -151990,7 +151990,7 @@
     "culture": "WRAITH",
     "twilightCost": 0,
     "strength": 1,
-    "imageUrl": "/cards_visuals/o_17_142.jpg",
+    "imageUrl": "/cards_visuals/o_17_142.png",
     "i18n": {
       "en": {
         "title": "Ring of Savagery",
@@ -152032,7 +152032,7 @@
     ],
     "culture": "WRAITH",
     "twilightCost": 0,
-    "imageUrl": "/cards_visuals/o_17_143.jpg",
+    "imageUrl": "/cards_visuals/o_17_143.png",
     "i18n": {
       "en": {
         "title": "Ring of Terror",
@@ -152072,7 +152072,7 @@
     "strength": 14,
     "vitality": 4,
     "minionSiteNumber": 3,
-    "imageUrl": "/cards_visuals/o_17_144.jpg",
+    "imageUrl": "/cards_visuals/o_17_144.png",
     "i18n": {
       "en": {
         "title": "The Witch-king",
@@ -152132,7 +152132,7 @@
     "strength": 6,
     "vitality": 3,
     "resistance": 6,
-    "imageUrl": "/cards_visuals/o_18_001.jpg",
+    "imageUrl": "/cards_visuals/o_18_001.png",
     "i18n": {
       "en": {
         "title": "Gimli",
@@ -152257,7 +152257,7 @@
     ],
     "culture": "DWARVEN",
     "twilightCost": 0,
-    "imageUrl": "/cards_visuals/o_18_002.jpg",
+    "imageUrl": "/cards_visuals/o_18_002.png",
     "i18n": {
       "en": {
         "title": "Run Until Found",
@@ -152299,7 +152299,7 @@
     ],
     "culture": "DWARVEN",
     "twilightCost": 0,
-    "imageUrl": "/cards_visuals/o_18_003.jpg",
+    "imageUrl": "/cards_visuals/o_18_003.png",
     "i18n": {
       "en": {
         "title": "Thorin's Harp",
@@ -152340,7 +152340,7 @@
     "culture": "ELVEN",
     "twilightCost": 2,
     "strength": 1,
-    "imageUrl": "/cards_visuals/o_18_004.jpg",
+    "imageUrl": "/cards_visuals/o_18_004.png",
     "i18n": {
       "en": {
         "title": "Arwen's Bow",
@@ -152386,7 +152386,7 @@
     "culture": "ELVEN",
     "twilightCost": 2,
     "strength": 1,
-    "imageUrl": "/cards_visuals/o_18_005.jpg",
+    "imageUrl": "/cards_visuals/o_18_005.png",
     "i18n": {
       "en": {
         "title": "Arwen's Dagger",
@@ -152454,7 +152454,7 @@
     ],
     "culture": "ELVEN",
     "twilightCost": 0,
-    "imageUrl": "/cards_visuals/o_18_006.jpg",
+    "imageUrl": "/cards_visuals/o_18_006.png",
     "i18n": {
       "en": {
         "title": "Back to the Light",
@@ -152510,7 +152510,7 @@
     "culture": "ELVEN",
     "twilightCost": 3,
     "strength": 2,
-    "imageUrl": "/cards_visuals/o_18_007.jpg",
+    "imageUrl": "/cards_visuals/o_18_007.png",
     "i18n": {
       "en": {
         "title": "Celebring",
@@ -152582,7 +152582,7 @@
     "twilightCost": 2,
     "strength": 2,
     "vitality": 1,
-    "imageUrl": "/cards_visuals/o_18_008.jpg",
+    "imageUrl": "/cards_visuals/o_18_008.png",
     "i18n": {
       "en": {
         "title": "Elven Armaments",
@@ -152648,7 +152648,7 @@
     "strength": 5,
     "vitality": 3,
     "resistance": 7,
-    "imageUrl": "/cards_visuals/o_18_009.jpg",
+    "imageUrl": "/cards_visuals/o_18_009.png",
     "i18n": {
       "en": {
         "title": "Elven Defender",
@@ -152687,7 +152687,7 @@
     "subtype": "SUPPORT-AREA",
     "culture": "ELVEN",
     "twilightCost": 2,
-    "imageUrl": "/cards_visuals/o_18_010.jpg",
+    "imageUrl": "/cards_visuals/o_18_010.png",
     "i18n": {
       "en": {
         "title": "Elven Supplies",
@@ -152752,7 +152752,7 @@
     ],
     "culture": "ELVEN",
     "twilightCost": 2,
-    "imageUrl": "/cards_visuals/o_18_011.jpg",
+    "imageUrl": "/cards_visuals/o_18_011.png",
     "i18n": {
       "en": {
         "title": "Galadriel's Silver Ewer",
@@ -152812,7 +152812,7 @@
     "strength": 9,
     "vitality": 3,
     "resistance": 7,
-    "imageUrl": "/cards_visuals/o_18_012.jpg",
+    "imageUrl": "/cards_visuals/o_18_012.png",
     "i18n": {
       "en": {
         "title": "Glorfindel",
@@ -152859,7 +152859,7 @@
     "strength": 6,
     "vitality": 3,
     "resistance": 6,
-    "imageUrl": "/cards_visuals/o_18_013.jpg",
+    "imageUrl": "/cards_visuals/o_18_013.png",
     "i18n": {
       "en": {
         "title": "Haldir",
@@ -152922,7 +152922,7 @@
     ],
     "culture": "ELVEN",
     "twilightCost": 2,
-    "imageUrl": "/cards_visuals/o_18_014.jpg",
+    "imageUrl": "/cards_visuals/o_18_014.png",
     "i18n": {
       "en": {
         "title": "Lembas Bread",
@@ -152964,7 +152964,7 @@
     ],
     "culture": "ELVEN",
     "twilightCost": 0,
-    "imageUrl": "/cards_visuals/o_18_015.jpg",
+    "imageUrl": "/cards_visuals/o_18_015.png",
     "i18n": {
       "en": {
         "title": "Miruvóre",
@@ -153010,7 +153010,7 @@
     "culture": "ELVEN",
     "twilightCost": 1,
     "strength": 1,
-    "imageUrl": "/cards_visuals/o_18_016.jpg",
+    "imageUrl": "/cards_visuals/o_18_016.png",
     "i18n": {
       "en": {
         "title": "Woodhall Elf",
@@ -153072,7 +153072,7 @@
     "strength": 9,
     "vitality": 4,
     "resistance": 7,
-    "imageUrl": "/cards_visuals/o_18_017.jpg",
+    "imageUrl": "/cards_visuals/o_18_017.png",
     "i18n": {
       "en": {
         "title": "Gil-galad",
@@ -153124,7 +153124,7 @@
     "twilightCost": 2,
     "strength": 2,
     "vitality": 1,
-    "imageUrl": "/cards_visuals/o_18_018.jpg",
+    "imageUrl": "/cards_visuals/o_18_018.png",
     "i18n": {
       "en": {
         "title": "Beorning Axe",
@@ -153168,7 +153168,7 @@
     ],
     "culture": "GANDALF",
     "twilightCost": 0,
-    "imageUrl": "/cards_visuals/o_18_019.jpg",
+    "imageUrl": "/cards_visuals/o_18_019.png",
     "i18n": {
       "en": {
         "title": "Drawn to Full Height",
@@ -153209,7 +153209,7 @@
     ],
     "culture": "GANDALF",
     "twilightCost": 3,
-    "imageUrl": "/cards_visuals/o_18_020.jpg",
+    "imageUrl": "/cards_visuals/o_18_020.png",
     "i18n": {
       "en": {
         "title": "Ents Marching",
@@ -153318,7 +153318,7 @@
     ],
     "culture": "GANDALF",
     "twilightCost": 2,
-    "imageUrl": "/cards_visuals/o_18_021.jpg",
+    "imageUrl": "/cards_visuals/o_18_021.png",
     "i18n": {
       "en": {
         "title": "Last Stand",
@@ -153360,7 +153360,7 @@
     "strength": 3,
     "vitality": 3,
     "resistance": 5,
-    "imageUrl": "/cards_visuals/o_18_022.jpg",
+    "imageUrl": "/cards_visuals/o_18_022.png",
     "i18n": {
       "en": {
         "title": "Librarian",
@@ -153409,7 +153409,7 @@
     ],
     "culture": "GANDALF",
     "twilightCost": 2,
-    "imageUrl": "/cards_visuals/o_18_023.jpg",
+    "imageUrl": "/cards_visuals/o_18_023.png",
     "i18n": {
       "en": {
         "title": "One-Upsmanship",
@@ -153465,7 +153465,7 @@
     ],
     "culture": "GANDALF",
     "twilightCost": 0,
-    "imageUrl": "/cards_visuals/o_18_024.jpg",
+    "imageUrl": "/cards_visuals/o_18_024.png",
     "i18n": {
       "en": {
         "title": "Our Time",
@@ -153504,7 +153504,7 @@
     "subtype": "SUPPORT-AREA",
     "culture": "GANDALF",
     "twilightCost": 2,
-    "imageUrl": "/cards_visuals/o_18_025.jpg",
+    "imageUrl": "/cards_visuals/o_18_025.png",
     "i18n": {
       "en": {
         "title": "Perspective",
@@ -153550,7 +153550,7 @@
     "twilightCost": 1,
     "vitality": 1,
     "resistance": 2,
-    "imageUrl": "/cards_visuals/o_18_026.jpg",
+    "imageUrl": "/cards_visuals/o_18_026.png",
     "i18n": {
       "en": {
         "title": "Radagast's Herb Bag",
@@ -153592,7 +153592,7 @@
     ],
     "culture": "GANDALF",
     "twilightCost": 0,
-    "imageUrl": "/cards_visuals/o_18_027.jpg",
+    "imageUrl": "/cards_visuals/o_18_027.png",
     "i18n": {
       "en": {
         "title": "Ship of Smoke",
@@ -153633,7 +153633,7 @@
     ],
     "culture": "GOLLUM",
     "twilightCost": 2,
-    "imageUrl": "/cards_visuals/o_18_028.jpg",
+    "imageUrl": "/cards_visuals/o_18_028.png",
     "i18n": {
       "en": {
         "title": "Countless Cords",
@@ -153672,7 +153672,7 @@
     "subtype": "SUPPORT-AREA",
     "culture": "GOLLUM",
     "twilightCost": 1,
-    "imageUrl": "/cards_visuals/o_18_029.jpg",
+    "imageUrl": "/cards_visuals/o_18_029.png",
     "i18n": {
       "en": {
         "title": "Deceit",
@@ -153713,7 +153713,7 @@
     ],
     "culture": "GOLLUM",
     "twilightCost": 0,
-    "imageUrl": "/cards_visuals/o_18_030.jpg",
+    "imageUrl": "/cards_visuals/o_18_030.png",
     "i18n": {
       "en": {
         "title": "Enemy in Your Midst",
@@ -153754,7 +153754,7 @@
     ],
     "culture": "GOLLUM",
     "twilightCost": 0,
-    "imageUrl": "/cards_visuals/o_18_031.jpg",
+    "imageUrl": "/cards_visuals/o_18_031.png",
     "i18n": {
       "en": {
         "title": "It Draws Him",
@@ -153793,7 +153793,7 @@
     "subtype": "SUPPORT-AREA",
     "culture": "GOLLUM",
     "twilightCost": 3,
-    "imageUrl": "/cards_visuals/o_18_032.jpg",
+    "imageUrl": "/cards_visuals/o_18_032.png",
     "i18n": {
       "en": {
         "title": "Not Easily Avoided",
@@ -153834,7 +153834,7 @@
     ],
     "culture": "GOLLUM",
     "twilightCost": 2,
-    "imageUrl": "/cards_visuals/o_18_033.jpg",
+    "imageUrl": "/cards_visuals/o_18_033.png",
     "i18n": {
       "en": {
         "title": "Set Up",
@@ -153879,7 +153879,7 @@
     "strength": 8,
     "vitality": 8,
     "minionSiteNumber": 8,
-    "imageUrl": "/cards_visuals/o_18_034.jpg",
+    "imageUrl": "/cards_visuals/o_18_034.png",
     "i18n": {
       "en": {
         "title": "Shelob",
@@ -153934,7 +153934,7 @@
     ],
     "culture": "GOLLUM",
     "twilightCost": 10,
-    "imageUrl": "/cards_visuals/o_18_035.jpg",
+    "imageUrl": "/cards_visuals/o_18_035.png",
     "i18n": {
       "en": {
         "title": "Sting of Shelob",
@@ -153975,7 +153975,7 @@
     ],
     "culture": "GOLLUM",
     "twilightCost": 0,
-    "imageUrl": "/cards_visuals/o_18_036.jpg",
+    "imageUrl": "/cards_visuals/o_18_036.png",
     "i18n": {
       "en": {
         "title": "Time for Food",
@@ -154016,7 +154016,7 @@
     ],
     "culture": "GOLLUM",
     "twilightCost": 0,
-    "imageUrl": "/cards_visuals/o_18_037.jpg",
+    "imageUrl": "/cards_visuals/o_18_037.png",
     "i18n": {
       "en": {
         "title": "Trusted Promise",
@@ -154061,7 +154061,7 @@
     "strength": 8,
     "vitality": 4,
     "resistance": 8,
-    "imageUrl": "/cards_visuals/o_18_038.jpg",
+    "imageUrl": "/cards_visuals/o_18_038.png",
     "i18n": {
       "en": {
         "title": "Aragorn",
@@ -154110,7 +154110,7 @@
     "culture": "GONDOR",
     "twilightCost": 1,
     "strength": 1,
-    "imageUrl": "/cards_visuals/o_18_039.jpg",
+    "imageUrl": "/cards_visuals/o_18_039.png",
     "i18n": {
       "en": {
         "title": "Armor of the White City",
@@ -154155,7 +154155,7 @@
     "strength": 7,
     "vitality": 3,
     "resistance": 5,
-    "imageUrl": "/cards_visuals/o_18_040.jpg",
+    "imageUrl": "/cards_visuals/o_18_040.png",
     "i18n": {
       "en": {
         "title": "Boromir",
@@ -154226,7 +154226,7 @@
     ],
     "culture": "GONDOR",
     "twilightCost": 4,
-    "imageUrl": "/cards_visuals/o_18_041.jpg",
+    "imageUrl": "/cards_visuals/o_18_041.png",
     "i18n": {
       "en": {
         "title": "Crown of Gondor",
@@ -154323,7 +154323,7 @@
     "strength": 8,
     "vitality": 3,
     "resistance": 5,
-    "imageUrl": "/cards_visuals/o_18_042.jpg",
+    "imageUrl": "/cards_visuals/o_18_042.png",
     "i18n": {
       "en": {
         "title": "Denethor",
@@ -154374,7 +154374,7 @@
     "culture": "GONDOR",
     "twilightCost": 1,
     "strength": 2,
-    "imageUrl": "/cards_visuals/o_18_043.jpg",
+    "imageUrl": "/cards_visuals/o_18_043.png",
     "i18n": {
       "en": {
         "title": "Denethor's Sword",
@@ -154415,7 +154415,7 @@
     ],
     "culture": "GONDOR",
     "twilightCost": 1,
-    "imageUrl": "/cards_visuals/o_18_044.jpg",
+    "imageUrl": "/cards_visuals/o_18_044.png",
     "i18n": {
       "en": {
         "title": "Defenses Long Held",
@@ -154461,7 +154461,7 @@
     "culture": "GONDOR",
     "twilightCost": 2,
     "strength": 1,
-    "imageUrl": "/cards_visuals/o_18_045.jpg",
+    "imageUrl": "/cards_visuals/o_18_045.png",
     "i18n": {
       "en": {
         "title": "Dúnadan's Bow",
@@ -154582,7 +154582,7 @@
     "culture": "GONDOR",
     "twilightCost": 2,
     "strength": -1,
-    "imageUrl": "/cards_visuals/o_18_046.jpg",
+    "imageUrl": "/cards_visuals/o_18_046.png",
     "i18n": {
       "en": {
         "title": "Disarmed",
@@ -154624,7 +154624,7 @@
     "culture": "GONDOR",
     "twilightCost": 0,
     "strength": 2,
-    "imageUrl": "/cards_visuals/o_18_047.jpg",
+    "imageUrl": "/cards_visuals/o_18_047.png",
     "i18n": {
       "en": {
         "title": "Elendil's Army",
@@ -154671,7 +154671,7 @@
     "strength": 7,
     "vitality": 3,
     "resistance": 7,
-    "imageUrl": "/cards_visuals/o_18_048.jpg",
+    "imageUrl": "/cards_visuals/o_18_048.png",
     "i18n": {
       "en": {
         "title": "Faramir",
@@ -154721,7 +154721,7 @@
     },
     "culture": "GONDOR",
     "twilightCost": 1,
-    "imageUrl": "/cards_visuals/o_18_049.jpg",
+    "imageUrl": "/cards_visuals/o_18_049.png",
     "i18n": {
       "en": {
         "title": "Faramir's Company",
@@ -154763,7 +154763,7 @@
     ],
     "culture": "GONDOR",
     "twilightCost": 3,
-    "imageUrl": "/cards_visuals/o_18_050.jpg",
+    "imageUrl": "/cards_visuals/o_18_050.png",
     "i18n": {
       "en": {
         "title": "The Faithful Stone",
@@ -154804,7 +154804,7 @@
     ],
     "culture": "GONDOR",
     "twilightCost": 0,
-    "imageUrl": "/cards_visuals/o_18_051.jpg",
+    "imageUrl": "/cards_visuals/o_18_051.png",
     "i18n": {
       "en": {
         "title": "For Gondor!",
@@ -154850,7 +154850,7 @@
     "culture": "GONDOR",
     "twilightCost": 0,
     "resistance": 3,
-    "imageUrl": "/cards_visuals/o_18_052.jpg",
+    "imageUrl": "/cards_visuals/o_18_052.png",
     "i18n": {
       "en": {
         "title": "Gondorian Servant",
@@ -154900,7 +154900,7 @@
     "culture": "GONDOR",
     "twilightCost": 0,
     "resistance": 1,
-    "imageUrl": "/cards_visuals/o_18_053.jpg",
+    "imageUrl": "/cards_visuals/o_18_053.png",
     "i18n": {
       "en": {
         "title": "Horn of Boromir",
@@ -154971,7 +154971,7 @@
     "strength": 7,
     "vitality": 3,
     "resistance": 1,
-    "imageUrl": "/cards_visuals/o_18_054.jpg",
+    "imageUrl": "/cards_visuals/o_18_054.png",
     "i18n": {
       "en": {
         "title": "Isildur",
@@ -155020,7 +155020,7 @@
     ],
     "culture": "GONDOR",
     "twilightCost": 0,
-    "imageUrl": "/cards_visuals/o_18_055.jpg",
+    "imageUrl": "/cards_visuals/o_18_055.png",
     "i18n": {
       "en": {
         "title": "Ranger of the North",
@@ -155089,7 +155089,7 @@
     "strength": 5,
     "vitality": 3,
     "resistance": 6,
-    "imageUrl": "/cards_visuals/o_18_056.jpg",
+    "imageUrl": "/cards_visuals/o_18_056.png",
     "i18n": {
       "en": {
         "title": "Ranger of the South",
@@ -155134,7 +155134,7 @@
     ],
     "culture": "GONDOR",
     "twilightCost": 1,
-    "imageUrl": "/cards_visuals/o_18_057.jpg",
+    "imageUrl": "/cards_visuals/o_18_057.png",
     "i18n": {
       "en": {
         "title": "Shield of the White Tree",
@@ -155307,7 +155307,7 @@
     "culture": "GONDOR",
     "twilightCost": 2,
     "siteNumber": 3,
-    "imageUrl": "/cards_visuals/o_18_058.jpg",
+    "imageUrl": "/cards_visuals/o_18_058.png",
     "i18n": {
       "en": {
         "title": "Soldier's Cache",
@@ -155347,7 +155347,7 @@
     "strength": 5,
     "vitality": 3,
     "resistance": 8,
-    "imageUrl": "/cards_visuals/o_18_059.jpg",
+    "imageUrl": "/cards_visuals/o_18_059.png",
     "i18n": {
       "en": {
         "title": "Watcher at Sarn Ford",
@@ -155398,7 +155398,7 @@
     "culture": "MEN",
     "twilightCost": 1,
     "strength": 2,
-    "imageUrl": "/cards_visuals/o_18_060.jpg",
+    "imageUrl": "/cards_visuals/o_18_060.png",
     "i18n": {
       "en": {
         "title": "Corsair Boarding Axe",
@@ -155444,7 +155444,7 @@
     "culture": "MEN",
     "twilightCost": 2,
     "strength": 1,
-    "imageUrl": "/cards_visuals/o_18_061.jpg",
+    "imageUrl": "/cards_visuals/o_18_061.png",
     "i18n": {
       "en": {
         "title": "Corsair Bow",
@@ -155490,7 +155490,7 @@
     "culture": "MEN",
     "twilightCost": 2,
     "strength": 1,
-    "imageUrl": "/cards_visuals/o_18_062.jpg",
+    "imageUrl": "/cards_visuals/o_18_062.png",
     "i18n": {
       "en": {
         "title": "Corsair Grappling Hook",
@@ -155539,7 +155539,7 @@
     "culture": "MEN",
     "twilightCost": 3,
     "strength": 2,
-    "imageUrl": "/cards_visuals/o_18_063.jpg",
+    "imageUrl": "/cards_visuals/o_18_063.png",
     "i18n": {
       "en": {
         "title": "Corsair Halberd",
@@ -155608,7 +155608,7 @@
     ],
     "culture": "MEN",
     "twilightCost": 2,
-    "imageUrl": "/cards_visuals/o_18_064.jpg",
+    "imageUrl": "/cards_visuals/o_18_064.png",
     "i18n": {
       "en": {
         "title": "Corsair Scimitar",
@@ -155649,7 +155649,7 @@
     ],
     "culture": "MEN",
     "twilightCost": 0,
-    "imageUrl": "/cards_visuals/o_18_065.jpg",
+    "imageUrl": "/cards_visuals/o_18_065.png",
     "i18n": {
       "en": {
         "title": "Declined Business",
@@ -155688,7 +155688,7 @@
     "subtype": "SUPPORT-AREA",
     "culture": "MEN",
     "twilightCost": 3,
-    "imageUrl": "/cards_visuals/o_18_066.jpg",
+    "imageUrl": "/cards_visuals/o_18_066.png",
     "i18n": {
       "en": {
         "title": "Fleet of Corsair Ships",
@@ -155759,7 +155759,7 @@
     "strength": 4,
     "vitality": 3,
     "minionSiteNumber": 4,
-    "imageUrl": "/cards_visuals/o_18_067.jpg",
+    "imageUrl": "/cards_visuals/o_18_067.png",
     "i18n": {
       "en": {
         "title": "Gríma",
@@ -155806,7 +155806,7 @@
     "strength": 6,
     "vitality": 2,
     "minionSiteNumber": 2,
-    "imageUrl": "/cards_visuals/o_18_068.jpg",
+    "imageUrl": "/cards_visuals/o_18_068.png",
     "i18n": {
       "en": {
         "title": "Harry Goatleaf",
@@ -155852,7 +155852,7 @@
     "culture": "MEN",
     "twilightCost": 0,
     "strength": 1,
-    "imageUrl": "/cards_visuals/o_18_069.jpg",
+    "imageUrl": "/cards_visuals/o_18_069.png",
     "i18n": {
       "en": {
         "title": "Henchman's Dagger",
@@ -155893,7 +155893,7 @@
     ],
     "culture": "MEN",
     "twilightCost": 2,
-    "imageUrl": "/cards_visuals/o_18_070.jpg",
+    "imageUrl": "/cards_visuals/o_18_070.png",
     "i18n": {
       "en": {
         "title": "Ill News is an Ill Guest",
@@ -155935,7 +155935,7 @@
     "strength": 11,
     "vitality": 3,
     "minionSiteNumber": 4,
-    "imageUrl": "/cards_visuals/o_18_071.jpg",
+    "imageUrl": "/cards_visuals/o_18_071.png",
     "i18n": {
       "en": {
         "title": "Mûmakil Commander",
@@ -155982,7 +155982,7 @@
     "strength": 8,
     "vitality": 1,
     "minionSiteNumber": 2,
-    "imageUrl": "/cards_visuals/o_18_072.jpg",
+    "imageUrl": "/cards_visuals/o_18_072.png",
     "i18n": {
       "en": {
         "title": "Ruffian",
@@ -156036,7 +156036,7 @@
     ],
     "culture": "ORC",
     "twilightCost": 3,
-    "imageUrl": "/cards_visuals/o_18_073.jpg",
+    "imageUrl": "/cards_visuals/o_18_073.png",
     "i18n": {
       "en": {
         "title": "Grond",
@@ -156083,7 +156083,7 @@
     "strength": 10,
     "vitality": 3,
     "minionSiteNumber": 2,
-    "imageUrl": "/cards_visuals/o_18_074.jpg",
+    "imageUrl": "/cards_visuals/o_18_074.png",
     "i18n": {
       "en": {
         "title": "Rough Man of the South",
@@ -156124,7 +156124,7 @@
     ],
     "culture": "ORC",
     "twilightCost": 2,
-    "imageUrl": "/cards_visuals/o_18_075.jpg",
+    "imageUrl": "/cards_visuals/o_18_075.png",
     "i18n": {
       "en": {
         "title": "Gruesome Meal",
@@ -156166,7 +156166,7 @@
     "strength": 9,
     "vitality": 2,
     "minionSiteNumber": 2,
-    "imageUrl": "/cards_visuals/o_18_076.jpg",
+    "imageUrl": "/cards_visuals/o_18_076.png",
     "i18n": {
       "en": {
         "title": "Squint-eyed Southerner",
@@ -156234,7 +156234,7 @@
     "culture": "ORC",
     "twilightCost": 1,
     "strength": 2,
-    "imageUrl": "/cards_visuals/o_18_077.jpg",
+    "imageUrl": "/cards_visuals/o_18_077.png",
     "i18n": {
       "en": {
         "title": "Orkish Ax",
@@ -156276,7 +156276,7 @@
     "strength": 3,
     "vitality": 4,
     "minionSiteNumber": 2,
-    "imageUrl": "/cards_visuals/o_18_078.jpg",
+    "imageUrl": "/cards_visuals/o_18_078.png",
     "i18n": {
       "en": {
         "title": "Ted Sandyman",
@@ -156323,7 +156323,7 @@
     "strength": 8,
     "vitality": 2,
     "minionSiteNumber": 4,
-    "imageUrl": "/cards_visuals/o_18_079.jpg",
+    "imageUrl": "/cards_visuals/o_18_079.png",
     "i18n": {
       "en": {
         "title": "Orkish Aggressor",
@@ -156364,7 +156364,7 @@
     ],
     "culture": "MEN",
     "twilightCost": 3,
-    "imageUrl": "/cards_visuals/o_18_080.jpg",
+    "imageUrl": "/cards_visuals/o_18_080.png",
     "i18n": {
       "en": {
         "title": "Treachery",
@@ -156421,7 +156421,7 @@
     "strength": 10,
     "vitality": 3,
     "minionSiteNumber": 4,
-    "imageUrl": "/cards_visuals/o_18_081.jpg",
+    "imageUrl": "/cards_visuals/o_18_081.png",
     "i18n": {
       "en": {
         "title": "Orkish Archer Troop",
@@ -156464,7 +156464,7 @@
     ],
     "culture": "MEN",
     "twilightCost": 0,
-    "imageUrl": "/cards_visuals/o_18_082.jpg",
+    "imageUrl": "/cards_visuals/o_18_082.png",
     "i18n": {
       "en": {
         "title": "Whisper in the Dark",
@@ -156503,7 +156503,7 @@
     "subtype": "SUPPORT-AREA",
     "culture": "ORC",
     "twilightCost": 1,
-    "imageUrl": "/cards_visuals/o_18_083.jpg",
+    "imageUrl": "/cards_visuals/o_18_083.png",
     "i18n": {
       "en": {
         "title": "Destroyers and Usurpers",
@@ -156544,7 +156544,7 @@
     ],
     "culture": "ORC",
     "twilightCost": 2,
-    "imageUrl": "/cards_visuals/o_18_084.jpg",
+    "imageUrl": "/cards_visuals/o_18_084.png",
     "i18n": {
       "en": {
         "title": "Frenzy of Arrows",
@@ -156616,7 +156616,7 @@
     "strength": 15,
     "vitality": 3,
     "minionSiteNumber": 4,
-    "imageUrl": "/cards_visuals/o_18_085.jpg",
+    "imageUrl": "/cards_visuals/o_18_085.png",
     "i18n": {
       "en": {
         "title": "Gothmog",
@@ -156680,7 +156680,7 @@
     "twilightCost": 1,
     "strength": 1,
     "vitality": 1,
-    "imageUrl": "/cards_visuals/o_18_086.jpg",
+    "imageUrl": "/cards_visuals/o_18_086.png",
     "i18n": {
       "en": {
         "title": "Gothmog's Warg",
@@ -156725,7 +156725,7 @@
     "strength": 9,
     "vitality": 3,
     "minionSiteNumber": 4,
-    "imageUrl": "/cards_visuals/o_18_087.jpg",
+    "imageUrl": "/cards_visuals/o_18_087.png",
     "i18n": {
       "en": {
         "title": "Orkish Breeder",
@@ -156767,7 +156767,7 @@
     "strength": 8,
     "vitality": 2,
     "minionSiteNumber": 4,
-    "imageUrl": "/cards_visuals/o_18_088.jpg",
+    "imageUrl": "/cards_visuals/o_18_088.png",
     "i18n": {
       "en": {
         "title": "Orkish Defender",
@@ -156812,7 +156812,7 @@
     "strength": 10,
     "vitality": 2,
     "minionSiteNumber": 4,
-    "imageUrl": "/cards_visuals/o_18_089.jpg",
+    "imageUrl": "/cards_visuals/o_18_089.png",
     "i18n": {
       "en": {
         "title": "Orkish Headsman",
@@ -156854,7 +156854,7 @@
     "strength": 9,
     "vitality": 3,
     "minionSiteNumber": 4,
-    "imageUrl": "/cards_visuals/o_18_090.jpg",
+    "imageUrl": "/cards_visuals/o_18_090.png",
     "i18n": {
       "en": {
         "title": "Orkish Skirmisher",
@@ -156896,7 +156896,7 @@
     "strength": 7,
     "vitality": 1,
     "minionSiteNumber": 4,
-    "imageUrl": "/cards_visuals/o_18_091.jpg",
+    "imageUrl": "/cards_visuals/o_18_091.png",
     "i18n": {
       "en": {
         "title": "Orkish Sneak",
@@ -156957,7 +156957,7 @@
     ],
     "culture": "ORC",
     "twilightCost": 0,
-    "imageUrl": "/cards_visuals/o_18_092.jpg",
+    "imageUrl": "/cards_visuals/o_18_092.png",
     "i18n": {
       "en": {
         "title": "War Preparations",
@@ -157027,7 +157027,7 @@
     "strength": 7,
     "vitality": 2,
     "minionSiteNumber": 4,
-    "imageUrl": "/cards_visuals/o_18_093.jpg",
+    "imageUrl": "/cards_visuals/o_18_093.png",
     "i18n": {
       "en": {
         "title": "Wary Orc",
@@ -157066,7 +157066,7 @@
     "subtype": "SUPPORT-AREA",
     "culture": "ROHAN",
     "twilightCost": 0,
-    "imageUrl": "/cards_visuals/o_18_094.jpg",
+    "imageUrl": "/cards_visuals/o_18_094.png",
     "i18n": {
       "en": {
         "title": "Cast from the Hall",
@@ -157111,7 +157111,7 @@
     ],
     "culture": "ROHAN",
     "twilightCost": 1,
-    "imageUrl": "/cards_visuals/o_18_095.jpg",
+    "imageUrl": "/cards_visuals/o_18_095.png",
     "i18n": {
       "en": {
         "title": "Éomer's Bow",
@@ -157155,7 +157155,7 @@
     ],
     "culture": "ROHAN",
     "twilightCost": 0,
-    "imageUrl": "/cards_visuals/o_18_096.jpg",
+    "imageUrl": "/cards_visuals/o_18_096.png",
     "i18n": {
       "en": {
         "title": "Erkenbrand's Horn",
@@ -157240,7 +157240,7 @@
     ],
     "culture": "ROHAN",
     "twilightCost": 0,
-    "imageUrl": "/cards_visuals/o_18_097.jpg",
+    "imageUrl": "/cards_visuals/o_18_097.png",
     "i18n": {
       "en": {
         "title": "Erkenbrand's Shield",
@@ -157276,7 +157276,7 @@
     ],
     "culture": "ROHAN",
     "twilightCost": 3,
-    "imageUrl": "/cards_visuals/o_18_098.jpg",
+    "imageUrl": "/cards_visuals/o_18_098.png",
     "i18n": {
       "en": {
         "title": "Fall Back to Helm's Deep",
@@ -157321,7 +157321,7 @@
     "strength": 6,
     "vitality": 3,
     "resistance": 6,
-    "imageUrl": "/cards_visuals/o_18_099.jpg",
+    "imageUrl": "/cards_visuals/o_18_099.png",
     "i18n": {
       "en": {
         "title": "Gamling",
@@ -157373,7 +157373,7 @@
     ],
     "culture": "ROHAN",
     "twilightCost": 0,
-    "imageUrl": "/cards_visuals/o_18_100.jpg",
+    "imageUrl": "/cards_visuals/o_18_100.png",
     "i18n": {
       "en": {
         "title": "Gamling's Horn",
@@ -157414,7 +157414,7 @@
     ],
     "culture": "ROHAN",
     "twilightCost": 0,
-    "imageUrl": "/cards_visuals/o_18_101.jpg",
+    "imageUrl": "/cards_visuals/o_18_101.png",
     "i18n": {
       "en": {
         "title": "Precise Attack",
@@ -157467,7 +157467,7 @@
     ],
     "culture": "ROHAN",
     "twilightCost": 2,
-    "imageUrl": "/cards_visuals/o_18_102.jpg",
+    "imageUrl": "/cards_visuals/o_18_102.png",
     "i18n": {
       "en": {
         "title": "Rohirrim Diadem",
@@ -157536,7 +157536,7 @@
     "strength": 6,
     "vitality": 3,
     "resistance": 6,
-    "imageUrl": "/cards_visuals/o_18_103.jpg",
+    "imageUrl": "/cards_visuals/o_18_103.png",
     "i18n": {
       "en": {
         "title": "Rohirrim Recruit",
@@ -157575,7 +157575,7 @@
     "subtype": "SUPPORT-AREA",
     "culture": "ROHAN",
     "twilightCost": 0,
-    "imageUrl": "/cards_visuals/o_18_104.jpg",
+    "imageUrl": "/cards_visuals/o_18_104.png",
     "i18n": {
       "en": {
         "title": "Surrendered Weapons",
@@ -157617,7 +157617,7 @@
     "strength": 7,
     "vitality": 3,
     "resistance": 6,
-    "imageUrl": "/cards_visuals/o_18_105.jpg",
+    "imageUrl": "/cards_visuals/o_18_105.png",
     "i18n": {
       "en": {
         "title": "Théoden",
@@ -157678,7 +157678,7 @@
     ],
     "culture": "SHIRE",
     "twilightCost": 1,
-    "imageUrl": "/cards_visuals/o_18_106.jpg",
+    "imageUrl": "/cards_visuals/o_18_106.png",
     "i18n": {
       "en": {
         "title": "A Dragon's Tale",
@@ -157720,7 +157720,7 @@
     "strength": 3,
     "vitality": 3,
     "resistance": 7,
-    "imageUrl": "/cards_visuals/o_18_107.jpg",
+    "imageUrl": "/cards_visuals/o_18_107.png",
     "i18n": {
       "en": {
         "title": "Fredegar Bolger",
@@ -157764,7 +157764,7 @@
     "subtype": "SUPPORT-AREA",
     "culture": "SHIRE",
     "twilightCost": 1,
-    "imageUrl": "/cards_visuals/o_18_108.jpg",
+    "imageUrl": "/cards_visuals/o_18_108.png",
     "i18n": {
       "en": {
         "title": "Golden Perch Ale",
@@ -157805,7 +157805,7 @@
     ],
     "culture": "SHIRE",
     "twilightCost": 2,
-    "imageUrl": "/cards_visuals/o_18_109.jpg",
+    "imageUrl": "/cards_visuals/o_18_109.png",
     "i18n": {
       "en": {
         "title": "Make a Run For It",
@@ -157844,7 +157844,7 @@
     "subtype": "SUPPORT-AREA",
     "culture": "SHIRE",
     "twilightCost": 0,
-    "imageUrl": "/cards_visuals/o_18_110.jpg",
+    "imageUrl": "/cards_visuals/o_18_110.png",
     "i18n": {
       "en": {
         "title": "Prized Lagan",
@@ -157890,7 +157890,7 @@
     "culture": "SHIRE",
     "twilightCost": 2,
     "strength": 1,
-    "imageUrl": "/cards_visuals/o_18_111.jpg",
+    "imageUrl": "/cards_visuals/o_18_111.png",
     "i18n": {
       "en": {
         "title": "Robin Smallburrow",
@@ -157992,7 +157992,7 @@
     ],
     "culture": "SHIRE",
     "twilightCost": 0,
-    "imageUrl": "/cards_visuals/o_18_112.jpg",
+    "imageUrl": "/cards_visuals/o_18_112.png",
     "i18n": {
       "en": {
         "title": "Scouring of the Shire",
@@ -158063,7 +158063,7 @@
     "strength": 1,
     "vitality": 1,
     "resistance": 1,
-    "imageUrl": "/cards_visuals/o_18_113.jpg",
+    "imageUrl": "/cards_visuals/o_18_113.png",
     "i18n": {
       "en": {
         "title": "Sting",
@@ -158108,7 +158108,7 @@
     "culture": "URUK-HAI",
     "twilightCost": 2,
     "vitality": -1,
-    "imageUrl": "/cards_visuals/o_18_114.jpg",
+    "imageUrl": "/cards_visuals/o_18_114.png",
     "i18n": {
       "en": {
         "title": "Cleaved",
@@ -158144,7 +158144,7 @@
     ],
     "culture": "URUK-HAI",
     "twilightCost": 4,
-    "imageUrl": "/cards_visuals/o_18_115.jpg",
+    "imageUrl": "/cards_visuals/o_18_115.png",
     "i18n": {
       "en": {
         "title": "Final Triumph",
@@ -158189,7 +158189,7 @@
     "culture": "URUK-HAI",
     "twilightCost": 0,
     "strength": 1,
-    "imageUrl": "/cards_visuals/o_18_116.jpg",
+    "imageUrl": "/cards_visuals/o_18_116.png",
     "i18n": {
       "en": {
         "title": "Fury of the Evil Army",
@@ -158230,7 +158230,7 @@
     ],
     "culture": "URUK-HAI",
     "twilightCost": 2,
-    "imageUrl": "/cards_visuals/o_18_117.jpg",
+    "imageUrl": "/cards_visuals/o_18_117.png",
     "i18n": {
       "en": {
         "title": "Ghastly Wound",
@@ -158276,7 +158276,7 @@
     "strength": 13,
     "vitality": 3,
     "minionSiteNumber": 5,
-    "imageUrl": "/cards_visuals/o_18_118.jpg",
+    "imageUrl": "/cards_visuals/o_18_118.png",
     "i18n": {
       "en": {
         "title": "Lurtz",
@@ -158322,7 +158322,7 @@
     "twilightCost": 1,
     "strength": 1,
     "vitality": 1,
-    "imageUrl": "/cards_visuals/o_18_119.jpg",
+    "imageUrl": "/cards_visuals/o_18_119.png",
     "i18n": {
       "en": {
         "title": "Lurtz's Bow",
@@ -158368,7 +158368,7 @@
     ],
     "culture": "URUK-HAI",
     "twilightCost": 0,
-    "imageUrl": "/cards_visuals/o_18_120.jpg",
+    "imageUrl": "/cards_visuals/o_18_120.png",
     "i18n": {
       "en": {
         "title": "New Forges Built",
@@ -158407,7 +158407,7 @@
     "subtype": "SUPPORT-AREA",
     "culture": "URUK-HAI",
     "twilightCost": 2,
-    "imageUrl": "/cards_visuals/o_18_121.jpg",
+    "imageUrl": "/cards_visuals/o_18_121.png",
     "i18n": {
       "en": {
         "title": "Pikes Upon Pikes",
@@ -158453,7 +158453,7 @@
     "strength": 13,
     "vitality": 3,
     "minionSiteNumber": 5,
-    "imageUrl": "/cards_visuals/o_18_122.jpg",
+    "imageUrl": "/cards_visuals/o_18_122.png",
     "i18n": {
       "en": {
         "title": "Shagrat",
@@ -158497,7 +158497,7 @@
     "subtype": "SUPPORT-AREA",
     "culture": "URUK-HAI",
     "twilightCost": 2,
-    "imageUrl": "/cards_visuals/o_18_123.jpg",
+    "imageUrl": "/cards_visuals/o_18_123.png",
     "i18n": {
       "en": {
         "title": "Tracking the Prize",
@@ -158542,7 +158542,7 @@
     "strength": 8,
     "vitality": 2,
     "minionSiteNumber": 5,
-    "imageUrl": "/cards_visuals/o_18_124.jpg",
+    "imageUrl": "/cards_visuals/o_18_124.png",
     "i18n": {
       "en": {
         "title": "White Hand Attacker",
@@ -158587,7 +158587,7 @@
     "strength": 6,
     "vitality": 1,
     "minionSiteNumber": 5,
-    "imageUrl": "/cards_visuals/o_18_125.jpg",
+    "imageUrl": "/cards_visuals/o_18_125.png",
     "i18n": {
       "en": {
         "title": "White Hand Exorciser",
@@ -158661,7 +158661,7 @@
     "strength": 9,
     "vitality": 2,
     "minionSiteNumber": 5,
-    "imageUrl": "/cards_visuals/o_18_126.jpg",
+    "imageUrl": "/cards_visuals/o_18_126.png",
     "i18n": {
       "en": {
         "title": "White Hand Marchers",
@@ -158706,7 +158706,7 @@
     "strength": 11,
     "vitality": 3,
     "minionSiteNumber": 5,
-    "imageUrl": "/cards_visuals/o_18_127.jpg",
+    "imageUrl": "/cards_visuals/o_18_127.png",
     "i18n": {
       "en": {
         "title": "White Hand Marshal",
@@ -158786,7 +158786,7 @@
     "strength": 8,
     "vitality": 3,
     "minionSiteNumber": 5,
-    "imageUrl": "/cards_visuals/o_18_128.jpg",
+    "imageUrl": "/cards_visuals/o_18_128.png",
     "i18n": {
       "en": {
         "title": "White Hand Mystic",
@@ -158857,7 +158857,7 @@
     "strength": 7,
     "vitality": 1,
     "minionSiteNumber": 5,
-    "imageUrl": "/cards_visuals/o_18_129.jpg",
+    "imageUrl": "/cards_visuals/o_18_129.png",
     "i18n": {
       "en": {
         "title": "White Hand Sieger",
@@ -158902,7 +158902,7 @@
     "strength": 8,
     "vitality": 2,
     "minionSiteNumber": 5,
-    "imageUrl": "/cards_visuals/o_18_130.jpg",
+    "imageUrl": "/cards_visuals/o_18_130.png",
     "i18n": {
       "en": {
         "title": "White Hand Traveler",
@@ -158962,7 +158962,7 @@
     "strength": 10,
     "vitality": 2,
     "minionSiteNumber": 5,
-    "imageUrl": "/cards_visuals/o_18_131.jpg",
+    "imageUrl": "/cards_visuals/o_18_131.png",
     "i18n": {
       "en": {
         "title": "White Hand Uruk",
@@ -159012,7 +159012,7 @@
     ],
     "culture": "WRAITH",
     "twilightCost": 2,
-    "imageUrl": "/cards_visuals/o_18_132.jpg",
+    "imageUrl": "/cards_visuals/o_18_132.png",
     "i18n": {
       "en": {
         "title": "All Life Flees",
@@ -159053,7 +159053,7 @@
     ],
     "culture": "WRAITH",
     "twilightCost": 0,
-    "imageUrl": "/cards_visuals/o_18_133.jpg",
+    "imageUrl": "/cards_visuals/o_18_133.png",
     "i18n": {
       "en": {
         "title": "Pull of the Ring",
@@ -159090,7 +159090,7 @@
     "kind": "FREE_PEOPLE",
     "type": "RING",
     "twilightCost": 0,
-    "imageUrl": "/cards_visuals/o_19_001.jpg",
+    "imageUrl": "/cards_visuals/o_19_001.png",
     "i18n": {
       "en": {
         "title": "The One Ring",
@@ -159135,7 +159135,7 @@
     "strength": 6,
     "vitality": 3,
     "resistance": 6,
-    "imageUrl": "/cards_visuals/o_19_002.jpg",
+    "imageUrl": "/cards_visuals/o_19_002.png",
     "i18n": {
       "en": {
         "title": "Gimli",
@@ -159187,7 +159187,7 @@
     ],
     "culture": "DWARVEN",
     "twilightCost": 1,
-    "imageUrl": "/cards_visuals/o_19_003.jpg",
+    "imageUrl": "/cards_visuals/o_19_003.png",
     "i18n": {
       "en": {
         "title": "Still Twitching",
@@ -159223,7 +159223,7 @@
     ],
     "culture": "DWARVEN",
     "twilightCost": 2,
-    "imageUrl": "/cards_visuals/o_19_004.jpg",
+    "imageUrl": "/cards_visuals/o_19_004.png",
     "i18n": {
       "en": {
         "title": "That’s Two!",
@@ -159268,7 +159268,7 @@
     "culture": "ELVEN",
     "twilightCost": 0,
     "strength": 1,
-    "imageUrl": "/cards_visuals/o_19_005.jpg",
+    "imageUrl": "/cards_visuals/o_19_005.png",
     "i18n": {
       "en": {
         "title": "Army Long Trained",
@@ -159309,7 +159309,7 @@
     "strength": 6,
     "vitality": 3,
     "resistance": 6,
-    "imageUrl": "/cards_visuals/o_19_006.jpg",
+    "imageUrl": "/cards_visuals/o_19_006.png",
     "i18n": {
       "en": {
         "title": "Arwen",
@@ -159359,7 +159359,7 @@
     "strength": 6,
     "vitality": 3,
     "resistance": 7,
-    "imageUrl": "/cards_visuals/o_19_007.jpg",
+    "imageUrl": "/cards_visuals/o_19_007.png",
     "i18n": {
       "en": {
         "title": "Legolas",
@@ -159406,7 +159406,7 @@
     "strength": 8,
     "vitality": 4,
     "resistance": 7,
-    "imageUrl": "/cards_visuals/o_19_008.jpg",
+    "imageUrl": "/cards_visuals/o_19_008.png",
     "i18n": {
       "en": {
         "title": "Gandalf",
@@ -159470,7 +159470,7 @@
     "culture": "GANDALF",
     "twilightCost": 2,
     "strength": 2,
-    "imageUrl": "/cards_visuals/o_19_009.jpg",
+    "imageUrl": "/cards_visuals/o_19_009.png",
     "i18n": {
       "en": {
         "title": "Stern Words",
@@ -159547,7 +159547,7 @@
     "strength": 5,
     "vitality": 4,
     "minionSiteNumber": 3,
-    "imageUrl": "/cards_visuals/o_19_010.jpg",
+    "imageUrl": "/cards_visuals/o_19_010.png",
     "i18n": {
       "en": {
         "title": "Gollum",
@@ -159601,7 +159601,7 @@
     "strength": 3,
     "vitality": 4,
     "resistance": 5,
-    "imageUrl": "/cards_visuals/o_19_011.jpg",
+    "imageUrl": "/cards_visuals/o_19_011.png",
     "i18n": {
       "en": {
         "title": "Sméagol",
@@ -159651,7 +159651,7 @@
     "strength": 8,
     "vitality": 4,
     "resistance": 8,
-    "imageUrl": "/cards_visuals/o_19_012.jpg",
+    "imageUrl": "/cards_visuals/o_19_012.png",
     "i18n": {
       "en": {
         "title": "Aragorn",
@@ -159701,7 +159701,7 @@
     "strength": 7,
     "vitality": 3,
     "resistance": 5,
-    "imageUrl": "/cards_visuals/o_19_013.jpg",
+    "imageUrl": "/cards_visuals/o_19_013.png",
     "i18n": {
       "en": {
         "title": "Boromir",
@@ -159751,7 +159751,7 @@
     "culture": "GONDOR",
     "twilightCost": 2,
     "strength": 1,
-    "imageUrl": "/cards_visuals/o_19_014.jpg",
+    "imageUrl": "/cards_visuals/o_19_014.png",
     "i18n": {
       "en": {
         "title": "Not Bound to His Fate",
@@ -159796,7 +159796,7 @@
     "culture": "GONDOR",
     "twilightCost": 1,
     "strength": 1,
-    "imageUrl": "/cards_visuals/o_19_015.jpg",
+    "imageUrl": "/cards_visuals/o_19_015.png",
     "i18n": {
       "en": {
         "title": "Strength in My Blood",
@@ -159838,7 +159838,7 @@
     "strength": 4,
     "vitality": 3,
     "minionSiteNumber": 3,
-    "imageUrl": "/cards_visuals/o_19_016.jpg",
+    "imageUrl": "/cards_visuals/o_19_016.png",
     "i18n": {
       "en": {
         "title": "Gríma",
@@ -159899,7 +159899,7 @@
     ],
     "culture": "ISENGARD",
     "twilightCost": 0,
-    "imageUrl": "/cards_visuals/o_19_017.jpg",
+    "imageUrl": "/cards_visuals/o_19_017.png",
     "i18n": {
       "en": {
         "title": "Urgency",
@@ -160021,7 +160021,7 @@
     "strength": 4,
     "vitality": 2,
     "minionSiteNumber": 4,
-    "imageUrl": "/cards_visuals/o_19_019.jpg",
+    "imageUrl": "/cards_visuals/o_19_019.png",
     "i18n": {
       "en": {
         "title": "Reaching Tentacle",
@@ -160093,7 +160093,7 @@
     "strength": 7,
     "vitality": 2,
     "minionSiteNumber": 4,
-    "imageUrl": "/cards_visuals/o_19_020.jpg",
+    "imageUrl": "/cards_visuals/o_19_020.png",
     "i18n": {
       "en": {
         "title": "Strong Tentacle",
@@ -160135,7 +160135,7 @@
     "strength": 11,
     "vitality": 4,
     "minionSiteNumber": 4,
-    "imageUrl": "/cards_visuals/o_19_021.jpg",
+    "imageUrl": "/cards_visuals/o_19_021.png",
     "i18n": {
       "en": {
         "title": "Watcher in the Water",
@@ -160197,7 +160197,7 @@
     "strength": 13,
     "vitality": 4,
     "minionSiteNumber": 4,
-    "imageUrl": "/cards_visuals/o_19_022.jpg",
+    "imageUrl": "/cards_visuals/o_19_022.png",
     "i18n": {
       "en": {
         "title": "Pit Troll",
@@ -160254,7 +160254,7 @@
     "strength": 13,
     "vitality": 3,
     "minionSiteNumber": 4,
-    "imageUrl": "/cards_visuals/o_19_023.jpg",
+    "imageUrl": "/cards_visuals/o_19_023.png",
     "i18n": {
       "en": {
         "title": "Troll of the Deep",
@@ -160304,7 +160304,7 @@
     "culture": "ROHAN",
     "twilightCost": 2,
     "strength": 1,
-    "imageUrl": "/cards_visuals/o_19_024.jpg",
+    "imageUrl": "/cards_visuals/o_19_024.png",
     "i18n": {
       "en": {
         "title": "Brought Down from Inside",
@@ -160349,7 +160349,7 @@
     "strength": 7,
     "vitality": 3,
     "resistance": 7,
-    "imageUrl": "/cards_visuals/o_19_025.jpg",
+    "imageUrl": "/cards_visuals/o_19_025.png",
     "i18n": {
       "en": {
         "title": "Éomer",
@@ -160400,7 +160400,7 @@
     "strength": 6,
     "vitality": 3,
     "resistance": 7,
-    "imageUrl": "/cards_visuals/o_19_026.jpg",
+    "imageUrl": "/cards_visuals/o_19_026.png",
     "i18n": {
       "en": {
         "title": "Éowyn",
@@ -160468,7 +160468,7 @@
     ],
     "culture": "SAURON",
     "twilightCost": 0,
-    "imageUrl": "/cards_visuals/o_19_027.jpg",
+    "imageUrl": "/cards_visuals/o_19_027.png",
     "i18n": {
       "en": {
         "title": "Sauron’s Might",
@@ -160515,7 +160515,7 @@
     "strength": 3,
     "vitality": 4,
     "resistance": 10,
-    "imageUrl": "/cards_visuals/o_19_028.jpg",
+    "imageUrl": "/cards_visuals/o_19_028.png",
     "i18n": {
       "en": {
         "title": "Frodo",
@@ -160562,7 +160562,7 @@
     "strength": 3,
     "vitality": 4,
     "resistance": 8,
-    "imageUrl": "/cards_visuals/o_19_029.jpg",
+    "imageUrl": "/cards_visuals/o_19_029.png",
     "i18n": {
       "en": {
         "title": "Merry",
@@ -160636,7 +160636,7 @@
     "strength": 3,
     "vitality": 4,
     "resistance": 8,
-    "imageUrl": "/cards_visuals/o_19_030.jpg",
+    "imageUrl": "/cards_visuals/o_19_030.png",
     "i18n": {
       "en": {
         "title": "Pippin",
@@ -160685,7 +160685,7 @@
     ],
     "culture": "SHIRE",
     "twilightCost": 1,
-    "imageUrl": "/cards_visuals/o_19_031.jpg",
+    "imageUrl": "/cards_visuals/o_19_031.png",
     "i18n": {
       "en": {
         "title": "Rabbit Stew",
@@ -160756,7 +160756,7 @@
     "strength": 3,
     "vitality": 4,
     "resistance": 9,
-    "imageUrl": "/cards_visuals/o_19_032.jpg",
+    "imageUrl": "/cards_visuals/o_19_032.png",
     "i18n": {
       "en": {
         "title": "Sam",
@@ -160802,7 +160802,7 @@
     "strength": 13,
     "vitality": 3,
     "minionSiteNumber": 5,
-    "imageUrl": "/cards_visuals/o_19_033.jpg",
+    "imageUrl": "/cards_visuals/o_19_033.png",
     "i18n": {
       "en": {
         "title": "Lurtz",
@@ -160871,7 +160871,7 @@
     "culture": "WRAITH",
     "twilightCost": 2,
     "strength": 2,
-    "imageUrl": "/cards_visuals/o_19_034.jpg",
+    "imageUrl": "/cards_visuals/o_19_034.png",
     "i18n": {
       "en": {
         "title": "In Twilight",
@@ -160916,7 +160916,7 @@
     "strength": 12,
     "vitality": 3,
     "minionSiteNumber": 3,
-    "imageUrl": "/cards_visuals/o_19_035.jpg",
+    "imageUrl": "/cards_visuals/o_19_035.png",
     "i18n": {
       "en": {
         "title": "Úlairë Attëa",
@@ -160966,7 +160966,7 @@
     "strength": 11,
     "vitality": 4,
     "minionSiteNumber": 3,
-    "imageUrl": "/cards_visuals/o_19_036.jpg",
+    "imageUrl": "/cards_visuals/o_19_036.png",
     "i18n": {
       "en": {
         "title": "Úlairë Enquëa",
@@ -161016,7 +161016,7 @@
     "strength": 9,
     "vitality": 2,
     "minionSiteNumber": 3,
-    "imageUrl": "/cards_visuals/o_19_037.jpg",
+    "imageUrl": "/cards_visuals/o_19_037.png",
     "i18n": {
       "en": {
         "title": "Úlairë Lemenya",
@@ -161066,7 +161066,7 @@
     "strength": 9,
     "vitality": 2,
     "minionSiteNumber": 3,
-    "imageUrl": "/cards_visuals/o_19_038.jpg",
+    "imageUrl": "/cards_visuals/o_19_038.png",
     "i18n": {
       "en": {
         "title": "Úlairë Nertëa",
@@ -161116,7 +161116,7 @@
     "strength": 12,
     "vitality": 3,
     "minionSiteNumber": 3,
-    "imageUrl": "/cards_visuals/o_19_039.jpg",
+    "imageUrl": "/cards_visuals/o_19_039.png",
     "i18n": {
       "en": {
         "title": "Úlairë Toldëa",
@@ -161166,7 +161166,7 @@
     "strength": 14,
     "vitality": 4,
     "minionSiteNumber": 3,
-    "imageUrl": "/cards_visuals/o_19_040.jpg",
+    "imageUrl": "/cards_visuals/o_19_040.png",
     "i18n": {
       "en": {
         "title": "The Witch-king",
