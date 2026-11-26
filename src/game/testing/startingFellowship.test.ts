@@ -108,6 +108,12 @@ describe('Compagnie de départ — jouer (hors pool)', () => {
         expect(frodo.isFaceDown).toBe(false);
         expect(gandalf.isFaceDown).toBe(false);
         expect(shadowSmeagol.isFaceDown).toBe(false);
+
+        // Journal : compagnons de départ des deux sièges (hors Porteur).
+        const played = (G.journalLog || []).filter((e) => e.playedCard);
+        const actors = played.map((e) => e.actorId);
+        expect(actors.filter((id) => id === '0').length).toBe(4);
+        expect(actors.filter((id) => id === '1').length).toBe(1);
     });
 
     it('réductions SF : 10 imprimés → 4 effectifs (plafond)', () => {

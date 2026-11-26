@@ -172,6 +172,34 @@ export const TextInput = styled.input`
     }
 `;
 
+export const Select = styled.select`
+    appearance: none;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 12px 14px;
+    border: 1px solid rgba(232, 230, 225, 0.28);
+    background: rgba(0, 0, 0, 0.45);
+    color: #e8e6e1;
+    font: inherit;
+    font-size: 1rem;
+    cursor: pointer;
+
+    &:focus {
+        outline: none;
+        border-color: rgba(226, 192, 68, 0.65);
+    }
+
+    &:disabled {
+        opacity: 0.55;
+        cursor: default;
+    }
+
+    option {
+        background: #1a1a1a;
+        color: #e8e6e1;
+    }
+`;
+
 export const ErrorText = styled.p`
     margin: 0;
     font-size: 0.88rem;

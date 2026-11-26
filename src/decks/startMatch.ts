@@ -1,11 +1,12 @@
 import { getGameServerUrl } from '../config/gameServer';
 import {
-    defaultAvatarForSeat,
     fallbackSeatName,
     sessionProfileForSetup,
 } from '../session/playerProfile';
 import { joinMatchSeat, type JoinedMatch } from '../match/joinMatch';
+import { stashPendingLoadout } from '../match/pendingLoadout';
 import { loadDeckForPlayer } from './deckStorage';
+import type { DeckConfig } from './types';
 
 export type { JoinedMatch } from '../match/joinMatch';
 
@@ -22,26 +23,18 @@ export class MatchCreateError extends Error {
 }
 
 /**
- * Crée une partie SocketIO, rejoint le siège 0 (credentials),
- * puis renvoie match + siège pour l’URL.
+ * Crée une partie en antichambre : deck + profil de l’hôte seulement.
+ * L’invité enverra les siens via readyWithLoadout.
  */
-export async function createMatchWithSelectedDecks(): Promise<JoinedMatch> {
-    const decks = {
-        '0': await loadDeckForPlayer('0'),
-        '1': await loadDeckForPlayer('1'),
-    };
-
+export async function createMatchWithSelectedDecks(
+    hostDeck?: DeckConfig
+): Promise<JoinedMatch> {
+    const deck = hostDeck ?? (await loadDeckForPlayer('0'));
     const host = sessionProfileForSetup();
     const profiles = {
         '0': {
             name: host.name || fallbackSeatName('0'),
             avatar: host.avatar,
-        },
-        // Siège 1 : encore le deck local du créateur (Phase 1) ;
-        // le profil adverse arrive en étape 4 (antichambre).
-        '1': {
-            name: fallbackSeatName('1'),
-            avatar: defaultAvatarForSeat('1').path,
         },
     };
 
@@ -51,8 +44,11 @@ export async function createMatchWithSelectedDecks(): Promise<JoinedMatch> {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
             numPlayers: 2,
-            setupData: { decks, profiles },
-            // Privé : pas listé dans GET /games/lotr (code à partager).
+            setupData: {
+                antichamber: true,
+                decks: { '0': deck },
+                profiles,
+            },
             unlisted: true,
         }),
     });
@@ -93,6 +89,11 @@ export async function createMatchWithSelectedDecks(): Promise<JoinedMatch> {
         );
     }
 
-    // Siège hôte protégé immédiatement.
     return joinMatchSeat(body.matchID, '0');
+}
+
+/** Avant navigation invité : mémoriser le deck à poser en antichambre. */
+export async function prepareGuestLoadout(deck?: DeckConfig): Promise<void> {
+    const d = deck ?? (await loadDeckForPlayer('0'));
+    stashPendingLoadout(d);
 }

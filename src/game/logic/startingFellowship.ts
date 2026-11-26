@@ -19,11 +19,13 @@ export function getStartingFellowshipTwilightCost(
 }
 
 /**
- * Après pose du site 1 : révéler les compagnies, et **jouer** les compagnons
- * de départ du joueur FP (sauf le Porteur) — toPlay + when-played.
+ * Après pose du site 1 : révéler les **deux** compagnies ; **jouer** les
+ * compagnons de départ du joueur FP (sauf le Porteur) — toPlay + when-played.
  *
- * Le Porteur n’est pas joué. Les autres compagnons le sont, mais leur coût
+ * Le Porteur n’est pas joué. Les autres compagnons FP le sont, mais leur coût
  * crépuscule n’alimente **pas** le pool (plafond 4 = construction de deck).
+ * Journal : les deux sièges (révélation visible) ; effets « quand joué »
+ * uniquement pour le FP (l’autre siège reste face visible sans toPlay).
  */
 export function revealAndPlayStartingFellowships(G: GameState): void {
     const fpId = G.fpPlayerId || '0';
@@ -35,18 +37,18 @@ export function revealAndPlayStartingFellowships(G: GameState): void {
             card.isFaceDown = false;
         }
 
-        if (playerId !== fpId) continue;
-
         for (const card of player.fellowshipArea) {
             if (card.type !== 'COMPANION') continue;
             if (isRingBearerCard(card)) continue;
 
-            applyAutomaticToPlayCosts(G, card, fpId, 'fellowship');
-            afterCardPlayed(G, card, {
-                playerId: fpId,
-                phase: 'fellowship',
-            });
-            appendCardPlayedJournal(G, fpId, card);
+            if (playerId === fpId) {
+                applyAutomaticToPlayCosts(G, card, fpId, 'fellowship');
+                afterCardPlayed(G, card, {
+                    playerId: fpId,
+                    phase: 'fellowship',
+                });
+            }
+            appendCardPlayedJournal(G, playerId, card);
         }
     }
 }

@@ -1,5 +1,6 @@
 /** Clés de consignes partagées (chaque client les traduit localement). */
 export type StatusKey =
+    | 'LOBBY_WAITING'
     | 'BIDDING_SETUP'
     | 'SETUP_COMPLETE'
     | 'MULLIGAN_PROMPT'

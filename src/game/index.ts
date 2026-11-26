@@ -5,9 +5,7 @@ import type {
     PlayerState,
     LotrPhaseContext,
     LotrMoveContext,
-    SiteCardState,
 } from './types';
-import { CARDS_DATABASE } from './cardsData';
 import {
     loadAndValidateDeck,
     type DeckConfig,
@@ -17,8 +15,11 @@ import {
     peekBotMatchDecks,
     peekBotMatchProfiles,
 } from './bot/botMatchSetup';
-import { defaultAvatarForSeat } from '../session/playerProfile';
 import { getEffectiveTwilightCost } from '../utils/roamingDetection';
+import {
+    assemblePlayer,
+    createStubPlayer,
+} from './logic/assemblePlayer';
 import { getWhileTwilightCostModifier } from './logic/stats/mechanics/whileModifier';
 import {
     resolveSkirmish,
@@ -38,7 +39,6 @@ import { beginOptionalSitePhaseAbility } from './logic/sitePhaseAbility';
 import { beginOptionalSiteStartAbility } from './logic/siteStartAbility';
 import { devMoves } from './dev/devMoves';
 import { drawCardsForPlayer } from '../utils/drawCards';
-import { buildDeckFromIds } from '../utils/deckBuilder';
 import { allMoves } from './moves/index';
 import { calculateArcheryTotals } from './logic/archery';
 import { getMusterCount } from './logic/musterHelpers';
@@ -113,70 +113,9 @@ const shuffle = <T>(array: T[]): T[] => {
     return arr;
 };
 
-const createCardInstance = (
-    cardId: string,
-    playerId: string,
-    suffix: string
-): CardState => {
-    const baseCard = CARDS_DATABASE.find((c) => c.id === cardId);
-    if (!baseCard) {
-        throw new Error(
-            `Carte introuvable dans CARDS_DATABASE pour l'ID : ${cardId}`
-        );
-    }
-    return {
-        ...baseCard,
-        printedId: baseCard.printedId || baseCard.id,
-        id: `p${playerId}-${baseCard.id}-${suffix}`,
-        isFaceDown: false,
-    };
-};
-
 type ProfileSeed = {
     name?: string;
     avatar?: string;
-};
-
-const createInitialPlayer = (
-    playerId: string,
-    deckConfig: DeckConfig,
-    profileSeed?: ProfileSeed
-): PlayerState => {
-    const isP0 = playerId === '0';
-    const fullDeckIds = [...deckConfig.freePeople, ...deckConfig.shadow];
-
-    // Chargement dynamique des sites depuis siteIds via buildDeckFromIds
-    const siteCards = buildDeckFromIds(deckConfig.siteIds || [], playerId);
-
-    const sitesDeck: SiteCardState[] = siteCards.map((card) => ({
-        ...card,
-        ownerId: playerId,
-        // Standard : le numéro s’assigne à la pose sur le chemin, pas dans le deck
-        siteNumber: undefined,
-    })) as SiteCardState[];
-
-    const name = profileSeed?.name?.trim() || `Joueur ${playerId}`;
-    const avatar =
-        profileSeed?.avatar?.trim() || defaultAvatarForSeat(playerId).path;
-
-    return {
-        profile: {
-            name,
-            avatar,
-            faction: isP0 ? 'freePeoples' : 'shadow',
-        },
-        deck: buildDeckFromIds(fullDeckIds, playerId),
-        hand: [],
-        discard: [],
-        deadPile: [],
-        removedFromGame: [],
-        fellowshipArea: [],
-        supportArea: [],
-        sitesDeck,
-        currentSiteIndex: 0,
-        burdens: 0,
-        threats: 0,
-    };
 };
 
 /**
@@ -252,6 +191,8 @@ export const advanceArcheryAssignmentStep = (G: GameState, events: any) => {
 type SetupData = {
     decks?: Partial<Record<string, DeckConfig>>;
     profiles?: Partial<Record<string, ProfileSeed>>;
+    /** Multi humain : démarrer en antichambre (un deck chacun). */
+    antichamber?: boolean;
 };
 
 export const setupGame = (
@@ -261,6 +202,7 @@ export const setupGame = (
     // Local + BOT : pas de setupData serveur → decks / profils stashed (sessionStorage).
     const botDecks = peekBotMatchDecks();
     const botProfiles = peekBotMatchProfiles();
+    const antichamber = setupData?.antichamber === true && !botDecks;
     const deckFor = (pId: string) =>
         setupData?.decks?.[pId] ||
         botDecks?.[pId as '0' | '1'] ||
@@ -268,59 +210,41 @@ export const setupGame = (
     const profileFor = (pId: string): ProfileSeed | undefined =>
         setupData?.profiles?.[pId] || botProfiles?.[pId];
 
-    const players: Record<string, PlayerState> = {
-        '0': createInitialPlayer('0', deckFor('0'), profileFor('0')),
-        '1': createInitialPlayer('1', deckFor('1'), profileFor('1')),
-    };
+    let players: Record<string, PlayerState>;
+    let setupStep: NonNullable<GameState['setupState']>['step'];
+    let loadouts: NonNullable<GameState['setupState']>['loadouts'];
 
-    Object.keys(players).forEach((pId) => {
-        const player = players[pId];
-        if (!player || !player.deck) return;
-
-        const deckConfig = deckFor(pId);
-
-        const ringBearer = createCardInstance(
-            deckConfig.ringBearerId,
-            pId,
-            'ringbearer'
-        );
-        const oneRing = createCardInstance(
-            deckConfig.oneRingId,
-            pId,
-            'onering'
-        );
-
-        if (!ringBearer.keywords) ringBearer.keywords = [];
-        if (!ringBearer.keywords.includes('RING-BEARER')) {
-            ringBearer.keywords.push('RING-BEARER');
-        }
-        ringBearer.isStartingMember = true;
-
-        ringBearer.attachments = [oneRing];
-        player.fellowshipArea = [ringBearer];
-
-        deckConfig.startingCompanionIds.forEach((cardId, index) => {
-            const companion = createCardInstance(
-                cardId,
-                pId,
-                `starting-comp-${index}`
-            );
-            companion.isFaceDown = true;
-            companion.isStartingMember = true;
-            player.fellowshipArea.push(companion);
-        });
-
-        player.deck = random.Shuffle(player.deck);
-    });
+    if (antichamber) {
+        const hostDeck = setupData?.decks?.['0'] || loadAndValidateDeck('0');
+        players = {
+            '0': assemblePlayer('0', hostDeck, profileFor('0'), random),
+            '1': createStubPlayer('1', profileFor('1')),
+        };
+        setupStep = 'LOBBY';
+        loadouts = {
+            '0': { ready: true, deckName: hostDeck.name },
+            '1': { ready: false },
+        };
+    } else {
+        players = {
+            '0': assemblePlayer('0', deckFor('0'), profileFor('0'), random),
+            '1': assemblePlayer('1', deckFor('1'), profileFor('1'), random),
+        };
+        setupStep = 'BIDDING';
+        loadouts = undefined;
+    }
 
     const G: GameState = {
         fpPlayerId: '0',
         twilightPool: 0,
         currentSiteIndex: 0,
         movesThisTurn: 0,
-        statusMessage:
-            'Phase de mise en place : Misez vos points-fardeau.',
-        statusNotice: { key: 'BIDDING_SETUP' },
+        statusMessage: antichamber
+            ? 'Antichambre : en attente des decks.'
+            : 'Phase de mise en place : Misez vos points-fardeau.',
+        statusNotice: {
+            key: antichamber ? 'LOBBY_WAITING' : 'BIDDING_SETUP',
+        },
         journalLog: [],
         awaitingSiteSelection: false,
         skirmishes: [],
@@ -341,7 +265,8 @@ export const setupGame = (
         setupState: {
             bids: { '0': null, '1': null },
             mulligans: { '0': null, '1': null },
-            step: 'BIDDING',
+            step: setupStep,
+            loadouts,
             auctionWinnerId: undefined,
         },
     };
@@ -406,6 +331,8 @@ export const LotrGame: Game<GameState> = {
             },
             moves: {
                 ...guardedDevMoves,
+                readyWithLoadout: allMoves.readyWithLoadout,
+                applySessionProfile: allMoves.applySessionProfile,
 
                 submitBid: (
                     { G, playerID, random }: LotrMoveContext,

@@ -27,6 +27,7 @@ import {
     otherPlayerId,
     playerDisplayName,
 } from '../../../../game/logic/playerName';
+import { submitLobbyLoadout } from '../../../../match/submitLobbyLoadout';
 
 /** Libellé court d'un mode de capacité de site « play… » (boutons du toaster). */
 function sitePhaseModeLabel(ability: any, labels: ChromeMessages): string {
@@ -154,9 +155,12 @@ export const GameControls: React.FC<GameControlsProps> = ({
     const isSetupPhase =
         ctx.phase === 'setup' && Boolean(setupStep) && setupStep !== 'COMPLETE';
 
+    const isLobbyStep = isSetupPhase && setupStep === 'LOBBY';
     const isBiddingStep = isSetupPhase && setupStep === 'BIDDING';
     const isChoosingFirstStep = isSetupPhase && setupStep === 'CHOOSING_FIRST';
     const isMulliganStep = isSetupPhase && setupStep === 'MULLIGAN';
+    const lobbyReady =
+        Boolean(G.setupState?.loadouts?.[currentPlayerId]?.ready);
 
     const currentBid = G.setupState?.bids?.[currentPlayerId];
     const hasAlreadyBid = currentBid !== null && currentBid !== undefined;
@@ -343,6 +347,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
         forcedOptionLabels?: string[];
         cancelableChoice?: boolean;
         type?:
+            | 'LOBBY'
             | 'BIDDING'
             | 'CHOOSING_FIRST'
             | 'MULLIGAN'
@@ -374,7 +379,23 @@ export const GameControls: React.FC<GameControlsProps> = ({
         type: 'STANDARD',
     };
 
-    if (isBiddingStep) {
+    if (isLobbyStep) {
+        toastConfig = {
+            show: true,
+            title: c.toast.lobby,
+            body: (
+                <>
+                    {lobbyReady
+                        ? c.toast.lobbyReadyWaiting(opponentName)
+                        : c.toast.lobbyWaiting}
+                    <br />
+                    {c.toast.lobbyCampsHint}
+                </>
+            ),
+            showPassButton: false,
+            type: 'LOBBY',
+        };
+    } else if (isBiddingStep) {
         toastConfig = {
             show: true,
             title: c.toast.burdenBid,
@@ -1458,6 +1479,27 @@ export const GameControls: React.FC<GameControlsProps> = ({
                         <p>{toastConfig.body}</p>
 
                         {/* RENDU DU WIDGET D'ENCHÈRE */}
+                        {toastConfig.type === 'LOBBY' && !lobbyReady && (
+                            <div
+                                style={{
+                                    display: 'flex',
+                                    gap: '8px',
+                                    marginTop: '12px',
+                                }}
+                            >
+                                <S.ActionButton
+                                    $variant="choice"
+                                    onClick={() => {
+                                        void submitLobbyLoadout(
+                                            moves.readyWithLoadout
+                                        );
+                                    }}
+                                >
+                                    {c.toast.lobbyConfirmDeck}
+                                </S.ActionButton>
+                            </div>
+                        )}
+
                         {toastConfig.type === 'BIDDING' && (
                             <BiddingWidget
                                 currentBid={currentBid ?? null}

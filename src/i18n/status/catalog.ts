@@ -4,6 +4,10 @@ import type { StatusKey, StatusParams } from './types';
 type Template = string | ((p: StatusParams) => string);
 
 const fr: Record<StatusKey, Template> = {
+    LOBBY_WAITING: (p) =>
+        p.name
+            ? `Antichambre : ${p.name} est prêt. En attente de l’autre joueur…`
+            : 'Antichambre : choisissez votre deck et attendez l’adversaire.',
     BIDDING_SETUP: 'Phase de mise en place : Misez vos points-fardeau.',
     SETUP_COMPLETE: 'Mise en place terminée ! Début de la partie.',
     MULLIGAN_PROMPT: 'Mulligan : garder ou piocher une nouvelle main.',
@@ -286,6 +290,10 @@ const fr: Record<StatusKey, Template> = {
 };
 
 const en: Record<StatusKey, Template> = {
+    LOBBY_WAITING: (p) =>
+        p.name
+            ? `Lobby: ${p.name} is ready. Waiting for the other player…`
+            : 'Lobby: choose your deck and wait for your opponent.',
     BIDDING_SETUP: 'Setup phase: Bid your burdens.',
     SETUP_COMPLETE: 'Setup complete! The game begins.',
     MULLIGAN_PROMPT: 'Mulligan: keep your hand or draw a new one.',
@@ -559,6 +567,10 @@ const en: Record<StatusKey, Template> = {
 };
 
 const de: Record<StatusKey, Template> = {
+    LOBBY_WAITING: (p) =>
+        p.name
+            ? `Vorraum: ${p.name} ist bereit. Warte auf den anderen Spieler…`
+            : 'Vorraum: wähle dein Deck und warte auf den Gegner.',
     BIDDING_SETUP: 'Vorbereitungsphase: Biete deine Lastmarken.',
     SETUP_COMPLETE: 'Vorbereitung abgeschlossen! Das Spiel beginnt.',
     MULLIGAN_PROMPT: 'Mulligan: Hand behalten oder neu ziehen.',
@@ -835,6 +847,10 @@ const de: Record<StatusKey, Template> = {
 };
 
 const it: Record<StatusKey, Template> = {
+    LOBBY_WAITING: (p) =>
+        p.name
+            ? `Anticamera: ${p.name} è pronto. In attesa dell’altro giocatore…`
+            : 'Anticamera: scegli il mazzo e attendi l’avversario.',
     BIDDING_SETUP: 'Fase di preparazione: Punta i tuoi fardelli.',
     SETUP_COMPLETE: 'Preparazione completata! Inizia la partita.',
     MULLIGAN_PROMPT: 'Mulligan: tieni la mano o pescane una nuova.',
@@ -1111,6 +1127,10 @@ const it: Record<StatusKey, Template> = {
 };
 
 const es: Record<StatusKey, Template> = {
+    LOBBY_WAITING: (p) =>
+        p.name
+            ? `Antesala: ${p.name} está listo. Esperando al otro jugador…`
+            : 'Antesala: elige tu mazo y espera al adversario.',
     BIDDING_SETUP: 'Fase de preparación: Puja tus cargas.',
     SETUP_COMPLETE: '¡Preparación terminada! Empieza la partida.',
     MULLIGAN_PROMPT: 'Mulligan: conserva tu mano o roba una nueva.',

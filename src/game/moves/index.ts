@@ -5,6 +5,7 @@ import { archeryMoves } from './archeryMoves';
 import { assignmentMoves } from './assignmentMoves';
 import { regroupMoves } from './regroupMoves';
 import { setupMoves } from './setupMoves';
+import { lobbyMoves } from './lobbyMoves';
 import { maneuverMoves } from './maneuverMoves';
 import { abilityMoves } from './abilityMoves';
 import { wrapMovesAgainstGameEnd } from './guardGameEnd';
@@ -19,6 +20,7 @@ const rawMoves = {
     ...assignmentMoves,
     ...regroupMoves,
     ...setupMoves,
+    ...lobbyMoves,
     ...maneuverMoves,
     ...abilityMoves,
     dismissGameEndOverlay: ({ G }: LotrMoveContext) => {
@@ -37,6 +39,7 @@ export {
     assignmentMoves,
     regroupMoves,
     setupMoves,
+    lobbyMoves,
     maneuverMoves,
     abilityMoves,
 };

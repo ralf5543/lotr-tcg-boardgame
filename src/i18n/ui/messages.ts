@@ -104,6 +104,7 @@ export type UiMessages = {
         joinCodePlaceholder: string;
         joinSubmit: string;
         invalidCode: string;
+        deckLabel: string;
         cancel: string;
     };
 };
@@ -203,6 +204,7 @@ const fr: UiBase = {
         joinCodePlaceholder: 'Collez le code reçu',
         joinSubmit: 'Rejoindre la partie',
         invalidCode: 'Code invalide.',
+        deckLabel: 'Votre deck',
         cancel: 'Retour',
     },
 };
@@ -300,6 +302,7 @@ const en: UiBase = {
         joinCodePlaceholder: 'Paste the code you received',
         joinSubmit: 'Join the match',
         invalidCode: 'Invalid code.',
+        deckLabel: 'Your deck',
         cancel: 'Back',
     },
 };
@@ -397,6 +400,7 @@ const de: UiBase = {
         joinCodePlaceholder: 'Erhaltenen Code einfügen',
         joinSubmit: 'Der Partie beitreten',
         invalidCode: 'Ungültiger Code.',
+        deckLabel: 'Dein Deck',
         cancel: 'Zurück',
     },
 };
@@ -494,6 +498,7 @@ const it: UiBase = {
         joinCodePlaceholder: 'Incolla il codice ricevuto',
         joinSubmit: 'Unisciti alla partita',
         invalidCode: 'Codice non valido.',
+        deckLabel: 'Il tuo mazzo',
         cancel: 'Indietro',
     },
 };
@@ -591,6 +596,7 @@ const es: UiBase = {
         joinCodePlaceholder: 'Pega el código recibido',
         joinSubmit: 'Unirse a la partida',
         invalidCode: 'Código no válido.',
+        deckLabel: 'Tu mazo',
         cancel: 'Volver',
     },
 };

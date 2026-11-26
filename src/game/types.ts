@@ -2536,7 +2536,13 @@ export interface GameState {
         bids: Record<string, number | null>;
         auctionWinnerId?: string;
         mulligans: Record<string, boolean | null>;
+        /** Antichambre : chaque siège pose son deck. */
+        loadouts?: Record<
+            string,
+            { ready: boolean; deckName?: string }
+        >;
         step:
+            | 'LOBBY'
             | 'BIDDING'
             | 'CHOOSING_FIRST'
             | 'AWAITING_SITE'

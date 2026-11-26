@@ -143,6 +143,8 @@ import {
     playerHasInitiative,
 } from '../../game/logic/initiative';
 import { loadSessionProfile } from '../../session/playerProfile';
+import { clearPendingLoadout } from '../../match/pendingLoadout';
+import { submitLobbyLoadout } from '../../match/submitLobbyLoadout';
 
 export interface GameBoardProps extends BoardProps<GameState> {
     moves: BoardProps<GameState>['moves'] &
@@ -337,6 +339,40 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         moves.applySessionProfile(session.name, session.avatarId);
         sessionProfileSyncedRef.current = true;
     }, [G.players, moves, playerID]);
+
+    /**
+     * Antichambre : poser le deck tant que le siège n’est pas prêt.
+     * Intervalle de secours (Strict Mode / coup trop tôt / INVALID_MOVE).
+     */
+    useEffect(() => {
+        if (!playerID || !moves?.readyWithLoadout) return;
+        if (G.setupState?.step !== 'LOBBY') return;
+        if (G.setupState?.loadouts?.[playerID]?.ready) {
+            clearPendingLoadout();
+            return;
+        }
+
+        let cancelled = false;
+        const tick = () => {
+            if (cancelled) return;
+            void submitLobbyLoadout(moves.readyWithLoadout);
+        };
+
+        // Laisser le Client SocketIO s’activer avant le premier coup.
+        const initial = window.setTimeout(tick, 300);
+        const interval = window.setInterval(tick, 2000);
+
+        return () => {
+            cancelled = true;
+            window.clearTimeout(initial);
+            window.clearInterval(interval);
+        };
+    }, [
+        G.setupState?.loadouts,
+        G.setupState?.step,
+        moves,
+        playerID,
+    ]);
 
     const oppId = myId === '0' ? '1' : '0';
     const {
@@ -2320,11 +2356,13 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         ctx.phase === 'setup'
     );
 
-    // Camps connus dès le choix du gagnant d’enchère (pas besoin d’attendre le mulligan).
+    // Camps connus seulement après le choix du premier joueur (pas en antichambre / enchère).
     const setupStep = G.setupState?.step;
     const sidesAssigned =
         !isSetupPhase ||
-        (setupStep !== 'BIDDING' && setupStep !== 'CHOOSING_FIRST');
+        (setupStep !== 'LOBBY' &&
+            setupStep !== 'BIDDING' &&
+            setupStep !== 'CHOOSING_FIRST');
 
     // 🟢 2. Identification des rôles (TOUJOURS définie)
     const fpPlayerId = G.fpPlayerId || '0';

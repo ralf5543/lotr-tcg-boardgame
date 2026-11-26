@@ -4,7 +4,14 @@ import { useUiMessages } from '../../i18n/ui/useUiMessages';
 import {
     createMatchWithSelectedDecks,
     MatchCreateError,
+    prepareGuestLoadout,
 } from '../../decks/startMatch';
+import {
+    assignDeckToPlayer,
+    getSelectedDeckIds,
+    listDecks,
+} from '../../decks/deckStorage';
+import type { DeckConfig } from '../../decks/types';
 import {
     joinMatchSeat,
     MatchJoinError,
@@ -43,6 +50,8 @@ export const Welcome: React.FC = () => {
     const [guestReady, setGuestReady] = useState(false);
     const [joinCode, setJoinCode] = useState('');
     const [copied, setCopied] = useState(false);
+    const [decks, setDecks] = useState<DeckConfig[]>([]);
+    const [deckId, setDeckId] = useState('');
 
     const hostMatchRef = useRef<JoinedMatch | null>(null);
     const guestReadyRef = useRef(false);
@@ -55,6 +64,23 @@ export const Welcome: React.FC = () => {
     useEffect(() => {
         guestReadyRef.current = guestReady;
     }, [guestReady]);
+
+    useEffect(() => {
+        let cancelled = false;
+        void listDecks().then((list) => {
+            if (cancelled) return;
+            setDecks(list);
+            const preferred = getSelectedDeckIds()['0'];
+            const initial =
+                (preferred && list.some((d) => d.id === preferred)
+                    ? preferred
+                    : list[0]?.id) || '';
+            setDeckId(initial);
+        });
+        return () => {
+            cancelled = true;
+        };
+    }, []);
 
     /** Hôte : poll jusqu’à ce que le siège 1 ait un nom (lobby), puis entrée. */
     useEffect(() => {
@@ -110,12 +136,24 @@ export const Welcome: React.FC = () => {
         return () => window.removeEventListener('pagehide', onPageHide);
     }, [panel]);
 
+    const selectedDeck = decks.find((d) => d.id === deckId);
+
+    const onDeckChange = (nextId: string) => {
+        setDeckId(nextId);
+        if (nextId) assignDeckToPlayer('0', nextId);
+    };
+
     const createMatch = async () => {
         if (busy) return;
+        if (!selectedDeck) {
+            setError(db.errors.startMatch);
+            return;
+        }
         setBusy(true);
         setError(null);
         try {
-            const joined = await createMatchWithSelectedDecks();
+            assignDeckToPlayer('0', selectedDeck.id);
+            const joined = await createMatchWithSelectedDecks(selectedDeck);
             enteringMatchRef.current = false;
             setHostMatch(joined);
             setGuestReady(false);
@@ -152,9 +190,15 @@ export const Welcome: React.FC = () => {
             setError(mt.invalidCode);
             return;
         }
+        if (!selectedDeck) {
+            setError(db.errors.startMatch);
+            return;
+        }
         setBusy(true);
         setError(null);
         try {
+            assignDeckToPlayer('0', selectedDeck.id);
+            await prepareGuestLoadout(selectedDeck);
             const joined = await joinMatchSeat(code);
             goToMatch(joined);
         } catch (err) {
@@ -208,6 +252,23 @@ export const Welcome: React.FC = () => {
         setJoinCode('');
     };
 
+    const deckField = (
+        <S.Field>
+            {mt.deckLabel}
+            <S.Select
+                value={deckId}
+                disabled={busy || decks.length === 0}
+                onChange={(event) => onDeckChange(event.target.value)}
+            >
+                {decks.map((deck) => (
+                    <option key={deck.id} value={deck.id}>
+                        {deck.name}
+                    </option>
+                ))}
+            </S.Select>
+        </S.Field>
+    );
+
     return (
         <S.Root>
             {panel === 'menu' && (
@@ -242,10 +303,11 @@ export const Welcome: React.FC = () => {
             {panel === 'play' && (
                 <S.Panel>
                     <S.PanelTitle>{welcome.play}</S.PanelTitle>
+                    {deckField}
                     <S.ButtonRow>
                         <S.MenuButton
                             type="button"
-                            disabled={busy}
+                            disabled={busy || !selectedDeck}
                             onClick={() => {
                                 void createMatch();
                             }}
@@ -312,6 +374,7 @@ export const Welcome: React.FC = () => {
                     }}
                 >
                     <S.PanelTitle>{welcome.join}</S.PanelTitle>
+                    {deckField}
                     <S.Field>
                         {mt.joinCodeLabel}
                         <S.TextInput
@@ -328,7 +391,10 @@ export const Welcome: React.FC = () => {
                     </S.Field>
                     {error && <S.ErrorText>{error}</S.ErrorText>}
                     <S.ButtonRow>
-                        <S.MenuButton type="submit" disabled={busy}>
+                        <S.MenuButton
+                            type="submit"
+                            disabled={busy || !selectedDeck}
+                        >
                             {busy ? mt.joining : mt.joinSubmit}
                         </S.MenuButton>
                         <S.MenuButton

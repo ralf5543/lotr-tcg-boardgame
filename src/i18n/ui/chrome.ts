@@ -57,6 +57,12 @@ export type ChromeMessages = {
     };
     toast: {
         actionRequired: string;
+        lobby: string;
+        lobbyWaiting: string;
+        lobbyReadyWaiting: (name: string) => string;
+        /** Antichambre : camps pas encore choisis. */
+        lobbyCampsHint: string;
+        lobbyConfirmDeck: string;
         burdenBid: string;
         burdenBidBody: string;
         chooseFirst: string;
@@ -286,6 +292,14 @@ const fr: ChromeMessages = {
     },
     toast: {
         actionRequired: 'ACTION REQUISE',
+        lobby: 'ANTICHAMBRE',
+        lobbyWaiting:
+            'Votre deck n’est pas encore chargé sur la table. Confirmez-le pour continuer.',
+        lobbyReadyWaiting: (name) =>
+            `Deck prêt. En attente de ${name}…`,
+        lobbyCampsHint:
+            'Les camps (Peuples libres / Ombre) seront choisis après l’enchère de fardeaux.',
+        lobbyConfirmDeck: 'Confirmer mon deck',
         burdenBid: 'ENCHÈRE DE FARDEAUX',
         burdenBidBody:
             'Misez des points-fardeau pour déterminer qui choisira le premier joueur.',
@@ -555,6 +569,13 @@ const en: ChromeMessages = {
     },
     toast: {
         actionRequired: 'ACTION REQUIRED',
+        lobby: 'LOBBY',
+        lobbyWaiting:
+            'Your deck is not on the table yet. Confirm it to continue.',
+        lobbyReadyWaiting: (name) => `Deck ready. Waiting for ${name}…`,
+        lobbyCampsHint:
+            'Sides (Free Peoples / Shadow) are chosen after the burden bid.',
+        lobbyConfirmDeck: 'Confirm my deck',
         burdenBid: 'BURDEN BID',
         burdenBidBody:
             'Bid burdens to decide who chooses the first player.',
@@ -814,6 +835,13 @@ const de: ChromeMessages = {
     },
     toast: {
         actionRequired: 'AKTION ERFORDERLICH',
+        lobby: 'VORRAUM',
+        lobbyWaiting:
+            'Dein Deck liegt noch nicht auf dem Tisch. Bestätige es, um weiterzumachen.',
+        lobbyReadyWaiting: (name) => `Deck bereit. Warte auf ${name}…`,
+        lobbyCampsHint:
+            'Die Seiten (Freie Völker / Schatten) werden nach dem Lastmarken-Gebot gewählt.',
+        lobbyConfirmDeck: 'Mein Deck bestätigen',
         burdenBid: 'LASTMARKEN-GEBOT',
         burdenBidBody:
             'Bietet Lastmarken, um zu entscheiden, wer den ersten Spieler wählt.',
@@ -1077,6 +1105,13 @@ const it: ChromeMessages = {
     },
     toast: {
         actionRequired: 'AZIONE RICHIESTA',
+        lobby: 'ANTICAMERA',
+        lobbyWaiting:
+            'Il tuo mazzo non è ancora sul tavolo. Confermalo per continuare.',
+        lobbyReadyWaiting: (name) => `Mazzo pronto. In attesa di ${name}…`,
+        lobbyCampsHint:
+            'I campi (Popoli Liberi / Ombra) si scelgono dopo l’asta dei fardelli.',
+        lobbyConfirmDeck: 'Conferma il mio mazzo',
         burdenBid: 'ASTA DEI FARDELLI',
         burdenBidBody:
             'Punta fardelli per decidere chi sceglie il primo giocatore.',
@@ -1342,6 +1377,13 @@ const es: ChromeMessages = {
     },
     toast: {
         actionRequired: 'ACCIÓN REQUERIDA',
+        lobby: 'ANTESALA',
+        lobbyWaiting:
+            'Tu mazo aún no está en la mesa. Confírmalo para continuar.',
+        lobbyReadyWaiting: (name) => `Mazo listo. Esperando a ${name}…`,
+        lobbyCampsHint:
+            'Los bandos (Pueblos Libres / Sombra) se eligen después de la puja de cargas.',
+        lobbyConfirmDeck: 'Confirmar mi mazo',
         burdenBid: 'PUJA DE CARGAS',
         burdenBidBody:
             'Puja cargas para decidir quién elige al primer jugador.',
