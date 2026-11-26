@@ -11,6 +11,7 @@ import {
     getSelectedDeckIds,
     listDecks,
 } from '../../decks/deckStorage';
+import { validateDeck } from '../../decks/validateDeck';
 import type { DeckConfig } from '../../decks/types';
 import {
     joinMatchSeat,
@@ -149,6 +150,13 @@ export const Welcome: React.FC = () => {
             setError(db.errors.startMatch);
             return;
         }
+        const deckCheck = validateDeck(selectedDeck);
+        if (!deckCheck.ok) {
+            setError(
+                deckCheck.errors[0]?.message || db.errors.startMatch
+            );
+            return;
+        }
         setBusy(true);
         setError(null);
         try {
@@ -192,6 +200,13 @@ export const Welcome: React.FC = () => {
         }
         if (!selectedDeck) {
             setError(db.errors.startMatch);
+            return;
+        }
+        const deckCheck = validateDeck(selectedDeck);
+        if (!deckCheck.ok) {
+            setError(
+                deckCheck.errors[0]?.message || db.errors.startMatch
+            );
             return;
         }
         setBusy(true);

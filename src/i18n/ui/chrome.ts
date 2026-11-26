@@ -63,6 +63,7 @@ export type ChromeMessages = {
         /** Antichambre : camps pas encore choisis. */
         lobbyCampsHint: string;
         lobbyConfirmDeck: string;
+        lobbyDeckInvalid: (detail: string) => string;
         burdenBid: string;
         burdenBidBody: string;
         chooseFirst: string;
@@ -300,6 +301,7 @@ const fr: ChromeMessages = {
         lobbyCampsHint:
             'Les camps (Peuples libres / Ombre) seront choisis après l’enchère de fardeaux.',
         lobbyConfirmDeck: 'Confirmer mon deck',
+        lobbyDeckInvalid: (detail) => `Deck refusé : ${detail}`,
         burdenBid: 'ENCHÈRE DE FARDEAUX',
         burdenBidBody:
             'Misez des points-fardeau pour déterminer qui choisira le premier joueur.',
@@ -576,6 +578,7 @@ const en: ChromeMessages = {
         lobbyCampsHint:
             'Sides (Free Peoples / Shadow) are chosen after the burden bid.',
         lobbyConfirmDeck: 'Confirm my deck',
+        lobbyDeckInvalid: (detail) => `Deck rejected: ${detail}`,
         burdenBid: 'BURDEN BID',
         burdenBidBody:
             'Bid burdens to decide who chooses the first player.',
@@ -842,6 +845,7 @@ const de: ChromeMessages = {
         lobbyCampsHint:
             'Die Seiten (Freie Völker / Schatten) werden nach dem Lastmarken-Gebot gewählt.',
         lobbyConfirmDeck: 'Mein Deck bestätigen',
+        lobbyDeckInvalid: (detail) => `Deck abgelehnt: ${detail}`,
         burdenBid: 'LASTMARKEN-GEBOT',
         burdenBidBody:
             'Bietet Lastmarken, um zu entscheiden, wer den ersten Spieler wählt.',
@@ -1112,6 +1116,7 @@ const it: ChromeMessages = {
         lobbyCampsHint:
             'I campi (Popoli Liberi / Ombra) si scelgono dopo l’asta dei fardelli.',
         lobbyConfirmDeck: 'Conferma il mio mazzo',
+        lobbyDeckInvalid: (detail) => `Mazzo rifiutato: ${detail}`,
         burdenBid: 'ASTA DEI FARDELLI',
         burdenBidBody:
             'Punta fardelli per decidere chi sceglie il primo giocatore.',
@@ -1384,6 +1389,7 @@ const es: ChromeMessages = {
         lobbyCampsHint:
             'Los bandos (Pueblos Libres / Sombra) se eligen después de la puja de cargas.',
         lobbyConfirmDeck: 'Confirmar mi mazo',
+        lobbyDeckInvalid: (detail) => `Mazo rechazado: ${detail}`,
         burdenBid: 'PUJA DE CARGAS',
         burdenBidBody:
             'Puja cargas para decidir quién elige al primer jugador.',

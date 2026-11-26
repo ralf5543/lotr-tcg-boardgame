@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import * as S from './styles';
 import type { Ctx } from 'boardgame.io';
 import type { CardState, GameState } from '../../../../game/types';
@@ -138,6 +138,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
     const uiLanguage = prefs?.uiLanguage ?? 'fr';
     const ui = useUiMessages();
     const c = ui.chrome;
+    const [lobbyError, setLobbyError] = useState<string | null>(null);
     const ins = getInstructions(uiLanguage);
 
     if (!G || !ctx) return null;
@@ -390,6 +391,14 @@ export const GameControls: React.FC<GameControlsProps> = ({
                         : c.toast.lobbyWaiting}
                     <br />
                     {c.toast.lobbyCampsHint}
+                    {lobbyError && !lobbyReady && (
+                        <>
+                            <br />
+                            <span style={{ color: '#ff8f8f' }}>
+                                {c.toast.lobbyDeckInvalid(lobbyError)}
+                            </span>
+                        </>
+                    )}
                 </>
             ),
             showPassButton: false,
@@ -1492,7 +1501,13 @@ export const GameControls: React.FC<GameControlsProps> = ({
                                     onClick={() => {
                                         void submitLobbyLoadout(
                                             moves.readyWithLoadout
-                                        );
+                                        ).then((result) => {
+                                            if (!result.ok) {
+                                                setLobbyError(result.error);
+                                                return;
+                                            }
+                                            setLobbyError(null);
+                                        });
                                     }}
                                 >
                                     {c.toast.lobbyConfirmDeck}
