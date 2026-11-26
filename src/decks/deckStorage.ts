@@ -1,5 +1,8 @@
 import fumeurs from '../game/decks/fumeurs-gollum-threats.json';
 import gondorUruks from '../game/decks/gondor-uruks.json';
+import hobbitsIsengard from '../game/decks/deck-1793794343693.json';
+import hobbitsNazgul from '../game/decks/deck-1793993637649.json';
+import rangersMumaks from '../game/decks/deck-1794768991010.json';
 import type { DeckConfig, SelectedDecks } from './types';
 
 /** Ancienne clé contenu decks — nettoyée au profit des fichiers JSON. */
@@ -8,8 +11,10 @@ const SELECTED_KEY = 'lotr.selectedDecks';
 
 export const SEED_DECK_FUMEURS_ID = 'fumeurs-gollum-threats';
 export const SEED_DECK_GONDOR_ID = 'gondor-uruks';
+export const SEED_DECK_HOBBITS_ISENGARD_ID = 'deck-1793794343693';
 /** Deck playtest en cours (hobbits / Nazgûl) — défaut des deux camps. */
 export const PLAYTEST_DECK_HOBBITS_ID = 'deck-1793993637649';
+export const SEED_DECK_RANGERS_MUMAKS_ID = 'deck-1794768991010';
 
 const LEGACY_SELECTED_IDS: Record<string, string> = {
     'seed-fumeurs-gollum': SEED_DECK_FUMEURS_ID,
@@ -30,6 +35,10 @@ function cloneDeck(raw: DeckConfig, id?: string, name?: string): DeckConfig {
     };
 }
 
+/**
+ * Decks embarqués dans le bundle (prod + repli si `/api/decks` absent).
+ * Les 5 JSON du repo — pas de création de deck avant Phase 3.
+ */
 export function getSeedDecks(): DeckConfig[] {
     return [
         cloneDeck(
@@ -41,6 +50,21 @@ export function getSeedDecks(): DeckConfig[] {
             gondorUruks as DeckConfig,
             SEED_DECK_GONDOR_ID,
             'Gondor / Ourouks (témoin)'
+        ),
+        cloneDeck(
+            hobbitsIsengard as DeckConfig,
+            SEED_DECK_HOBBITS_ISENGARD_ID,
+            'Hobbits résistants / Hommes Isengard'
+        ),
+        cloneDeck(
+            hobbitsNazgul as DeckConfig,
+            PLAYTEST_DECK_HOBBITS_ID,
+            'Hobbits qui tachent / Nazgûl possessions'
+        ),
+        cloneDeck(
+            rangersMumaks as DeckConfig,
+            SEED_DECK_RANGERS_MUMAKS_ID,
+            'Rôdeurs divers / Mumaks'
         ),
     ];
 }

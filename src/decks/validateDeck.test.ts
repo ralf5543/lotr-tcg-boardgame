@@ -124,10 +124,12 @@ describe('validateDeck', () => {
         expect(result.errors.some((e) => e.code === 'SITE_TYPE')).toBe(true);
     });
 
-    it('seeds exposent les deux decks témoins', () => {
+    it('seeds exposent les cinq decks du repo (prod / repli API)', () => {
         const seeds = getSeedDecks();
-        expect(seeds).toHaveLength(2);
-        expect(seeds[0]?.ringBearerId).toBeTruthy();
-        expect(seeds[1]?.siteIds).toHaveLength(9);
+        expect(seeds).toHaveLength(5);
+        for (const deck of seeds) {
+            expect(deck.ringBearerId).toBeTruthy();
+            expect(deck.siteIds).toHaveLength(9);
+        }
     });
 });

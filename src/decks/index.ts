@@ -33,4 +33,7 @@ export {
     getSeedDecks,
     SEED_DECK_FUMEURS_ID,
     SEED_DECK_GONDOR_ID,
+    SEED_DECK_HOBBITS_ISENGARD_ID,
+    SEED_DECK_RANGERS_MUMAKS_ID,
+    PLAYTEST_DECK_HOBBITS_ID,
 } from './deckStorage';
