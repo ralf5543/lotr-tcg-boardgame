@@ -40,6 +40,8 @@ export async function joinMatchSeat(
     const playerName = session.name || fallbackSeatName(playerID ?? '0');
 
     const server = getGameServerUrl();
+    // Sans playerID : premier siège libre (invité = 1 si l’hôte a déjà pris 0).
+    // OK en local à 2 onglets : le localStorage partagé garde les deux jetons.
     const body: Record<string, string> = { playerName };
     if (playerID != null && playerID !== '') {
         body.playerID = playerID;

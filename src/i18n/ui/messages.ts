@@ -77,6 +77,8 @@ export type UiMessages = {
         menuAria: string;
         collection: string;
         play: string;
+        create: string;
+        join: string;
         tutorial: string;
         soon: string;
     };
@@ -87,6 +89,22 @@ export type UiMessages = {
         notFound: string;
         joinFailed: string;
         backHome: string;
+        creating: string;
+        joining: string;
+        codeLabel: string;
+        codeHint: string;
+        copyCode: string;
+        copied: string;
+        enterMatch: string;
+        waitingOpponent: string;
+        opponentJoined: string;
+        cancelHostPrompt: string;
+        cannotJoinOwn: string;
+        joinCodeLabel: string;
+        joinCodePlaceholder: string;
+        joinSubmit: string;
+        invalidCode: string;
+        cancel: string;
     };
 };
 
@@ -156,7 +174,9 @@ const fr: UiBase = {
     welcome: {
         menuAria: 'Menu principal',
         collection: 'Ma collection',
-        play: 'Lancer une partie',
+        play: 'Jouer',
+        create: 'Créer une partie',
+        join: 'Rejoindre une partie',
         tutorial: 'Tutoriel',
         soon: 'Bientôt',
     },
@@ -167,6 +187,23 @@ const fr: UiBase = {
         notFound: 'Partie introuvable.',
         joinFailed: 'Impossible de rejoindre la partie.',
         backHome: 'Retour à l’accueil',
+        creating: 'Création de la partie…',
+        joining: 'Entrée en cours…',
+        codeLabel: 'Code de partie',
+        codeHint: 'Donnez ce code à votre adversaire. La partie ne démarre que lorsqu’il a rejoint.',
+        copyCode: 'Copier le code',
+        copied: 'Copié',
+        enterMatch: 'Entrer dans la partie',
+        waitingOpponent: 'En attente de l’adversaire…',
+        opponentJoined: 'Adversaire connecté — entrée…',
+        cancelHostPrompt:
+            'Quitter l’attente annulera la partie : le code ne sera plus utilisable. Continuer ?',
+        cannotJoinOwn: 'Vous êtes déjà l’hôte de cette partie.',
+        joinCodeLabel: 'Code de la partie',
+        joinCodePlaceholder: 'Collez le code reçu',
+        joinSubmit: 'Rejoindre la partie',
+        invalidCode: 'Code invalide.',
+        cancel: 'Retour',
     },
 };
 
@@ -234,7 +271,9 @@ const en: UiBase = {
     welcome: {
         menuAria: 'Main menu',
         collection: 'My collection',
-        play: 'Start a game',
+        play: 'Play',
+        create: 'Create a match',
+        join: 'Join a match',
         tutorial: 'Tutorial',
         soon: 'Coming soon',
     },
@@ -245,6 +284,23 @@ const en: UiBase = {
         notFound: 'Match not found.',
         joinFailed: 'Could not join the match.',
         backHome: 'Back to home',
+        creating: 'Creating the match…',
+        joining: 'Joining…',
+        codeLabel: 'Match code',
+        codeHint: 'Give this code to your opponent. The match starts only once they have joined.',
+        copyCode: 'Copy code',
+        copied: 'Copied',
+        enterMatch: 'Enter the match',
+        waitingOpponent: 'Waiting for opponent…',
+        opponentJoined: 'Opponent joined — entering…',
+        cancelHostPrompt:
+            'Leaving will cancel the match: the code will no longer work. Continue?',
+        cannotJoinOwn: 'You are already the host of this match.',
+        joinCodeLabel: 'Match code',
+        joinCodePlaceholder: 'Paste the code you received',
+        joinSubmit: 'Join the match',
+        invalidCode: 'Invalid code.',
+        cancel: 'Back',
     },
 };
 
@@ -312,7 +368,9 @@ const de: UiBase = {
     welcome: {
         menuAria: 'Hauptmenü',
         collection: 'Meine Sammlung',
-        play: 'Partie starten',
+        play: 'Spielen',
+        create: 'Partie erstellen',
+        join: 'Einer Partie beitreten',
         tutorial: 'Tutorial',
         soon: 'Demnächst',
     },
@@ -323,6 +381,23 @@ const de: UiBase = {
         notFound: 'Partie nicht gefunden.',
         joinFailed: 'Beitritt zur Partie fehlgeschlagen.',
         backHome: 'Zurück zum Start',
+        creating: 'Partie wird erstellt…',
+        joining: 'Beitritt läuft…',
+        codeLabel: 'Partiecode',
+        codeHint: 'Gib diesen Code deinem Gegner. Die Partie startet erst, wenn er beigetreten ist.',
+        copyCode: 'Code kopieren',
+        copied: 'Kopiert',
+        enterMatch: 'Zur Partie',
+        waitingOpponent: 'Warte auf Gegner…',
+        opponentJoined: 'Gegner da — Eintritt…',
+        cancelHostPrompt:
+            'Wenn du gehst, wird die Partie abgebrochen: der Code gilt nicht mehr. Weiter?',
+        cannotJoinOwn: 'Du bist bereits Gastgeber dieser Partie.',
+        joinCodeLabel: 'Partiecode',
+        joinCodePlaceholder: 'Erhaltenen Code einfügen',
+        joinSubmit: 'Der Partie beitreten',
+        invalidCode: 'Ungültiger Code.',
+        cancel: 'Zurück',
     },
 };
 
@@ -390,7 +465,9 @@ const it: UiBase = {
     welcome: {
         menuAria: 'Menu principale',
         collection: 'La mia collezione',
-        play: 'Avvia una partita',
+        play: 'Gioca',
+        create: 'Crea una partita',
+        join: 'Unisciti a una partita',
         tutorial: 'Tutorial',
         soon: 'Presto',
     },
@@ -401,6 +478,23 @@ const it: UiBase = {
         notFound: 'Partita non trovata.',
         joinFailed: 'Impossibile unirsi alla partita.',
         backHome: 'Torna al menu',
+        creating: 'Creazione della partita…',
+        joining: 'Ingresso in corso…',
+        codeLabel: 'Codice partita',
+        codeHint: 'Dai questo codice al tuo avversario. La partita inizia solo quando è entrato.',
+        copyCode: 'Copia il codice',
+        copied: 'Copiato',
+        enterMatch: 'Entra nella partita',
+        waitingOpponent: 'In attesa dell’avversario…',
+        opponentJoined: 'Avversario connesso — ingresso…',
+        cancelHostPrompt:
+            'Uscendo annulli la partita: il codice non sarà più valido. Continuare?',
+        cannotJoinOwn: 'Sei già l’host di questa partita.',
+        joinCodeLabel: 'Codice della partita',
+        joinCodePlaceholder: 'Incolla il codice ricevuto',
+        joinSubmit: 'Unisciti alla partita',
+        invalidCode: 'Codice non valido.',
+        cancel: 'Indietro',
     },
 };
 
@@ -468,7 +562,9 @@ const es: UiBase = {
     welcome: {
         menuAria: 'Menú principal',
         collection: 'Mi colección',
-        play: 'Empezar una partida',
+        play: 'Jugar',
+        create: 'Crear una partida',
+        join: 'Unirse a una partida',
         tutorial: 'Tutorial',
         soon: 'Pronto',
     },
@@ -479,6 +575,23 @@ const es: UiBase = {
         notFound: 'Partida no encontrada.',
         joinFailed: 'No se pudo unir a la partida.',
         backHome: 'Volver al inicio',
+        creating: 'Creando la partida…',
+        joining: 'Entrando…',
+        codeLabel: 'Código de partida',
+        codeHint: 'Dale este código a tu adversario. La partida solo empieza cuando se haya unido.',
+        copyCode: 'Copiar código',
+        copied: 'Copiado',
+        enterMatch: 'Entrar en la partida',
+        waitingOpponent: 'Esperando al adversario…',
+        opponentJoined: 'Adversario conectado — entrando…',
+        cancelHostPrompt:
+            'Si sales, se anulará la partida: el código ya no servirá. ¿Continuar?',
+        cannotJoinOwn: 'Ya eres el anfitrión de esta partida.',
+        joinCodeLabel: 'Código de la partida',
+        joinCodePlaceholder: 'Pega el código recibido',
+        joinSubmit: 'Unirse a la partida',
+        invalidCode: 'Código no válido.',
+        cancel: 'Volver',
     },
 };
 

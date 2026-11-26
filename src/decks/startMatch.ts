@@ -52,6 +52,8 @@ export async function createMatchWithSelectedDecks(): Promise<JoinedMatch> {
         body: JSON.stringify({
             numPlayers: 2,
             setupData: { decks, profiles },
+            // Privé : pas listé dans GET /games/lotr (code à partager).
+            unlisted: true,
         }),
     });
 
