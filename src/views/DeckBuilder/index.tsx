@@ -43,7 +43,7 @@ import * as S from './styles';
 import { useUiMessages } from '../../i18n/ui/useUiMessages';
 import { formatDeckIssue } from '../../i18n/ui/deckValidation';
 
-function goToBoard(matchId?: string) {
+function goToBoard(matchId?: string, playerId: string = '0') {
     const url = new URL(window.location.href);
     url.searchParams.delete('bot');
     url.searchParams.set('view', 'play');
@@ -52,9 +52,7 @@ function goToBoard(matchId?: string) {
     } else if (!url.searchParams.has('match')) {
         url.searchParams.set('match', 'default');
     }
-    if (!url.searchParams.has('player')) {
-        url.searchParams.set('player', '0');
-    }
+    url.searchParams.set('player', playerId);
     window.location.href = url.toString();
 }
 
@@ -637,8 +635,8 @@ export const DeckBuilder: React.FC = () => {
             assignDeckToPlayer(playerId, draft.id);
             refreshSeatDecks();
             await refreshList();
-            const matchID = await createMatchWithSelectedDecks();
-            goToBoard(matchID);
+            const joined = await createMatchWithSelectedDecks();
+            goToBoard(joined.matchID, joined.playerID);
         } catch (err) {
             console.error(err);
             const message =

@@ -22,8 +22,10 @@ export const Welcome: React.FC = () => {
         if (starting) return;
         setStarting(true);
         try {
-            const matchID = await createMatchWithSelectedDecks();
-            goTo(`?view=play&player=0&match=${encodeURIComponent(matchID)}`);
+            const joined = await createMatchWithSelectedDecks();
+            goTo(
+                `?view=play&player=${encodeURIComponent(joined.playerID)}&match=${encodeURIComponent(joined.matchID)}`
+            );
         } catch (err) {
             console.error(err);
             const message =

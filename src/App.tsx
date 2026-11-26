@@ -17,6 +17,7 @@ import { audioService } from './services/audioService';
 import { initFullscreenEscapeLock } from './utils/fullscreen';
 import { PreferencesProvider } from './contexts/PreferencesProvider';
 import { getGameServerUrl } from './config/gameServer';
+import { MatchSeatGate } from './match/MatchSeatGate';
 
 initFullscreenEscapeLock();
 
@@ -179,10 +180,20 @@ function App() {
                                             matchID={currentMatchId}
                                         />
                                     ) : (
-                                        <LotrClient
+                                        <MatchSeatGate
                                             matchID={currentMatchId}
                                             playerID={myPlayerId}
-                                        />
+                                        >
+                                            {(seat) => (
+                                                <LotrClient
+                                                    matchID={currentMatchId}
+                                                    playerID={seat.playerID}
+                                                    credentials={
+                                                        seat.credentials
+                                                    }
+                                                />
+                                            )}
+                                        </MatchSeatGate>
                                     )}
                                 </ScaledView>
                             </TargetingProvider>

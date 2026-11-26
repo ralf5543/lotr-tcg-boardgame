@@ -69,16 +69,17 @@ Repli si trop lourd : salon ultra-court hors match (salle mémoire serveur → `
 | --- | --- |
 | [`src/decks/startMatch.ts`](../../src/decks/startMatch.ts) | `create` avec decks **0 et 1** du même navigateur |
 | [`src/game/index.ts`](../../src/game/index.ts) | `createInitialPlayer` : noms / avatars en dur |
-| [`src/App.tsx`](../../src/App.tsx) | SocketIO sans `credentials` ; deep-link `?match=&player=` |
-| [`src/views/Welcome/`](../../src/views/Welcome/) | Menu provisoire (play → match `default`) |
-| [`server.ts`](../../server.ts) | Plafond OK ; pas encore de salle / join custom |
+| [`src/App.tsx`](../../src/App.tsx) | `MatchSeatGate` + `credentials` sur Client |
+| [`src/match/`](../../src/match/) | `joinMatchSeat` + gate |
+| [`src/session/matchCredentials.ts`](../../src/session/matchCredentials.ts) | Stockage local par match/siège |
+| [`server.ts`](../../server.ts) | Plafond OK ; pas encore de salon custom (étape 3) |
 
 ## Étapes
 
 | # | Étape | Statut | Notes |
 | --- | --- | --- | --- |
 | **1** | Profil session local (nom + avatar liste fixe) | **fait** | `src/session/playerProfile.ts` ; Options → Compte ; setupData / BOT ; plus de Raphaël/Tom. Avatars = scan auto de `public/avatars/` (`vite.sessionAvatars.ts`) |
-| **2** | Credentials create / join + Client | à faire | Stocker par match ; URL seule ne suffit plus pour jouer |
+| **2** | Credentials create / join + Client | **fait** | create→join siège 0 ; `lotr.matchCredentials` ; `MatchSeatGate` + `credentials` sur Client ; join auto si absents |
 | **3** | Flux Créer / Rejoindre (code) | à faire | Remplace le bricolage d’URL ; wire depuis l’accueil sans figer le design |
 | **4** | Un deck chacun + antichambre | à faire | Prêt ×2 → enchère ; validation deck côté coup |
 | **5** | Playtest 2 navigateurs (prod ou local) | à faire | Deux decks différents, noms OK, siège protégé |

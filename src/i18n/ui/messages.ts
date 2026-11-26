@@ -80,6 +80,14 @@ export type UiMessages = {
         tutorial: string;
         soon: string;
     };
+    match: {
+        connecting: string;
+        seatTaken: string;
+        matchFull: string;
+        notFound: string;
+        joinFailed: string;
+        backHome: string;
+    };
 };
 
 type UiBase = Omit<UiMessages, 'chrome' | 'targeting' | 'deckBuilder'>;
@@ -152,6 +160,14 @@ const fr: UiBase = {
         tutorial: 'Tutoriel',
         soon: 'Bientôt',
     },
+    match: {
+        connecting: 'Connexion à la partie…',
+        seatTaken: 'Ce siège est déjà pris.',
+        matchFull: 'Cette partie est complète.',
+        notFound: 'Partie introuvable.',
+        joinFailed: 'Impossible de rejoindre la partie.',
+        backHome: 'Retour à l’accueil',
+    },
 };
 
 const en: UiBase = {
@@ -221,6 +237,14 @@ const en: UiBase = {
         play: 'Start a game',
         tutorial: 'Tutorial',
         soon: 'Coming soon',
+    },
+    match: {
+        connecting: 'Connecting to the match…',
+        seatTaken: 'This seat is already taken.',
+        matchFull: 'This match is full.',
+        notFound: 'Match not found.',
+        joinFailed: 'Could not join the match.',
+        backHome: 'Back to home',
     },
 };
 
@@ -292,6 +316,14 @@ const de: UiBase = {
         tutorial: 'Tutorial',
         soon: 'Demnächst',
     },
+    match: {
+        connecting: 'Verbindung zur Partie…',
+        seatTaken: 'Dieser Platz ist bereits belegt.',
+        matchFull: 'Diese Partie ist voll.',
+        notFound: 'Partie nicht gefunden.',
+        joinFailed: 'Beitritt zur Partie fehlgeschlagen.',
+        backHome: 'Zurück zum Start',
+    },
 };
 
 const it: UiBase = {
@@ -362,6 +394,14 @@ const it: UiBase = {
         tutorial: 'Tutorial',
         soon: 'Presto',
     },
+    match: {
+        connecting: 'Connessione alla partita…',
+        seatTaken: 'Questo posto è già occupato.',
+        matchFull: 'Questa partita è completa.',
+        notFound: 'Partita non trovata.',
+        joinFailed: 'Impossibile unirsi alla partita.',
+        backHome: 'Torna al menu',
+    },
 };
 
 const es: UiBase = {
@@ -431,6 +471,14 @@ const es: UiBase = {
         play: 'Empezar una partida',
         tutorial: 'Tutorial',
         soon: 'Pronto',
+    },
+    match: {
+        connecting: 'Conectando a la partida…',
+        seatTaken: 'Este asiento ya está ocupado.',
+        matchFull: 'Esta partida está completa.',
+        notFound: 'Partida no encontrada.',
+        joinFailed: 'No se pudo unir a la partida.',
+        backHome: 'Volver al inicio',
     },
 };
 

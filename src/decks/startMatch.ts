@@ -4,7 +4,10 @@ import {
     fallbackSeatName,
     sessionProfileForSetup,
 } from '../session/playerProfile';
+import { joinMatchSeat, type JoinedMatch } from '../match/joinMatch';
 import { loadDeckForPlayer } from './deckStorage';
+
+export type { JoinedMatch } from '../match/joinMatch';
 
 export type MatchCreateErrorCode = 'SERVER_FULL' | 'HTTP' | 'NO_MATCH_ID';
 
@@ -19,10 +22,10 @@ export class MatchCreateError extends Error {
 }
 
 /**
- * Crée une partie SocketIO avec les decks sélectionnés (setupData),
- * puis renvoie l’id de match à mettre dans l’URL.
+ * Crée une partie SocketIO, rejoint le siège 0 (credentials),
+ * puis renvoie match + siège pour l’URL.
  */
-export async function createMatchWithSelectedDecks(): Promise<string> {
+export async function createMatchWithSelectedDecks(): Promise<JoinedMatch> {
     const decks = {
         '0': await loadDeckForPlayer('0'),
         '1': await loadDeckForPlayer('1'),
@@ -87,5 +90,7 @@ export async function createMatchWithSelectedDecks(): Promise<string> {
             'Réponse serveur sans matchID.'
         );
     }
-    return body.matchID;
+
+    // Siège hôte protégé immédiatement.
+    return joinMatchSeat(body.matchID, '0');
 }
