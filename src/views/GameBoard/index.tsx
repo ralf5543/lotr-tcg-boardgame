@@ -142,6 +142,7 @@ import {
     freePeoplesHasInitiative,
     playerHasInitiative,
 } from '../../game/logic/initiative';
+import { loadSessionProfile } from '../../session/playerProfile';
 
 export interface GameBoardProps extends BoardProps<GameState> {
     moves: BoardProps<GameState>['moves'] &
@@ -324,6 +325,19 @@ export const GameBoard: React.FC<GameBoardProps> = ({
     const tg = ui.targeting;
     const uiLanguage = usePreferencesOptional()?.uiLanguage ?? 'fr';
     const myId = playerID || ctx.currentPlayer;
+
+    /** Profil Options (local) → siège courant, une fois connecté. */
+    const sessionProfileSyncedRef = useRef(false);
+    useEffect(() => {
+        if (sessionProfileSyncedRef.current) return;
+        if (!playerID || !moves?.applySessionProfile) return;
+        if (!G.players?.[playerID]) return;
+
+        const session = loadSessionProfile();
+        moves.applySessionProfile(session.name, session.avatarId);
+        sessionProfileSyncedRef.current = true;
+    }, [G.players, moves, playerID]);
+
     const oppId = myId === '0' ? '1' : '0';
     const {
         startTargeting,

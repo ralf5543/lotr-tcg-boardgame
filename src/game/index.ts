@@ -13,7 +13,11 @@ import {
     type DeckConfig,
 } from '../utils/deckLoader';
 import { enumerateBotMoves } from './bot/enumerateBotMoves';
-import { peekBotMatchDecks } from './bot/botMatchSetup';
+import {
+    peekBotMatchDecks,
+    peekBotMatchProfiles,
+} from './bot/botMatchSetup';
+import { defaultAvatarForSeat } from '../session/playerProfile';
 import { getEffectiveTwilightCost } from '../utils/roamingDetection';
 import { getWhileTwilightCostModifier } from './logic/stats/mechanics/whileModifier';
 import {
@@ -128,9 +132,15 @@ const createCardInstance = (
     };
 };
 
+type ProfileSeed = {
+    name?: string;
+    avatar?: string;
+};
+
 const createInitialPlayer = (
     playerId: string,
-    deckConfig: DeckConfig
+    deckConfig: DeckConfig,
+    profileSeed?: ProfileSeed
 ): PlayerState => {
     const isP0 = playerId === '0';
     const fullDeckIds = [...deckConfig.freePeople, ...deckConfig.shadow];
@@ -145,41 +155,15 @@ const createInitialPlayer = (
         siteNumber: undefined,
     })) as SiteCardState[];
 
-    if (isP0) {
-        return {
-            profile: {
-                name: 'Raphaël',
-                avatar: 'avatars/avatar_p0.webp',
-                faction: 'freePeoples',
-            },
-            deck: buildDeckFromIds(fullDeckIds, playerId),
-            hand: [],
-            discard: [],
-            /*deadPile: [
-                {
-                    id: 'mock-gandalf-dead',
-                    title: 'Gandalf',
-                    isUnique: true,
-                    type: 'COMPANION',
-                    kind: 'FREE_PEOPLE',
-                } as CardState,
-            ],*/
-            deadPile: [],
-            removedFromGame: [],
-            fellowshipArea: [],
-            supportArea: [],
-            sitesDeck,
-            currentSiteIndex: 0,
-            burdens: 0,
-            threats: 0,
-        };
-    }
+    const name = profileSeed?.name?.trim() || `Joueur ${playerId}`;
+    const avatar =
+        profileSeed?.avatar?.trim() || defaultAvatarForSeat(playerId).path;
 
     return {
         profile: {
-            name: 'Tom',
-            avatar: 'avatars/avatar_p1.webp',
-            faction: 'shadow',
+            name,
+            avatar,
+            faction: isP0 ? 'freePeoples' : 'shadow',
         },
         deck: buildDeckFromIds(fullDeckIds, playerId),
         hand: [],
@@ -267,22 +251,26 @@ export const advanceArcheryAssignmentStep = (G: GameState, events: any) => {
 
 type SetupData = {
     decks?: Partial<Record<string, DeckConfig>>;
+    profiles?: Partial<Record<string, ProfileSeed>>;
 };
 
 export const setupGame = (
     { random }: { random: any },
     setupData?: SetupData
 ): GameState => {
-    // Local + BOT : pas de setupData serveur → decks stashed (sessionStorage).
+    // Local + BOT : pas de setupData serveur → decks / profils stashed (sessionStorage).
     const botDecks = peekBotMatchDecks();
+    const botProfiles = peekBotMatchProfiles();
     const deckFor = (pId: string) =>
         setupData?.decks?.[pId] ||
         botDecks?.[pId as '0' | '1'] ||
         loadAndValidateDeck(pId);
+    const profileFor = (pId: string): ProfileSeed | undefined =>
+        setupData?.profiles?.[pId] || botProfiles?.[pId];
 
     const players: Record<string, PlayerState> = {
-        '0': createInitialPlayer('0', deckFor('0')),
-        '1': createInitialPlayer('1', deckFor('1')),
+        '0': createInitialPlayer('0', deckFor('0'), profileFor('0')),
+        '1': createInitialPlayer('1', deckFor('1'), profileFor('1')),
     };
 
     Object.keys(players).forEach((pId) => {

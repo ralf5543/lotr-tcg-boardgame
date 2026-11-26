@@ -1,143 +1,103 @@
 ---
-description: Plan jeu en ligne — vision long terme + phases (VPS, comptes, amis)
-alwaysApply: false
+description: Plan actif — Jeu en ligne Phase 2 (confort de table)
+alwaysApply: true
 ---
 
-# Jeu en ligne
+# Jeu en ligne — Phase 2 (confort de table)
 
-> **Plan vivant** (pas encore chantier actif). Vision à long terme + phases. Ne pas confondre avec l’écran d’accueil en cours. Vision globale : [`.cursor/rules/roadmap.mdc`](roadmap.mdc).
+> **Plan actif.** Phase 1 en prod. Accueil (design / tutoriel) = chantier parallèle, hors scope ici. Vision globale : [`.cursor/rules/roadmap.mdc`](roadmap.mdc).
 
 **Format : Standard (règles modernes).** Voir `.cursor/rules/format-standard.mdc`.
 
-## Objectifs (modestes, à assurer)
+Credo : **mieux vaut inerte que faux** ; flux jouable avant polish ; pas de BDD / comptes (Phase 3) ; pas de matchmaking public.
 
-Pas un salon AAA ni du matchmaking ouvert style « affronter un inconnu au hasard ». Cible :
+## Objectif Phase 2
 
-| Objectif | Détail |
+Deux personnes à distance jouent **sans bricoler l’URL** : chacune a un **nom**, un **avatar** (liste fixe), **son** deck, et un siège **protégé** (credentials).
+
+| | Aujourd’hui (Phase 1) | Cible Phase 2 |
+| --- | --- | --- |
+| Entrée | `?match=…&player=0\|1` à la main | Créer / rejoindre (code de partie) |
+| Decks | Les **deux** decks du créateur (`localStorage`) | **Un deck chacun** à l’entrée |
+| Noms | En dur (`Raphaël` / `Tom`) | Saisis (session locale) |
+| Avatars | En dur `avatar_p0` / `p1` | Choix dans une **liste fixe** |
+| Sièges | Ouverts (URL suffit) | Credentials boardgame.io |
+
+## Hors scope Phase 2
+
+- Comptes, login, BDD, mails (→ Phase 3).
+- Liste d’amis / invitation (→ Phase 4).
+- Design final de l’accueil, tutoriel (Ralf affine en parallèle).
+- Collection serveur ; les decks restent locaux (builder + `localStorage`).
+- Matchmaking public / salon d’inconnus.
+
+## Décisions retenues
+
+### Profil de session (sans compte)
+
+- Nom + avatar stockés en **local** (ex. `localStorage`) pour préremplir.
+- Liste d’avatars **fixe** dans le repo (pas d’upload).
+- Propagés dans `G.players[id].profile` avant / au début de la partie (plus de noms en dur dans `createInitialPlayer`).
+
+### Credentials
+
+- À la **création** et au **join** boardgame.io : récupérer `playerCredentials`, les garder en session (localStorage / sessionStorage lié au `matchID`).
+- Le `Client` reçoit `credentials` — plus de siège usurpable juste avec l’URL.
+
+### Un deck chacun — approche
+
+`setup()` tourne **une fois** à la création avec `setupData.decks`. On ne peut donc pas coller le deck de l’invité après coup sans phase d’attente.
+
+**Retenu** : **antichambre** (hors enchère) dans le match :
+
+1. L’hôte crée la partie avec **son** profil + deck (siège 0) ; siège 1 encore « pas prêt ».
+2. L’invité rejoint (credentials) et envoie **son** profil + deck via un coup de prépartie (`readyWithLoadout` ou équivalent).
+3. Quand **les deux** sont prêts → transition vers l’enchère de fardeaux (état actuel de mise en place).
+
+Repli si trop lourd : salon ultra-court hors match (salle mémoire serveur → `create` seulement quand les deux ont soumis) — à trancher à l’implémentation, même UX joueur.
+
+### Flux UI (fonctionnel)
+
+- Depuis l’accueil (ou un écran dédié branché dessus) : **Créer une partie** / **Rejoindre**.
+- Créer → choix nom / avatar / deck → code à partager + attente adversaire.
+- Rejoindre → saisir le code → choix nom / avatar / deck → entrée.
+- Pas besoin que le chrome soit final : **lisible et utilisable** suffit (Ralf polishera l’accueil).
+
+## État actuel (constats code)
+
+| Fichier | Rôle / écart |
 | --- | --- |
-| **Jouer à distance** | Deux personnes **autres que le développeur**, chacune chez elle, s’affrontent via l’appli (VPS allumé 24/7). |
-| **Plusieurs paires** | Une partie = 2 joueurs ; le serveur accueille **plusieurs parties simultanées**. |
-| **Comptes** | Création / gestion : nom, login, choix d’avatar (**liste fixe**, pas d’hébergement d’images joueur). |
-| **Collection & decks** | Création / gestion de sa collection de cartes et de ses decks (persistés côté serveur). |
-| **Retrouver un adversaire** | Via **liste d’amis** (ou équivalent simple) — **pas** un salon public d’adversaires inconnus (hors scope volontaire). |
-| **Communauté FR** | Diffuser d’abord dans la com’ française (petit cercle qui connaît le TCG) ; charge attendue faible au début. |
-| **Croissance douce** | Petit VPS d’abord ; **agrandir le forfait** (Rescale) si ça grossit — éventuellement financé par pubs / dons plus tard (sujet séparé). |
-| **Frein de charge** | Plafond configurable de parties actives (ex. N max) : au‑delà, refuser les créations (« serveur plein »). |
+| [`src/decks/startMatch.ts`](../../src/decks/startMatch.ts) | `create` avec decks **0 et 1** du même navigateur |
+| [`src/game/index.ts`](../../src/game/index.ts) | `createInitialPlayer` : noms / avatars en dur |
+| [`src/App.tsx`](../../src/App.tsx) | SocketIO sans `credentials` ; deep-link `?match=&player=` |
+| [`src/views/Welcome/`](../../src/views/Welcome/) | Menu provisoire (play → match `default`) |
+| [`server.ts`](../../server.ts) | Plafond OK ; pas encore de salle / join custom |
 
-## Infra (pérennité)
+## Étapes
 
-- **Un petit VPS** = socle unique : front + serveur boardgame.io, puis API + SQL.
-- Facturation Hetzner : à l’heure avec **plafond ≈ prix « / mo »** = max à **payer** pour cette machine (pas une coupure de jeu). Allumé 24/7 → ~forfait mensuel + IPv4 + TVA. Pas de « crédit épuisé → plus de parties ».
-- **IONOS Pro** : domaine / DNS / mails (reset mdp) — **pas** le process Node / WebSockets. Pas besoin d’upgrader le Pro pour le jeu.
-- Ordre de grandeur : phase 1 **~7–10 € TTC/mois** (petit cloud) ; avec comptes/decks/amis souvent encore dans cette zone tant que petite communauté. **Rescale** si besoin.
+| # | Étape | Statut | Notes |
+| --- | --- | --- | --- |
+| **1** | Profil session local (nom + avatar liste fixe) | **fait** | `src/session/playerProfile.ts` ; Options → Compte ; setupData / BOT ; plus de Raphaël/Tom. Avatars = scan auto de `public/avatars/` (`vite.sessionAvatars.ts`) |
+| **2** | Credentials create / join + Client | à faire | Stocker par match ; URL seule ne suffit plus pour jouer |
+| **3** | Flux Créer / Rejoindre (code) | à faire | Remplace le bricolage d’URL ; wire depuis l’accueil sans figer le design |
+| **4** | Un deck chacun + antichambre | à faire | Prêt ×2 → enchère ; validation deck côté coup |
+| **5** | Playtest 2 navigateurs (prod ou local) | à faire | Deux decks différents, noms OK, siège protégé |
 
-### Hetzner — choix retenus (création)
+Ordre conseillé : **1 → 2 → 3 → 4 → 5** (3 peut avancer en parallèle de 4 une fois 2 posé).
 
-| | Retenu |
+## Critère de succès Phase 2
+
+Un ami peut : ouvrir le site → rejoindre avec un code → choisir **son** deck et un nom → jouer, sans coller `?player=1` ni partager ton `localStorage` de decks.
+
+## Phases suivantes (rappel)
+
+| Phase | Contenu |
 | --- | --- |
-| Fournisseur | Hetzner Cloud (ils disent « Server », c’est bien le VPS) |
-| Gamme | **Cost-optimized** (CX x86 si dispo ; sinon **CAX Arm64** OK pour Node) |
-| Taille départ | **CAX11** (2 vCPU, **4 Go**, 40 Go) ~7,19 €/mo HT — éviter CPX02 **1 Go** trop juste |
-| Lieu | **Helsinki (HEL1)** si Falkenstein/CX indisponibles — latence FR OK pour un TCG |
-| Image | **Ubuntu** LTS (24.04 / 26.04) — **pas** Fedora / Apps préinstallées |
-| Réseau | **IPv4 + IPv6** ; Private networks **non** (un seul serveur) |
-| SSH | Clé **ed25519** (`~/.ssh/id_ed25519.pub`) |
-| Nom | Libre (ex. `lotr-tcg`) — purement cosmétique dans la console |
-| Domaine prod | `lotr-tcg-online.raphael-bigot.info` — enregistrement **A** → IPv4 Hetzner (pas l’IP IONOS hébergement web) |
-| Scripts deploy | [`deploy/setup-vps.sh`](../../deploy/setup-vps.sh), nginx + systemd dans `deploy/` |
+| **3** | Comptes + persistance collection / decks |
+| **4** | Amis & invitation (pas de matchmaking public) |
 
-### Hetzner — options reportées (plus tard / si besoin)
+## Infra (rappel Phase 1)
 
-Ne pas activer au jour 1 ; on pourra y revenir :
-
-| Option | Quand ça peut servir |
-| --- | --- |
-| **Volumes** | Disque SSD attaché (jusqu’à 10 To, même localisation) si le disque local ne suffit plus |
-| **Firewalls** (console) | Règles cloud : ports **22** (SSH), **80**, **443** ; restreindre le 22 à ton IP plus tard |
-| **Backups** | Snapshots auto (~20 % du prix serveur) — surtout utile **après** comptes / decks en base |
-| **Placement groups** (`spread`) | Plusieurs serveurs sur des hôtes différents — inutile à 1 machine |
-| **Labels** | Étiquettes clé/valeur pour s’y retrouver dans la console |
-| **Cloud-init** | Scripts auto à la création (≤ 32 KiB) — on préfère config manuelle / scripts documentés |
-| **Regular Performance (CPX)** | Si besoin de plus de CPU ; ou si seul x86 dispo avec assez de RAM (≥ 2–4 Go) |
-| **Rescale** | Monter de forfait sans tout reconstruire si la com’ grossit |
-| **Private networks** | Plusieurs serveurs Hetzner qui se parlent entre eux |
-
-```mermaid
-flowchart TB
-  subgraph phase1 [Phase_1]
-    Front1[Front_statique]
-    Bgio[Serveur_boardgame.io]
-    Cap[Plafond_parties]
-  end
-  subgraph phaseN [Phases_suivantes]
-    Accounts[Comptes_avatars]
-    Collection[Collection_decks]
-    Friends[Liste_amis]
-    DB[(SQL)]
-  end
-  Players[Joueurs_navigateur] --> Front1
-  Front1 --> Bgio
-  Bgio --> Cap
-  Accounts --> DB
-  Collection --> DB
-  Friends --> DB
-  Front1 -.-> Accounts
-```
-
-## Phases
-
-### Phase 1 — Multi hors Wi‑Fi (socle)
-
-Objectif : deux navigateurs, réseaux différents, partie synchronisée.
-
-- SocketIO en prod pour le multi humain (`Local` réservé au BOT via `SoloBotMatch`).
-- URL serveur : [`src/config/gameServer.ts`](../../src/config/gameServer.ts) + `VITE_GAME_SERVER_URL` (voir [`.env.example`](../../.env.example)).
-- CORS : `CORS_ORIGINS` + localhost / LAN dans [`server.ts`](../../server.ts).
-- **Plafond** : `MAX_ACTIVE_MATCHES` (défaut 20) → HTTP 503 `SERVER_FULL`.
-- Lien de partie type `?match=…&player=0|1` OK (bricolé mais jouable).
-- Playtest solo : le VPS peut être **éteint la nuit** (économie) ; rallumer avant une partie à distance.
-
-Hors scope phase 1 : comptes, amis, BDD, credentials, un deck par joueur côté chacun.
-
-#### Checklist déploiement VPS (quand on s’y met)
-
-1. DNS (IONOS) : sous-domaine `A` → IPv4 du VPS (ou tester d’abord à l’IP).
-2. SSH OK ; Ubuntu à jour (`apt update && apt upgrade`).
-3. Installer Node LTS, nginx, certbot (Let’s Encrypt).
-4. Cloner / copier le repo ; `npm ci` ; `npm run build`.
-5. `systemd` (ou pm2) : `npm run server` avec env `PORT`, `CORS_ORIGINS`, `MAX_ACTIVE_MATCHES`.
-6. nginx : fichiers `dist/` en statique ; proxy `/games` + Socket.IO vers Node ; HTTPS.
-7. Build front avec `VITE_GAME_SERVER_URL` vide si même origine, sinon URL publique du jeu.
-8. Firewall : 22 / 80 / 443.
-9. Test : deux navigateurs (ou deux réseaux) créent / rejoignent une partie.
-
-### Phase 2 — Confort de table
-
-- Noms / avatars saisis (liste d’avatars).
-- Credentials boardgame.io (sièges protégés).
-- Chaque joueur choisit **son** deck avant / à l’entrée en partie.
-- Salon minimal ou flux « créer / rejoindre » sans URL à bricoler à la main.
-
-### Phase 3 — Comptes & persistance
-
-- Comptes (login / mdp ou équivalent simple).
-- Collection + decks en base (remplace fichiers DEV / plugin Vite).
-- Mails de reset via IONOS si besoin.
-
-### Phase 4 — Amis & invitation
-
-- Liste d’amis, invitation à une partie.
-- Toujours **pas** de matchmaking public obligatoire.
-
-### Plus tard (optionnel)
-
-- Pubs / dons (si besoin de financer un VPS plus gros).
-- Embellissements, stats, historique de parties.
-- Rescale VPS si la com’ dépasse le petit forfait.
-
-## Critères de succès (global)
-
-- Le jeu reste jouable **sans** que le développeur laisse tourner son PC.
-- Deux joueurs quelconques peuvent s’affronter à distance.
-- La com’ FR peut grandir sans changer d’architecture ; on **augmente le forfait** et/ou le plafond N.
-- Les objectifs ci-dessus restent la boussole : **modestes, assumés, pas dilués** en salon géant.
+- **Prod** : `https://lotr-tcg-online.raphael-bigot.info`
+- **MAJ** : `npm run deploy:prod` — **ne pas** écraser nginx après Certbot
+- Scripts : [`deploy/update-prod.sh`](../../deploy/update-prod.sh), [`deploy/setup-vps.sh`](../../deploy/setup-vps.sh)

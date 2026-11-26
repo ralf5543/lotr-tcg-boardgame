@@ -9,6 +9,12 @@ import {
     appendActorJournalNotice,
     appendJournalNotice,
 } from '../logic/journal';
+import {
+    avatarPathForId,
+    fallbackSeatName,
+    isSessionAvatarId,
+    normalizeDisplayName,
+} from '../../session/playerProfile';
 
 export const submitMulliganChoice = (
     { G, events, playerID }: LotrMoveContext,
@@ -64,6 +70,35 @@ export const submitMulliganChoice = (
     }
 };
 
+/**
+ * Applique le profil de session local sur **son** siège
+ * (accueil → match existant, ou create sans setupData.profiles).
+ */
+export const applySessionProfile = (
+    { G, playerID }: LotrMoveContext,
+    name: string,
+    avatarId: string
+) => {
+    const pId = String(playerID ?? '');
+    const player = G.players?.[pId];
+    if (!player?.profile) return 'INVALID_MOVE';
+    if (!isSessionAvatarId(avatarId)) return 'INVALID_MOVE';
+
+    const nextName = normalizeDisplayName(name) || fallbackSeatName(pId);
+    const nextAvatar = avatarPathForId(avatarId);
+
+    if (
+        player.profile.name === nextName &&
+        player.profile.avatar === nextAvatar
+    ) {
+        return;
+    }
+
+    player.profile.name = nextName;
+    player.profile.avatar = nextAvatar;
+};
+
 export const setupMoves = {
     submitMulliganChoice,
+    applySessionProfile,
 };

@@ -1,6 +1,7 @@
 import { defineConfig } from 'vitest/config'
 import react from '@vitejs/plugin-react-swc' // 👈 Changement d'import ici !
 import { decksFileApiPlugin } from './vite.decksApi'
+import { sessionAvatarsPlugin } from './vite.sessionAvatars'
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -14,6 +15,7 @@ export default defineConfig({
       ],
     }),
     decksFileApiPlugin(),
+    sessionAvatarsPlugin(),
   ],
   test: {
     environment: 'node',

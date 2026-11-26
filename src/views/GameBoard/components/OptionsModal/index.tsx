@@ -12,12 +12,23 @@ import {
     isSupportedLanguage,
 } from '../../../../i18n/languages';
 import { getUiMessages } from '../../../../i18n/ui';
+import {
+    loadSessionProfile,
+    MAX_DISPLAY_NAME_LENGTH,
+    normalizeDisplayName,
+    saveSessionProfile,
+    SESSION_AVATARS,
+    type SessionAvatarId,
+    type SessionProfile,
+} from '../../../../session/playerProfile';
 import * as S from './styles';
 
 export type OptionsTabId = 'display' | 'audio' | 'language' | 'account';
 
 export interface OptionsModalProps {
     onClose: () => void;
+    /** Affiche « retour à l’accueil » (masqué sur l’écran d’accueil lui‑même). */
+    showQuitToHome?: boolean;
 }
 
 const TAB_IDS: OptionsTabId[] = [
@@ -27,7 +38,16 @@ const TAB_IDS: OptionsTabId[] = [
     'account',
 ];
 
-export const OptionsModal: React.FC<OptionsModalProps> = ({ onClose }) => {
+function goToWelcome() {
+    const url = new URL(window.location.href);
+    url.search = '';
+    window.location.href = url.toString();
+}
+
+export const OptionsModal: React.FC<OptionsModalProps> = ({
+    onClose,
+    showQuitToHome = true,
+}) => {
     const {
         uiLanguage,
         cardLanguage,
@@ -43,17 +63,53 @@ export const OptionsModal: React.FC<OptionsModalProps> = ({ onClose }) => {
     const [musicVolume, setMusicVolume] = useState(50);
     const [sfxVolume, setSfxVolume] = useState(80);
     const [quitConfirm, setQuitConfirm] = useState(false);
+    const [sessionProfile, setSessionProfile] = useState<SessionProfile>(() =>
+        loadSessionProfile()
+    );
+    const [displayNameDraft, setDisplayNameDraft] = useState(
+        () => loadSessionProfile().name
+    );
+
+    const persistSessionProfile = (next: SessionProfile) => {
+        const saved = saveSessionProfile(next);
+        setSessionProfile(saved);
+        return saved;
+    };
+
+    const commitDisplayName = (raw: string = displayNameDraft) => {
+        const saved = persistSessionProfile({
+            ...sessionProfile,
+            name: normalizeDisplayName(raw),
+        });
+        setDisplayNameDraft(saved.name);
+        return saved;
+    };
+
+    const closeOptions = () => {
+        commitDisplayName(displayNameDraft);
+        onClose();
+    };
+
+    const onAvatarPick = (avatarId: SessionAvatarId) => {
+        const saved = persistSessionProfile({
+            ...sessionProfile,
+            name: normalizeDisplayName(displayNameDraft),
+            avatarId,
+        });
+        setDisplayNameDraft(saved.name);
+    };
 
     useEffect(() => {
         const onKeyDown = (event: KeyboardEvent) => {
             if (event.key !== 'Escape') return;
             event.preventDefault();
             event.stopPropagation();
+            commitDisplayName(displayNameDraft);
             onClose();
         };
         window.addEventListener('keydown', onKeyDown, true);
         return () => window.removeEventListener('keydown', onKeyDown, true);
-    }, [onClose]);
+    }, [displayNameDraft, sessionProfile, onClose]);
 
     useEffect(() => {
         const syncFullscreen = () => {
@@ -93,7 +149,7 @@ export const OptionsModal: React.FC<OptionsModalProps> = ({ onClose }) => {
             role="dialog"
             aria-modal="true"
             aria-label={t.options.title}
-            onClick={onClose}
+            onClick={closeOptions}
         >
             <S.Panel onClick={(event) => event.stopPropagation()}>
                 <S.Header>
@@ -101,7 +157,7 @@ export const OptionsModal: React.FC<OptionsModalProps> = ({ onClose }) => {
                     <S.CloseButton
                         type="button"
                         aria-label={t.options.closeAria}
-                        onClick={onClose}
+                        onClick={closeOptions}
                     >
                         ×
                     </S.CloseButton>
@@ -346,23 +402,84 @@ export const OptionsModal: React.FC<OptionsModalProps> = ({ onClose }) => {
                                 <S.SectionHint>
                                     {t.options.account.hint}
                                 </S.SectionHint>
-                                <S.AccountList>
-                                    <S.AccountItem type="button" disabled>
-                                        <S.AccountItemTitle>
-                                            {t.options.account.personal}
-                                        </S.AccountItemTitle>
-                                        <S.AccountItemHint>
-                                            {t.options.account.personalHint}
-                                        </S.AccountItemHint>
-                                    </S.AccountItem>
-                                    <S.AccountItem type="button" disabled>
-                                        <S.AccountItemTitle>
+                                <S.FieldGroup>
+                                    <S.Field>
+                                        <S.Label htmlFor="session-display-name">
+                                            {t.options.account.displayName}
+                                        </S.Label>
+                                        <S.Hint>
+                                            {t.options.account.displayNameHint}
+                                        </S.Hint>
+                                        <S.TextInput
+                                            id="session-display-name"
+                                            type="text"
+                                            value={displayNameDraft}
+                                            maxLength={MAX_DISPLAY_NAME_LENGTH}
+                                            placeholder={
+                                                t.options.account
+                                                    .displayNamePlaceholder
+                                            }
+                                            autoComplete="nickname"
+                                            onChange={(event) =>
+                                                setDisplayNameDraft(
+                                                    event.target.value.slice(
+                                                        0,
+                                                        MAX_DISPLAY_NAME_LENGTH
+                                                    )
+                                                )
+                                            }
+                                            onBlur={() =>
+                                                commitDisplayName(
+                                                    displayNameDraft
+                                                )
+                                            }
+                                        />
+                                    </S.Field>
+                                    <S.Field>
+                                        <S.Label>
                                             {t.options.account.avatar}
-                                        </S.AccountItemTitle>
-                                        <S.AccountItemHint>
+                                        </S.Label>
+                                        <S.Hint>
                                             {t.options.account.avatarHint}
-                                        </S.AccountItemHint>
-                                    </S.AccountItem>
+                                        </S.Hint>
+                                        <S.AvatarGrid
+                                            role="listbox"
+                                            aria-label={
+                                                t.options.account.avatar
+                                            }
+                                        >
+                                            {SESSION_AVATARS.map((avatar) => {
+                                                const selected =
+                                                    sessionProfile.avatarId ===
+                                                    avatar.id;
+                                                return (
+                                                    <S.AvatarOption
+                                                        key={avatar.id}
+                                                        type="button"
+                                                        role="option"
+                                                        aria-selected={
+                                                            selected
+                                                        }
+                                                        $selected={selected}
+                                                        title={avatar.id}
+                                                        onClick={() =>
+                                                            onAvatarPick(
+                                                                avatar.id
+                                                            )
+                                                        }
+                                                    >
+                                                        <S.AvatarImage
+                                                            src={`/${avatar.path}`}
+                                                            alt=""
+                                                            loading="lazy"
+                                                        />
+                                                    </S.AvatarOption>
+                                                );
+                                            })}
+                                        </S.AvatarGrid>
+                                    </S.Field>
+                                </S.FieldGroup>
+                                <S.AccountList>
                                     <S.AccountItem type="button" disabled>
                                         <S.AccountItemTitle>
                                             {t.options.account.contacts}
@@ -401,15 +518,20 @@ export const OptionsModal: React.FC<OptionsModalProps> = ({ onClose }) => {
                 <S.Footer>
                     {!quitConfirm ? (
                         <>
-                            <S.GhostButton type="button" onClick={onClose}>
+                            <S.GhostButton
+                                type="button"
+                                onClick={closeOptions}
+                            >
                                 {t.options.close}
                             </S.GhostButton>
-                            <S.DangerButton
-                                type="button"
-                                onClick={() => setQuitConfirm(true)}
-                            >
-                                {t.options.quit}
-                            </S.DangerButton>
+                            {showQuitToHome && (
+                                <S.DangerButton
+                                    type="button"
+                                    onClick={() => setQuitConfirm(true)}
+                                >
+                                    {t.options.quit}
+                                </S.DangerButton>
+                            )}
                         </>
                     ) : (
                         <S.QuitConfirm>
@@ -422,7 +544,13 @@ export const OptionsModal: React.FC<OptionsModalProps> = ({ onClose }) => {
                             >
                                 {t.options.cancel}
                             </S.GhostButton>
-                            <S.DangerButton type="button" disabled>
+                            <S.DangerButton
+                                type="button"
+                                onClick={() => {
+                                    commitDisplayName(displayNameDraft);
+                                    goToWelcome();
+                                }}
+                            >
                                 {t.options.confirm}
                             </S.DangerButton>
                         </S.QuitConfirm>

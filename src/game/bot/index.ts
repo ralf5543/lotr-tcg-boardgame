@@ -27,9 +27,11 @@ export type {
 export { isBotToAct, pendingNamedActor } from './isBotToAct';
 export {
     stashBotMatchDecks,
+    stashBotMatchProfiles,
     peekBotMatchDecks,
+    peekBotMatchProfiles,
     clearBotMatchDecks,
     isBotMatchFromUrl,
     isBotMatchPending,
 } from './botMatchSetup';
-export type { BotMatchDecks } from './botMatchSetup';
+export type { BotMatchDecks, BotMatchProfiles } from './botMatchSetup';

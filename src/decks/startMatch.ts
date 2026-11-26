@@ -1,4 +1,9 @@
 import { getGameServerUrl } from '../config/gameServer';
+import {
+    defaultAvatarForSeat,
+    fallbackSeatName,
+    sessionProfileForSetup,
+} from '../session/playerProfile';
 import { loadDeckForPlayer } from './deckStorage';
 
 export type MatchCreateErrorCode = 'SERVER_FULL' | 'HTTP' | 'NO_MATCH_ID';
@@ -23,13 +28,27 @@ export async function createMatchWithSelectedDecks(): Promise<string> {
         '1': await loadDeckForPlayer('1'),
     };
 
+    const host = sessionProfileForSetup();
+    const profiles = {
+        '0': {
+            name: host.name || fallbackSeatName('0'),
+            avatar: host.avatar,
+        },
+        // Siège 1 : encore le deck local du créateur (Phase 1) ;
+        // le profil adverse arrive en étape 4 (antichambre).
+        '1': {
+            name: fallbackSeatName('1'),
+            avatar: defaultAvatarForSeat('1').path,
+        },
+    };
+
     const server = getGameServerUrl();
     const res = await fetch(`${server}/games/lotr/create`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
             numPlayers: 2,
-            setupData: { decks },
+            setupData: { decks, profiles },
         }),
     });
 

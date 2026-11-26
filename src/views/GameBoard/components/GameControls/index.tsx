@@ -1353,8 +1353,8 @@ export const GameControls: React.FC<GameControlsProps> = ({
                                     'Avatar joueur'
                                 }
                                 style={{
-                                    width: 28,
-                                    height: 28,
+                                    width: 38,
+                                    height: 38,
                                     borderRadius: '50%',
                                 }}
                             />

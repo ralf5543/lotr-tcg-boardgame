@@ -34,7 +34,7 @@ export const Token = styled.div<{ $value: string }>`
         background-image: url(${(props) => `interface/tokens/token_player_${props.$value}_base.webp`});
         position: absolute;
         inset: 0;
-        background-position: 1px 2px;
+        background-position: 0px 2px;
         background-size: contain;
         background-repeat: no-repeat;
         pointer-events: none;
@@ -42,7 +42,7 @@ export const Token = styled.div<{ $value: string }>`
 `;
 
 export const Avatar = styled.img`
-    width: 23px;
+    width: 24px;
     height: auto;
     border-radius: 50%;
     position: relative;

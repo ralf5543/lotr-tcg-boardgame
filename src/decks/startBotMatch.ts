@@ -1,4 +1,12 @@
-import { stashBotMatchDecks } from '../game/bot/botMatchSetup';
+import {
+    stashBotMatchDecks,
+    stashBotMatchProfiles,
+} from '../game/bot/botMatchSetup';
+import {
+    defaultAvatarForSeat,
+    fallbackSeatName,
+    sessionProfileForSetup,
+} from '../session/playerProfile';
 import { loadDeckForPlayer } from './deckStorage';
 
 /**
@@ -10,6 +18,17 @@ export async function prepareBotMatch(): Promise<string> {
         '0': await loadDeckForPlayer('0'),
         '1': await loadDeckForPlayer('1'),
     };
+    const host = sessionProfileForSetup();
     stashBotMatchDecks(decks);
+    stashBotMatchProfiles({
+        '0': {
+            name: host.name || fallbackSeatName('0'),
+            avatar: host.avatar,
+        },
+        '1': {
+            name: 'BOT',
+            avatar: defaultAvatarForSeat('1').path,
+        },
+    });
     return `bot-${Date.now()}`;
 }

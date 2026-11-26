@@ -128,6 +128,25 @@ export const Content = styled.div`
     min-width: 0;
     padding: 18px 22px 20px;
     overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(226, 192, 68, 0.5) transparent;
+
+    &::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    &::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background: rgba(226, 192, 68, 0.5);
+        border-radius: 4px;
+    }
+
+    &::-webkit-scrollbar-thumb:hover {
+        background: rgba(226, 192, 68, 0.7);
+    }
 `;
 
 export const SectionTitle = styled.h3`
@@ -172,6 +191,71 @@ export const Label = styled.label`
 export const Hint = styled.span`
     font-size: 12px;
     color: rgba(255, 255, 255, 0.45);
+`;
+
+export const TextInput = styled.input`
+    appearance: none;
+    width: 100%;
+    max-width: 320px;
+    padding: 9px 12px;
+    border-radius: 8px;
+    border: 1px solid #444;
+    background: #21262d;
+    color: #fff;
+    font: inherit;
+    font-size: 14px;
+
+    &::placeholder {
+        color: rgba(255, 255, 255, 0.35);
+    }
+
+    &:hover,
+    &:focus {
+        border-color: rgba(226, 192, 68, 0.65);
+        outline: none;
+    }
+`;
+
+export const AvatarGrid = styled.div`
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(52px, 1fr));
+    gap: 8px;
+    margin-top: 4px;
+`;
+
+export const AvatarOption = styled.button<{ $selected: boolean }>`
+    appearance: none;
+    width: 100%;
+    aspect-ratio: 1;
+    padding: 0;
+    border-radius: 8px;
+    border: 2px solid
+        ${(p) => (p.$selected ? '#e2c044' : 'rgba(255, 255, 255, 0.22)')};
+    background: #161a20;
+    cursor: pointer;
+    overflow: hidden;
+    transition:
+        border-color 0.15s ease,
+        box-shadow 0.15s ease;
+
+    &:hover {
+        border-color: ${(p) =>
+            p.$selected ? '#e2c044' : 'rgba(226, 192, 68, 0.55)'};
+    }
+
+    ${(p) =>
+        p.$selected
+            ? css`
+                  box-shadow: 0 0 0 1px rgba(226, 192, 68, 0.35);
+              `
+            : ''}
+`;
+
+export const AvatarImage = styled.img`
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 `;
 
 export const Select = styled.select`
@@ -253,6 +337,7 @@ export const AccountList = styled.div`
     display: flex;
     flex-direction: column;
     gap: 8px;
+    margin-top: 18px;
 `;
 
 export const AccountItem = styled.button`
