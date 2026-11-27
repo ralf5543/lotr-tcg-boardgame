@@ -251,6 +251,109 @@ export const BannerStrip = styled.div<{ $tone: BannerStripTone }>`
     }
 `;
 
+/** Cadre de position (valeurs calées) — pas d’anim ici. */
+export const EyeAura = styled.div`
+    position: absolute;
+    left: 71.5%;
+    top: 25%;
+    width: 8.5%;
+    aspect-ratio: 1 / 1;
+    z-index: 2;
+    pointer-events: none;
+`;
+
+/**
+ * Halo rouge — profil radial figé ; scaleX/Y + opacity.
+ * Deux calques empilés, même anim, déphasés ; opacité ≈ ÷2 pour compenser.
+ */
+const eyeGlowWarp = keyframes`
+    0%,
+    100% {
+        transform: scale(1, 1);
+        opacity: 0.4;
+    }
+    22% {
+        transform: scale(1.32, 0.82);
+        opacity: 0.55;
+    }
+    48% {
+        transform: scale(0.78, 1.28);
+        opacity: 0.28;
+    }
+    71% {
+        transform: scale(1.22, 1.08);
+        opacity: 0.48;
+    }
+`;
+
+export const EyeGlow = styled.div<{ $lag?: boolean }>`
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    mix-blend-mode: screen;
+    filter: blur(10px);
+    background: radial-gradient(
+        circle,
+        transparent 0%,
+        transparent 25%,
+        rgba(190, 45, 22, 0.35) 35%,
+        rgba(200, 50, 25, 0.45) 50%,
+        rgba(150, 25, 12, 0.18) 70%,
+        rgba(90, 8, 4, 0.1) 85%,
+        transparent 100%
+    );
+    will-change: transform, opacity;
+    animation: ${eyeGlowWarp} 11s ease-in-out infinite;
+    animation-delay: ${(p) => (p.$lag ? '-5.5s' : '0s')};
+
+    @media (prefers-reduced-motion: reduce) {
+        animation: none;
+        opacity: 0.45;
+    }
+`;
+
+/**
+ * Petit halo jaune centré sur l’œil (~1,5× l’œil ≈ 30 % du cadre aura).
+ * Seule l’opacité anime (0 → 50 %).
+ */
+const eyeSparkPulse = keyframes`
+    0%,
+    100% {
+        opacity: 0;
+    }
+    40% {
+        opacity: 0.5;
+    }
+    70% {
+        opacity: 0.15;
+    }
+`;
+
+export const EyeSpark = styled.div`
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 30%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    mix-blend-mode: screen;
+    filter: blur(6px);
+    background: radial-gradient(
+        circle,
+        rgba(255, 210, 100, 0.9) 0%,
+        rgba(255, 170, 50, 0.45) 45%,
+        transparent 72%
+    );
+    will-change: opacity;
+    animation: ${eyeSparkPulse} 8s ease-in-out infinite;
+
+    @media (prefers-reduced-motion: reduce) {
+        animation: none;
+        opacity: 0.25;
+    }
+`;
+
 export const Menu = styled.nav`
     position: relative;
     z-index: 1;

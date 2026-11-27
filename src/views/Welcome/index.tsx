@@ -295,6 +295,11 @@ export const Welcome: React.FC = () => {
                         <S.BannerStrip $tone="hard" />
                     </S.BannerSwing>
                 </S.Banner>
+                <S.EyeAura aria-hidden>
+                    <S.EyeGlow />
+                    <S.EyeGlow $lag />
+                    <S.EyeSpark />
+                </S.EyeAura>
             </S.Scene>
             {panel === 'menu' && (
                 <S.Menu aria-label={welcome.menuAria}>
