@@ -1,58 +1,116 @@
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
+
+/** Ratio du PNG `background_home.png` (2048×768). */
+const BG_ASPECT = '2048 / 768';
 
 /** Accueil plein viewport — pas de ScaledView 1920×1080. */
 export const Root = styled.div`
     position: relative;
     width: 100%;
     height: 100%;
+    overflow: hidden;
     display: flex;
     align-items: center;
     justify-content: center;
-    background-image: url('/interface/background_home.png');
+    background-image: url('interface/home_composition/background_home.png');
     background-size: auto 100%;
     background-position: center;
     background-repeat: no-repeat;
     color: #e8e6e1;
+`;
+
+/**
+ * Cadre = zone réellement peinte par le fond (`auto 100%` + centré).
+ * Les calques décoratifs (feuillage…) s’ancrent ici en % — ils suivent
+ * le recadrage quand le viewport est plus étroit que l’image.
+ */
+export const Scene = styled.div`
+    position: absolute;
+    inset-block: 0;
+    inset-inline-start: 50%;
+    transform: translateX(-50%);
+    height: 100%;
+    aspect-ratio: ${BG_ASPECT};
+    pointer-events: none;
 
     &::before {
         content: '';
         position: absolute;
-        inset-block-start: 50%;
-        inset-inline-start: 50%;
-        transform: translate(-50%, -50%);
-        height: 100vh;
-         aspect-ratio: 2508 / 941;
-         position: absolute;
-         pointer-events: none;
+        z-index: 1;
+        inset: 0;
+        background:
+            /* Fondu latéral gauche et droit */
+            linear-gradient(
+                to right,
+                #000 0%,
+                rgba(0, 0, 0, 0.9) 7%,
+                rgba(0, 0, 0, 0.75) 13%,
+                rgba(0, 0, 0, 0.55) 16.67%,
+                transparent 21%,
+                transparent 79%,
+                rgba(0, 0, 0, 0.55) 83.33%,
+                rgba(0, 0, 0, 0.75) 87%,
+                rgba(0, 0, 0, 0.9) 93%,
+                #000 100%
+            ),
+            /* Léger assombrissement vertical */
+            linear-gradient(
+                to bottom,
+                rgba(0, 0, 0, 0.5) 0%,
+                transparent 12%,
+                transparent 88%,
+                rgba(0, 0, 0, 0.5) 100%
+            );
+    }
+`;
 
-    background:
-        /* Fondu latéral gauche et droit */
-        linear-gradient(
-            to right,
-            #000 0%,
-            rgba(0, 0, 0, 0.90) 7%,
-            rgba(0, 0, 0, 0.75) 13%,
-            rgba(0, 0, 0, 0.55) 16.67%,
-            transparent 21%,
-            transparent 79%,
-            rgba(0, 0, 0, 0.55) 83.33%,
-            rgba(0, 0, 0, 0.75) 87%,
-            rgba(0, 0, 0, 0.90) 93%,
-            #000 100%
-        ),
+/**
+ * Vent léger : pivot centre-bas → le pied bouge à peine,
+ * rotation + skewX s’amplifient vers les bords / le haut du PNG.
+ */
+const foliageSway = keyframes`
+    0% {
+        transform: rotate(0deg) skewX(0deg);
+    }
+    18% {
+        transform: rotate(0.75deg) skewX(1.25deg);
+    }
+    42% {
+        transform: rotate(-0.45deg) skewX(-0.75deg);
+    }
+    63% {
+        transform: rotate(0.6deg) skewX(1.05deg);
+    }
+    82% {
+        transform: rotate(-0.28deg) skewX(-0.55deg);
+    }
+    100% {
+        transform: rotate(0deg) skewX(0deg);
+    }
+`;
 
-        /* Léger assombrissement vertical */
-        linear-gradient(
-            to bottom,
-            rgba(0, 0, 0, 0.50) 0%,
-            transparent 12%,
-            transparent 88%,
-            rgba(0, 0, 0, 0.50) 100%
-        );
+export const Foliage = styled.div`
+    position: absolute;
+    top: -2%;
+    left: 0%;
+    width: 40%;
+    aspect-ratio: 2048 / 1091;
+    background-image: url(interface/home_composition/foliage.png);
+    background-size: 100% 100%;
+    background-position: center center;
+    background-repeat: no-repeat;
+    transform-origin: 50% 100%;
+    will-change: transform;
+    animation: ${foliageSway} 9.5s ease-in-out infinite;
+
+    @media (prefers-reduced-motion: reduce) {
+        animation: none;
     }
 `;
 
 export const Menu = styled.nav`
+    position: relative;
+    z-index: 1;
     display: flex;
     flex-direction: column;
     align-items: stretch;

@@ -286,6 +286,9 @@ export const Welcome: React.FC = () => {
 
     return (
         <S.Root>
+            <S.Scene>
+                <S.Foliage aria-hidden />
+            </S.Scene>
             {panel === 'menu' && (
                 <S.Menu aria-label={welcome.menuAria}>
                     <S.MenuButton
@@ -296,12 +299,6 @@ export const Welcome: React.FC = () => {
                         }}
                     >
                         {welcome.play}
-                    </S.MenuButton>
-                    <S.MenuButton
-                        type="button"
-                        onClick={() => goTo('?view=decks')}
-                    >
-                        {welcome.collection}
                     </S.MenuButton>
                     <S.MenuButton
                         type="button"
