@@ -108,6 +108,149 @@ export const Foliage = styled.div`
     }
 `;
 
+/**
+ * Bannière = calques empilés (un seul PNG ne peut pas cumuler deux cinématiques
+ * indépendantes ni un scale « plus fort en bas ») :
+ * - haut 10 % figé
+ * - balancier (rotate/skew) sur le tissu
+ * - bandes internes : scaleX croissant vers le bas, rythme désynchronisé
+ */
+const bannerSway = keyframes`
+    0% {
+        transform: rotate(0deg) skewX(0deg) skewY(0deg);
+    }
+    20% {
+        transform: rotate(3.4deg) skewX(2.4deg) skewY(0.45deg);
+    }
+    45% {
+        transform: rotate(-2.4deg) skewX(-1.8deg) skewY(-0.35deg);
+    }
+    68% {
+        transform: rotate(2.8deg) skewX(2.1deg) skewY(0.4deg);
+    }
+    86% {
+        transform: rotate(-1.3deg) skewX(-1.05deg) skewY(-0.22deg);
+    }
+    100% {
+        transform: rotate(0deg) skewX(0deg) skewY(0deg);
+    }
+`;
+
+const bannerBillowSoft = keyframes`
+    0%,
+    100% {
+        transform: scaleX(1);
+    }
+    35% {
+        transform: scaleX(1.04);
+    }
+    70% {
+        transform: scaleX(0.97);
+    }
+`;
+
+const bannerBillowMid = keyframes`
+    0%,
+    100% {
+        transform: scaleX(1);
+    }
+    30% {
+        transform: scaleX(1.1);
+    }
+    65% {
+        transform: scaleX(0.92);
+    }
+`;
+
+const bannerBillowHard = keyframes`
+    0%,
+    100% {
+        transform: scaleX(1);
+    }
+    28% {
+        transform: scaleX(1.22);
+    }
+    62% {
+        transform: scaleX(0.84);
+    }
+`;
+
+const bannerFace = `
+    position: absolute;
+    inset: 0;
+    background-image: url(interface/home_composition/banner_gondor.png);
+    background-size: auto 100%;
+    background-position: center center;
+    background-repeat: no-repeat;
+`;
+
+export const Banner = styled.div`
+    position: absolute;
+    top: 41%;
+    left: 25.65%;
+    width: 8%;
+    aspect-ratio: 327 / 542;
+    pointer-events: none;
+
+    /* Attache / haut — jamais animé */
+    &::before {
+        content: '';
+        ${bannerFace}
+        clip-path: inset(0 0 89% 0);
+        z-index: 1;
+    }
+`;
+
+/** Tissu entier : balancier (indépendant du scale des bandes). */
+export const BannerSwing = styled.div`
+    position: absolute;
+    inset: 0;
+    transform-origin: 50% 10%;
+    will-change: transform;
+    animation: ${bannerSway} 11s ease-in-out infinite;
+
+    @media (prefers-reduced-motion: reduce) {
+        animation: none;
+    }
+`;
+
+type BannerStripTone = 'soft' | 'mid' | 'hard';
+
+const stripTone: Record<
+    BannerStripTone,
+    { clip: string; anim: ReturnType<typeof keyframes>; duration: string }
+> = {
+    soft: {
+        clip: 'inset(9% 0 50% 0)',
+        anim: bannerBillowSoft,
+        duration: '7.2s',
+    },
+    mid: {
+        clip: 'inset(46% 0 20% 0)',
+        anim: bannerBillowMid,
+        duration: '8.4s',
+    },
+    hard: {
+        clip: 'inset(76% 0 0 0)',
+        anim: bannerBillowHard,
+        duration: '6.5s',
+    },
+};
+
+/** Bande de tissu : même PNG, scaleX plus marqué vers le bas. */
+export const BannerStrip = styled.div<{ $tone: BannerStripTone }>`
+    ${bannerFace}
+    clip-path: ${(p) => stripTone[p.$tone].clip};
+    transform-origin: 50% 10%;
+    will-change: transform;
+    animation: ${(p) => stripTone[p.$tone].anim}
+        ${(p) => stripTone[p.$tone].duration} ease-in-out infinite;
+
+    @media (prefers-reduced-motion: reduce) {
+        animation: none;
+    }
+`;
+
 export const Menu = styled.nav`
     position: relative;
     z-index: 1;

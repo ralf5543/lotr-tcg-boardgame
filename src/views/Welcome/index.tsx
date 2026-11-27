@@ -288,6 +288,13 @@ export const Welcome: React.FC = () => {
         <S.Root>
             <S.Scene>
                 <S.Foliage aria-hidden />
+                <S.Banner aria-hidden>
+                    <S.BannerSwing>
+                        <S.BannerStrip $tone="soft" />
+                        <S.BannerStrip $tone="mid" />
+                        <S.BannerStrip $tone="hard" />
+                    </S.BannerSwing>
+                </S.Banner>
             </S.Scene>
             {panel === 'menu' && (
                 <S.Menu aria-label={welcome.menuAria}>
