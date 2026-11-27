@@ -11,7 +11,7 @@ Document **vivant** : précisé, modifié, complété au fur et à mesure. **Lis
 
 ## Mode de travail
 
-1. **Un plan thématique actif** à la fois (détail, credo, étapes) — actuellement Phase 2 en ligne.
+1. **Un plan thématique actif** à la fois (détail, credo, étapes) — actuellement Phase 3 comptes.
 2. **Cette roadmap** = vision d’ensemble + statut des grands axes.
 3. À la bascule : figer / désactiver le plan courant (`alwaysApply: false`), activer le suivant, mettre à jour le statut ici.
 
@@ -27,9 +27,9 @@ Credo transversal (hérités des plans cartes / sites / jetons) : **mieux vaut i
 
 | | |
 | --- | --- |
-| **Chantier** | Jeu en ligne — Phase 2 (confort de table) |
-| **Plan** | [`online-play-plan.mdc`](online-play-plan.mdc) |
-| **Statut** | Actif — étapes 1–4 faites ; playtest (étape 5) |
+| **Chantier** | Comptes + persistance (Phase 3) |
+| **Plan** | [`accounts-plan.mdc`](accounts-plan.mdc) |
+| **Statut** | Actif — socle SQLite + auth e-mail faits ; suite OAuth / UI |
 
 ## Grands axes
 
@@ -47,7 +47,7 @@ Statuts : `en cours` · `à faire` · `plus tard` · `fait` · `pause`
 | **Gagner / Perdre** | **fait** | Site 9 / corruption / mort Porteur + overlay. Plan : [`win-lose-plan.mdc`](win-lose-plan.mdc) (embellisement plus tard). |
 | **Options** | **fait** | UI 5 langues en l’état (chrome, consignes, status/journal, mots-clés, deck builder). Hors scope : DEV, `effect.message` papier, grammaire AST 5×. |
 | **Écran de bienvenue** | **en cours** | Design / tutoriel en parallèle (Ralf) — hors scope Phase 2 ; le flux créer/rejoindre s’y branche sans figer le visuel. |
-| **Jeu en ligne** | **en cours** | Phase 1 **en prod** ; **Phase 2 active** (confort table). MAJ = `npm run deploy:prod` (nginx intouché). Plan : [`online-play-plan.mdc`](online-play-plan.mdc). |
+| **Jeu en ligne** | **en cours** | Phase 1–2 **faites** (prod). **Phase 3 active** (comptes / decks). MAJ = `npm run deploy:prod` (nginx intouché). Plans : [`online-play-plan.mdc`](online-play-plan.mdc) (figé), [`accounts-plan.mdc`](accounts-plan.mdc). |
 | **Exceptions de cartes** | à faire | Cartes trop spécifiques — handlers par id, en dernier. Liste : [`card-exceptions.mdc`](card-exceptions.mdc). |
 | **Visuel artefacts** | **fait** | Calques culture artefact validés (commit antérieur). |
 

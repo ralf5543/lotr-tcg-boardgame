@@ -17,6 +17,12 @@ dist-ssr
 .env.*
 !.env.example
 
+# SQLite comptes (Phase 3) — local / prod hors git
+data/
+*.sqlite
+*.sqlite-journal
+*.sqlite-wal
+
 # Python
 __pycache__/
 *.pyc

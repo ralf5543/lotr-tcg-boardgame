@@ -1,107 +1,49 @@
 ---
-description: Plan actif — Jeu en ligne Phase 2 (confort de table)
-alwaysApply: true
+description: ARCHIVÉ — Jeu en ligne Phase 2 confort de table (figé ; suite = accounts-plan.mdc)
+alwaysApply: false
 ---
 
 # Jeu en ligne — Phase 2 (confort de table)
 
-> **Plan actif.** Phase 1 en prod. Accueil (design / tutoriel) = chantier parallèle, hors scope ici. Vision globale : [`.cursor/rules/roadmap.mdc`](roadmap.mdc).
+> **Plan figé.** Playtest validé (2 navigateurs + smoke mobile). Suite : [`accounts-plan.mdc`](accounts-plan.mdc) (Phase 3). Vision : [`.cursor/rules/roadmap.mdc`](roadmap.mdc).
 
 **Format : Standard (règles modernes).** Voir `.cursor/rules/format-standard.mdc`.
 
-Credo : **mieux vaut inerte que faux** ; flux jouable avant polish ; pas de BDD / comptes (Phase 3) ; pas de matchmaking public.
+Credo : **mieux vaut inerte que faux** ; flux jouable avant polish ; pas de matchmaking public.
 
-## Objectif Phase 2
+## Objectif (atteint)
 
 Deux personnes à distance jouent **sans bricoler l’URL** : chacune a un **nom**, un **avatar** (liste fixe), **son** deck, et un siège **protégé** (credentials).
 
-| | Aujourd’hui (Phase 1) | Cible Phase 2 |
-| --- | --- | --- |
-| Entrée | `?match=…&player=0\|1` à la main | Créer / rejoindre (code de partie) |
-| Decks | Les **deux** decks du créateur (`localStorage`) | **Un deck chacun** à l’entrée |
-| Noms | En dur (`Raphaël` / `Tom`) | Saisis (session locale) |
-| Avatars | En dur `avatar_p0` / `p1` | Choix dans une **liste fixe** |
-| Sièges | Ouverts (URL suffit) | Credentials boardgame.io |
-
-## Hors scope Phase 2
-
-- Comptes, login, BDD, mails (→ Phase 3).
-- Liste d’amis / invitation (→ Phase 4).
-- Design final de l’accueil, tutoriel (Ralf affine en parallèle).
-- Collection serveur ; les decks restent locaux (builder + `localStorage`).
-- Matchmaking public / salon d’inconnus.
-
 ## Décisions retenues
 
-### Profil de session (sans compte)
+- Profil session local (`lotr.sessionProfile`) ; avatars = scan `public/avatars/`.
+- Credentials boardgame.io create/join ; `MatchSeatGate` + Client.
+- Antichambre `LOBBY` + `readyWithLoadout` (un deck chacun).
+- Accueil : Créer / Rejoindre + choix deck (chrome provisoire).
 
-- Nom + avatar stockés en **local** (ex. `localStorage`) pour préremplir.
-- Liste d’avatars **fixe** dans le repo (pas d’upload).
-- Propagés dans `G.players[id].profile` avant / au début de la partie (plus de noms en dur dans `createInitialPlayer`).
+## Fichiers clés
 
-### Credentials
-
-- À la **création** et au **join** boardgame.io : récupérer `playerCredentials`, les garder en session (localStorage / sessionStorage lié au `matchID`).
-- Le `Client` reçoit `credentials` — plus de siège usurpable juste avec l’URL.
-
-### Un deck chacun — approche
-
-`setup()` tourne **une fois** à la création avec `setupData.decks`. On ne peut donc pas coller le deck de l’invité après coup sans phase d’attente.
-
-**Retenu** : **antichambre** (hors enchère) dans le match :
-
-1. L’hôte crée la partie avec **son** profil + deck (siège 0) ; siège 1 encore « pas prêt ».
-2. L’invité rejoint (credentials) et envoie **son** profil + deck via un coup de prépartie (`readyWithLoadout` ou équivalent).
-3. Quand **les deux** sont prêts → transition vers l’enchère de fardeaux (état actuel de mise en place).
-
-Repli si trop lourd : salon ultra-court hors match (salle mémoire serveur → `create` seulement quand les deux ont soumis) — à trancher à l’implémentation, même UX joueur.
-
-### Flux UI (fonctionnel)
-
-- Depuis l’accueil (ou un écran dédié branché dessus) : **Créer une partie** / **Rejoindre**.
-- Créer → choix nom / avatar / deck → code à partager + attente adversaire.
-- Rejoindre → saisir le code → choix nom / avatar / deck → entrée.
-- Pas besoin que le chrome soit final : **lisible et utilisable** suffit (Ralf polishera l’accueil).
-
-## État actuel (constats code)
-
-| Fichier | Rôle / écart |
+| Fichier | Rôle |
 | --- | --- |
-| [`src/decks/startMatch.ts`](../../src/decks/startMatch.ts) | create antichambre : deck **hôte** seul |
+| [`src/decks/startMatch.ts`](../../src/decks/startMatch.ts) | create antichambre : deck hôte |
 | [`src/game/logic/assemblePlayer.ts`](../../src/game/logic/assemblePlayer.ts) | `assemblePlayer` / `createStubPlayer` |
 | [`src/game/moves/lobbyMoves.ts`](../../src/game/moves/lobbyMoves.ts) | `readyWithLoadout` → BIDDING |
-| [`src/match/pendingLoadout.ts`](../../src/match/pendingLoadout.ts) | Deck invité stashed → plateau |
-| [`src/App.tsx`](../../src/App.tsx) | `MatchSeatGate` + `credentials` sur Client |
-| [`src/match/`](../../src/match/) | `joinMatchSeat` + gate |
-| [`src/session/matchCredentials.ts`](../../src/session/matchCredentials.ts) | Stockage local par match/siège |
-| [`src/views/Welcome/`](../../src/views/Welcome/) | Créer / Rejoindre + choix deck — chrome provisoire |
-| [`server.ts`](../../server.ts) | Plafond OK ; create `unlisted` |
+| [`src/match/pendingLoadout.ts`](../../src/match/pendingLoadout.ts) | Deck invité stashed |
+| [`src/session/`](../../src/session/) | profil + credentials |
+| [`src/views/Welcome/`](../../src/views/Welcome/) | Créer / Rejoindre + deck |
 
 ## Étapes
 
-| # | Étape | Statut | Notes |
-| --- | --- | --- | --- |
-| **1** | Profil session local (nom + avatar liste fixe) | **fait** | `src/session/playerProfile.ts` ; Options → Compte ; setupData / BOT ; plus de Raphaël/Tom. Avatars = scan auto de `public/avatars/` (`vite.sessionAvatars.ts`) |
-| **2** | Credentials create / join + Client | **fait** | create→join siège 0 ; `lotr.matchCredentials` ; `MatchSeatGate` + `credentials` sur Client ; join auto si absents |
-| **3** | Flux Créer / Rejoindre (code) | **fait** | « Jouer » → Créer / Rejoindre ; hôte attend siège 1 ; Retour / fermeture = leave+wipe ; pas de self-join |
-| **4** | Un deck chacun + antichambre | **fait** | LOBBY + `readyWithLoadout` ; Welcome deck select ; invité via `pendingLoadout` |
-| **5** | Playtest 2 navigateurs (prod ou local) | à faire | Deux decks différents, noms OK, siège protégé |
+| # | Étape | Statut |
+| --- | --- | --- |
+| **1** | Profil session local (nom + avatar) | **fait** |
+| **2** | Credentials create / join + Client | **fait** |
+| **3** | Flux Créer / Rejoindre (code) | **fait** |
+| **4** | Un deck chacun + antichambre | **fait** |
+| **5** | Playtest 2 navigateurs (prod) | **fait** |
 
-Ordre conseillé : **1 → 2 → 3 → 4 → 5** (3 peut avancer en parallèle de 4 une fois 2 posé).
-
-## Critère de succès Phase 2
-
-Un ami peut : ouvrir le site → rejoindre avec un code → choisir **son** deck et un nom → jouer, sans coller `?player=1` ni partager ton `localStorage` de decks.
-
-## Phases suivantes (rappel)
-
-| Phase | Contenu |
-| --- | --- |
-| **3** | Comptes + persistance collection / decks |
-| **4** | Amis & invitation (pas de matchmaking public) |
-
-## Infra (rappel Phase 1)
+## Infra
 
 - **Prod** : `https://lotr-tcg-online.raphael-bigot.info`
 - **MAJ** : `npm run deploy:prod` — **ne pas** écraser nginx après Certbot
-- Scripts : [`deploy/update-prod.sh`](../../deploy/update-prod.sh), [`deploy/setup-vps.sh`](../../deploy/setup-vps.sh)

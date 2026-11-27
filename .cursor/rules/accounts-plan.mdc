@@ -1,0 +1,98 @@
+---
+description: Plan actif — Comptes + persistance collection / decks (Phase 3)
+alwaysApply: true
+---
+
+# Comptes & persistance — Phase 3
+
+> **Plan actif.** Phase 2 figée : [`online-play-plan.mdc`](online-play-plan.mdc). Vision : [`.cursor/rules/roadmap.mdc`](roadmap.mdc).
+
+**Format : Standard (règles modernes).** Voir `.cursor/rules/format-standard.mdc`.
+
+Credo : **mieux vaut inerte que faux** ; flux jouable avant polish ; pas de matchmaking public (→ Phase 4 amis).
+
+## Objectif
+
+Un joueur a un **compte** : son **profil** (nom, avatar) et ses **decks** vivent sur le serveur, disponibles sur n’importe quel appareil. Jouer en ligne Phase 2 reste possible ; l’invité / l’hôte n’ont plus besoin de partager un `localStorage`.
+
+| | Aujourd’hui (Phase 2) | Cible Phase 3 |
+| --- | --- | --- |
+| Identité | `localStorage` session | Compte (session serveur) |
+| Decks | JSON locaux / seeds bundle | Decks liés au compte |
+| Collection cartes | Implicite (tout le pool Standard) | Hors Phase 3 (decks only) |
+| Multi-appareil | Non | Oui (login) |
+
+## Hors scope Phase 3
+
+- Liste d’amis / invitation (→ Phase 4).
+- Matchmaking public / salon d’inconnus.
+- Design final de l’accueil / tutoriel (Ralf en parallèle).
+- Paiement, boutique, ownership Decipher « réel ».
+- Remplacer boardgame.io (credentials match inchangés).
+
+## Décisions retenues
+
+### Auth
+
+**E-mail + mot de passe** et **Google (OAuth)** — les deux.
+- Inscription / connexion classique (e-mail + MDP).
+- Bouton « Continuer avec Google » en plus.
+- Pas de magic link pour l’instant (SMTP en moins).
+
+### Base de données
+
+**SQLite** (fichier sur le VPS).
+
+Ce n’est **pas** lié au poids des JSON de decks ni à « combien de decks par compte ». Un deck = quelques Ko de texte ; même 100 decks × 100 joueurs reste négligeable.
+
+Le choix SQLite vs Postgres, c’est surtout :
+- **infra** (SQLite = un fichier, zéro service à installer ; Postgres = serveur BDD à part) ;
+- **concurrence** (Postgres tient mieux si des milliers de joueurs écrivent en même temps — hors sujet pour nous).
+
+Donc SQLite. On migrera vers Postgres seulement si un jour ça coince vraiment.
+
+### Collection
+
+**Decks only** en Phase 3.
+
+Pas de collection serveur (pas d’ownership carte / boosters). Le pool Standard reste jouable pour construire des decks quand on a un compte.
+
+Une vraie « collection » (inventaire perso) = chantier **séparé / plus tard**. Entrée « Ma collection » retirée du menu d’accueil (le builder reste en DEV via `?view=decks` jusqu’à l’UI compte).
+
+### Accès en ligne vs DEV
+
+| Contexte | Règle |
+| --- | --- |
+| **Prod / jeu en ligne** | **Compte obligatoire** pour créer ou rejoindre. Plus de seeds publics partagés « pour tout le monde » à terme — les decks d’exemple seront liés à des comptes. |
+| **DEV / offline** | Inchangé : presets, mocks, builder local, BOT, parties locales — Ralf continue comme aujourd’hui. |
+
+## Étapes
+
+| # | Étape | Statut | Notes |
+| --- | --- | --- | --- |
+| **0** | Trancher auth / BDD / collection / invité | **fait** | Voir décisions retenues |
+| **1** | Socle serveur : SQLite + User / Session / Deck | **fait** | `server/db.ts` ; tables users / sessions / decks ; `data/lotr.sqlite` |
+| **2** | API auth e-mail+MDP + session cookie | **fait** | `POST/GET /api/auth/{register,login,logout,me}` ; cookie `lotr_session` |
+| **3** | OAuth Google | à faire | Même session que (2) |
+| **4** | API decks CRUD liés au compte | à faire | Prod ; DEV garde fichiers / mocks |
+| **5** | UI Compte (accueil + Options) | à faire | i18n 5× |
+| **6** | Créer / Rejoindre : exige session | à faire | Plus d’entrée anonyme en prod |
+| **7** | Builder branché sur decks compte (prod) | à faire | |
+| **8** | Deploy + playtest multi-appareil | à faire | |
+
+## Infra (rappel)
+
+- **Prod** : `https://lotr-tcg-online.raphael-bigot.info`
+- **MAJ** : `npm run deploy:prod` — **ne pas** écraser nginx après Certbot
+- **nginx** : ajouter `location /api/` → Node (exemple dans `deploy/nginx-lotr.conf`) — fusion manuelle si Certbot a déjà modifié le fichier live.
+- **DEV** : Vite proxy `/api` → `http://127.0.0.1:8000` ; lancer `npm run server`.
+- BDD : `LOTR_DB_PATH` ou `data/lotr.sqlite` (gitignoré).
+
+## Fichiers clés (socle)
+
+| Fichier | Rôle |
+| --- | --- |
+| [`server/db.ts`](../../server/db.ts) | SQLite + migrate |
+| [`server/auth/`](../../server/auth/) | passwords, sessions, users, routes |
+| [`server/mountAccountsApi.ts`](../../server/mountAccountsApi.ts) | Branche sur Koa bgio |
+| [`server.ts`](../../server.ts) | Point d’entrée Node |

@@ -1,6 +1,7 @@
 // @ts-expect-error - Chemin CJS interne boardgame.io sans types explicites
 import { Server, Origins } from 'boardgame.io/dist/cjs/server.js';
 import { LotrGame } from './src/game';
+import { mountAccountsApi } from './server/mountAccountsApi';
 
 const PORT = Number(process.env.PORT || 8000);
 const MAX_ACTIVE_MATCHES = Number(process.env.MAX_ACTIVE_MATCHES || 20);
@@ -55,8 +56,11 @@ server.app.use(async (ctx: {
     await next();
 });
 
+/** Comptes / decks (Phase 3) — routes `/api/…`. */
+mountAccountsApi(server.app);
+
 server.run({ port: PORT }, () => {
     console.log(
-        `Serveur boardgame.io sur le port ${PORT} (max ${MAX_ACTIVE_MATCHES} parties actives)`
+        `Serveur boardgame.io + comptes sur le port ${PORT} (max ${MAX_ACTIVE_MATCHES} parties actives)`
     );
 });

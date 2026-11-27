@@ -17,8 +17,17 @@ export default defineConfig({
     decksFileApiPlugin(),
     sessionAvatarsPlugin(),
   ],
+  // DEV : API comptes sur le même serveur Node que boardgame.io.
+  server: {
+    proxy: {
+      '/api': {
+        target: 'http://127.0.0.1:8000',
+        changeOrigin: true,
+      },
+    },
+  },
   test: {
     environment: 'node',
-    include: ['src/**/*.test.ts'],
+    include: ['src/**/*.test.ts', 'server/**/*.test.ts'],
   },
 });
